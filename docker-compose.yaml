@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  vacated-backend:
+    container_name: vacated_backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html:rw,cached
+    ports:
+      - "8080:80"
+
+  postgres:
+    container_name: vacated_postgres
+    image: postgres:16.1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+

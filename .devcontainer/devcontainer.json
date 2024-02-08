@@ -1,0 +1,23 @@
+{
+    "name": "Vacated dev container",
+    "dockerComposeFile": [
+        "../docker-compose.yaml"
+    ],
+    "service": "vacated-backend",
+    "workspaceFolder": "/var/www/html",
+    "shutdownAction": "none",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "xdebug.php-debug",
+                "bmewburn.vscode-intelephense-client",
+                "eamodio.gitlens",
+                "jaguadoromero.vscode-php-create-class",
+                "valeryanm.vscode-phpsab",
+                "joelwmale.vscode-codeception",
+                "ryanluker.vscode-coverage-gutters",
+                "phproberto.vscode-php-getters-setters"
+            ]
+        }
+    }
+}
