@@ -8,5 +8,14 @@
 actor: FunctionalTester
 modules:
     enabled:
-        # add a framework module here
+        - Db:
+            dsn: 'pgsql:host=postgres;dbname=vacated_test'
+            user: 'root'
+            password: 'root'
+            populate: false # run populator before all tests
+            cleanup: true # run populator before each test
+        - Symfony:
+            environment: test
+            app_path: src
+        - Asserts
 step_decorators: ~
