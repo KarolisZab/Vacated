@@ -77,9 +77,12 @@
         }
     },
     "require-dev": {
+        "codeception/codeception": "^5.1",
         "phpstan/phpstan": "^1.10",
         "slevomat/coding-standard": "^8.11",
         "squizlabs/php_codesniffer": "3.7.2",
-        "symfony/maker-bundle": "^1.54"
+        "symfony/maker-bundle": "^1.54",
+        "codeception/module-phpbrowser": "*",
+        "codeception/module-asserts": "*"
     }
 }
