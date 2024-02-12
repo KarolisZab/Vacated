@@ -32,10 +32,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: "string")]
     #[Assert\NotBlank(groups: ['update'])]
+    #[Assert\Length(['min' => 4, 'max' => 12])]
     protected string $firstName = '';
 
     #[ORM\Column(type: "string")]
     #[Assert\NotBlank(groups: ['update'])]
+    #[Assert\Length(['min' => 2, 'max' => 12])]
     protected string $lastName = '';
 
     #[ORM\Column(type: "string")]
@@ -118,6 +120,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function hasRole(string $role): bool
+    {
+        foreach ($this->roles as $userRole) {
+            if ($userRole === $role) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

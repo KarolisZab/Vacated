@@ -2,20 +2,17 @@
 
 namespace App\Command;
 
-// use App\Entity\User;
 use App\Service\UserManager;
-// use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'app:create:admin')]
+#[AsCommand(name: 'app:admin:create')]
 class CreateAdminCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager, private UserManager $userManager)
+    public function __construct(private UserManager $userManager)
     {
         parent::__construct();
     }
