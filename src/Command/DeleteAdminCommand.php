@@ -21,17 +21,17 @@ class DeleteAdminCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('identifier', InputArgument::REQUIRED, 'Existing email or username of the admin user.')
+            ->addArgument('email', InputArgument::REQUIRED, 'Existing admin user email.')
             ->setDescription('Deletes admin user.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $identifier = $input->getArgument('identifier');
+        $email = $input->getArgument('email');
 
         try {
-            $this->userManager->deleteAdmin($identifier);
-            $output->writeln('Admin user ' . $identifier . ' deleted successfully!');
+            $this->userManager->deleteAdmin($email);
+            $output->writeln('Admin user ' . $email . ' deleted successfully!');
             return Command::SUCCESS;
         } catch (UserNotFoundException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');

@@ -2,12 +2,13 @@
 
 namespace App\Service;
 
+use App\DTO\UserDTO;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-// use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 class UserManager
 {
@@ -39,69 +40,65 @@ class UserManager
     //     return 0;
     // }
 
-    public function createAdmin(string $username, string $email, string $password)
+    public function createAdmin(string $username, string $email, string $password): ?User
     {
-        $admin = new User();
-        $hashedPassword = $this->passwordHasher->hashPassword(
-            $admin,
-            $password
-        );
-        $admin->setUsername($username)
-            ->setEmail($email)
-            ->setPassword($hashedPassword)
-            ->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
+        try {
+            $admin = new User();
+            $hashedPassword = $this->passwordHasher->hashPassword(
+                $admin,
+                $password
+            );
+            $admin->setUsername($username)
+                ->setEmail($email)
+                ->setPassword($hashedPassword)
+                ->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
 
-        $this->entityManager->persist($admin);
-        $this->entityManager->flush();
+            $this->entityManager->persist($admin);
+            $this->entityManager->flush();
 
-        return 0;
+            return $admin;
+        } catch (\Exception) {
+            return null;
+        }
     }
 
-    public function deleteUser(string $id)
+    public function deleteUser(string $id): bool
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
         $user = $userRepository->find($id);
 
-        if ($user === null) {
-            // return null;
-            throw new UserNotFoundException('User not found!', 404);
-        }
-
         if ($user->hasRole('ROLE_ADMIN')) {
             throw new \Exception('Admin users cannot be deleted', 403);
         }
 
+        if ($user === null) {
+            return false;
+        }
+
         $this->entityManager->remove($user);
         $this->entityManager->flush();
 
-        return $user;
+        return true;
     }
 
-    public function deleteAdmin(string $identifier)
+    public function deleteAdmin(string $email): bool
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
-        // $user = $userRepository->find($id);
-
-        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
-            $user = $userRepository->findOneBy(['email' => $identifier]);
-        } else {
-            $user = $userRepository->findOneBy(['username' => $identifier]);
-        }
+        $user = $userRepository->findOneBy(['email' => $email]);
 
         if ($user === null) {
-            // return null;
-            throw new UserNotFoundException('User not found!', 404);
+            return false;
         }
 
         $this->entityManager->remove($user);
         $this->entityManager->flush();
 
-        return $user;
+        return true;
     }
 
-    public function getAllUsers()
+    public function getAllUsers(): array
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
@@ -110,47 +107,50 @@ class UserManager
         return $allUsers;
     }
 
-    public function getUser(string $id)
+    public function getUser(string $id): ?User
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
         $user = $userRepository->find($id);
 
         if ($user === null) {
-            throw new UserNotFoundException('User not found', 404);
+            return null;
         }
 
         return $user;
     }
 
-    public function updateUser(string $id, array $parameters)
+    /**
+     * updateUser - Updates a user with given ID and parameters.
+     *
+     * @param  string $id - The ID of an user to update.
+     * @param  UserDTO $userDTO - The data transfer object containing updated user data.
+     * @return User|null - Updated user object.
+     *
+     * @throws \Exception - Invalid or missing parameters provided or validation fails.
+     */
+    public function updateUser(string $id, UserDTO $userDTO): ?User
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
         $user = $userRepository->find($id);
 
         if ($user === null) {
-            throw new UserNotFoundException('User not found', 404);
+            return null;
         }
 
-        if (empty($parameters['first_name']) || empty($parameters['last_name']) || empty($parameters['phone_number'])) {
-            throw new \Exception('Invalid or missing parameters', 400);
-        }
+        $user->setFirstName($userDTO->firstName)
+            ->setLastName($userDTO->lastName)
+            ->setPhoneNumber($userDTO->phoneNumber);
 
-        $user->setFirstName($parameters['first_name'])
-            ->setLastName($parameters['last_name'])
-            ->setPhoneNumber($parameters['phone_number']);
-
-        $errors = $this->validator->validate($user);
+        $errors = $this->validator->validate($user, null, ['update']);
 
         if (count($errors) > 0) {
-            // Handle validation errors, for example, return a 400 Bad Request response
             $validationErrors = [];
             foreach ($errors as $error) {
                 $validationErrors[$error->getPropertyPath()] = $error->getMessage();
             }
             throw new \Exception(json_encode($validationErrors), 400);
-            // return new JsonResponse($validationErrors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $this->entityManager->flush();
@@ -158,5 +158,19 @@ class UserManager
         return $user;
 
         // TODO: Adminas updatint visus userius ir save, bet ne kitus adminus.
+    }
+
+    /**
+     * Used to upgrade (rehash) the user's password automatically over time.
+     */
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    {
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
+        }
+
+        $user->setPassword($newHashedPassword);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 }

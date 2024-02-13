@@ -32,9 +32,13 @@ class CreateAdminCommand extends Command
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
 
-        $this->userManager->createAdmin($username, $email, $password);
+        $adminUser = $this->userManager->createAdmin($username, $email, $password);
 
-        $output->writeln('Admin user ' . $username . ' created successfully!');
+        if ($adminUser !== null) {
+            $output->writeln('Admin user ' . $username . ' created successfully!');
+        } else {
+            $output->writeln('Error: Failed to create admin user.');
+        }
 
         return Command::SUCCESS;
     }

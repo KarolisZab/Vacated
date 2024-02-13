@@ -2,16 +2,18 @@
 
 namespace App\Controller\Admin;
 
+use App\DTO\UserDTO;
 use App\Service\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 #[Route('/api/admin')]
-class AdminController extends AbstractController
+class UserController extends AbstractController
 {
     public function __construct(
         private SerializerInterface $serializer,
@@ -32,6 +34,11 @@ class AdminController extends AbstractController
     {
         try {
             $user = $this->userManager->getUser($id);
+
+            if ($user === null) {
+                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+            }
+
             return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
         } catch (UserNotFoundException $e) {
             return new JsonResponse($e->getMessage(), $e->getCode());
@@ -43,36 +50,32 @@ class AdminController extends AbstractController
     {
         try {
             $user = $this->userManager->deleteUser($id);
+
+            if ($user === false) {
+                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+            }
+
             return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
         } catch (UserNotFoundException $e) {
             return new JsonResponse($e->getMessage(), $e->getCode());
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), $e->getCode());
         }
-
-        //TODO: Administratorius gali trinti kitus User, bet negali trinti kitu Admin useriu.
     }
 
     #[Route('/update-user/{id}', name: 'update_user', methods: ['PATCH'])]
-    public function updateUser(Request $request, string $id)
+    public function updateUser(Request $request, string $id, #[MapRequestPayload()] UserDTO $userDTO)
     {
         try {
-            $parameters = json_decode($request->getContent(), true);
+            $user = $this->userManager->updateUser($id, $userDTO);
 
-            if ($parameters === null || empty($parameters)) {
-                throw new \Exception('Invalid or empty request body', 400);
+            if ($user === null) {
+                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
             }
 
-            $user = $this->userManager->updateUser($id, $parameters);
             return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
         } catch (\Exception $exception) {
-            return new JsonResponse($exception->getMessage(), 400);
+            return $this->json(['error' => $exception->getMessage()], $exception->getCode());
         }
     }
 }
-
-//// lieka response ir iskvietimas funkcijos
-// jeigu user === null, throwint exceptiona su status codu JsonResponse
-
-// jeigu bando trint admina, reikia checko, ar jis yra adminas ar ne
-// console command istrint admina ir vsio

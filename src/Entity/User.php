@@ -18,13 +18,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected string $id;
 
     #[ORM\Column(type: "string", unique: true)]
-    // #[Assert\NotBlank()]
-    #[Assert\Length(['min' => 12, 'max' => 50])]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Email must contain at least {{ limit }} characters',
+        maxMessage: 'Email must not exceed {{ limit }} characters'
+    )]
     protected string $email;
 
     #[ORM\Column(type: "string", unique: true)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(['min' => 4, 'max' => 12])]
+    #[Assert\Length(['min' => 4, 'max' => 15])]
     protected string $username;
 
     #[ORM\Column(type: "json")]
@@ -32,12 +35,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: "string")]
     #[Assert\NotBlank(groups: ['update'])]
-    #[Assert\Length(['min' => 4, 'max' => 12])]
     protected string $firstName = '';
 
     #[ORM\Column(type: "string")]
     #[Assert\NotBlank(groups: ['update'])]
-    #[Assert\Length(['min' => 2, 'max' => 12])]
     protected string $lastName = '';
 
     #[ORM\Column(type: "string")]
