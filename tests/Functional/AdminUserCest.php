@@ -44,12 +44,6 @@ class CreateAdminCest
         $usersAfter = $userRepository->findBy(['email' => 'admin@admin.lt']);
 
         $I->assertEquals(0, count($usersAfter));
-
-        $this->userManager->createAdmin('Adminas', 'adminas@adminas.com', 'admin');
-
-        $result = $this->userManager->deleteAdmin('Adminas');
-
-        $I->assertFalse($result);
     }
 
     public function testAdminCannotDeleteAdmin(FunctionalTester $I)

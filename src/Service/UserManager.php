@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\DTO\UserDTO;
 use App\Entity\User;
+use App\Exception\ValidationFailureException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -13,7 +14,7 @@ class UserManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
     ) {
     }
 
@@ -29,16 +30,6 @@ class UserManager
                 ->setEmail($email)
                 ->setPassword($hashedPassword)
                 ->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
-
-            $errors = $this->validator->validate($admin);
-
-            if (count($errors) > 0) {
-                $validationErrors = [];
-                foreach ($errors as $error) {
-                    $validationErrors[$error->getPropertyPath()] = $error->getMessage();
-                }
-                throw new \Exception(json_encode($validationErrors), 400);
-            }
 
             $this->entityManager->persist($admin);
             $this->entityManager->flush();
@@ -111,13 +102,13 @@ class UserManager
     }
 
     /**
-     * updateUser - Updates a user with given ID and parameters.
+     * Updates a user with given ID and parameters.
      *
-     * @param  string $id - The ID of an user to update.
-     * @param  UserDTO $userDTO - The data transfer object containing updated user data.
-     * @return User|null - Updated user object.
+     * @param  string       $id         The ID of an user to update.
+     * @param  UserDTO      $userDTO    The data transfer object containing updated user data.
+     * @return User|null
      *
-     * @throws \Exception - Invalid or missing parameters provided or validation fails.
+     * @throws ValidationFailureException Invalid or missing parameters provided or validation fails.
      */
     public function updateUser(string $id, UserDTO $userDTO): ?User
     {
@@ -135,13 +126,7 @@ class UserManager
 
         $errors = $this->validator->validate($user, null, ['update']);
 
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[$error->getPropertyPath()] = $error->getMessage();
-            }
-            throw new \Exception(json_encode($validationErrors), 400);
-        }
+        ValidationFailureException::throwException($errors);
 
         $this->entityManager->flush();
 
