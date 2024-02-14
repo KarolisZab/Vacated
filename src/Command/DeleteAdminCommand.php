@@ -8,7 +8,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 #[AsCommand(name: 'app:admin:delete')]
 class DeleteAdminCommand extends Command
@@ -29,12 +28,13 @@ class DeleteAdminCommand extends Command
     {
         $email = $input->getArgument('email');
 
-        try {
-            $this->userManager->deleteAdmin($email);
+        $deleted = $this->userManager->deleteAdmin($email);
+
+        if ($deleted) {
             $output->writeln('Admin user ' . $email . ' deleted successfully!');
             return Command::SUCCESS;
-        } catch (UserNotFoundException $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+        } else {
+            $output->writeln('<error>User not found or deletion failed.</error>');
             return Command::FAILURE;
         }
     }

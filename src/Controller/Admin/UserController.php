@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 #[Route('/api/admin')]
 class UserController extends AbstractController
@@ -32,17 +31,13 @@ class UserController extends AbstractController
     #[Route('/users/{id}', name: 'get_user', methods: ['GET'])]
     public function getOneUser(string $id)
     {
-        try {
-            $user = $this->userManager->getUser($id);
+        $user = $this->userManager->getUser($id);
 
-            if ($user === null) {
-                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
-            }
-
-            return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
-        } catch (UserNotFoundException $e) {
-            return new JsonResponse($e->getMessage(), $e->getCode());
+        if ($user === null) {
+            return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
         }
+
+        return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
     #[Route('/delete-user/{id}', name: 'delete_user', methods: ['DELETE'])]
@@ -56,8 +51,6 @@ class UserController extends AbstractController
             }
 
             return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
-        } catch (UserNotFoundException $e) {
-            return new JsonResponse($e->getMessage(), $e->getCode());
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), $e->getCode());
         }
@@ -75,7 +68,7 @@ class UserController extends AbstractController
 
             return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
         } catch (\Exception $exception) {
-            return $this->json(['error' => $exception->getMessage()], $exception->getCode());
+            return new JsonResponse($exception->getMessage(), $exception->getCode());
         }
     }
 }

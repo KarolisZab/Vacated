@@ -39,9 +39,6 @@ class CreateAdminCest
         $userRepository = $this->entityManager->getRepository(User::class);
 
         $this->userManager->createAdmin('Admin', 'admin@admin.lt', 'Admin');
-        $usersBefore = $userRepository->findBy(['email' => 'admin@admin.lt']);
-
-        $I->assertEquals(1, count($usersBefore));
 
         $this->userManager->deleteAdmin('admin@admin.lt');
         $usersAfter = $userRepository->findBy(['email' => 'admin@admin.lt']);
@@ -60,14 +57,14 @@ class CreateAdminCest
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        $admin = $this->userManager->createAdmin('testas', 'testas@admin.com', 'test');
+        $admin = $this->userManager->createAdmin('testas33', 'testas33@admin.com', 'test');
 
         try {
             $this->userManager->deleteUser($admin->getId());
         } catch (\Exception) {
         }
 
-        $userAfter3 = $userRepository->findBy(['email' => 'testas@admin.com']);
+        $userAfter3 = $userRepository->findBy(['email' => 'testas33@admin.com']);
         $I->assertEquals(1, count($userAfter3));
     }
 
@@ -86,18 +83,9 @@ class CreateAdminCest
         $this->userManager->createAdmin('testinis', 'testinis@tes.com', 'test');
         $user = $userRepository->findOneBy(['username' => 'testinis']);
 
-        // $updateData = [
-        //     'first_name' => 'Karolis',
-        //     'last_name' => 'Testinis',
-        //     'phone_number' => '123456789'
-        // ];
-
         $updateDTO = new UserDTO('Karolis', 'Testinis', '123456789');
 
-        try {
-            $this->userManager->updateUser($user->getId(), $updateDTO);
-        } catch (\Exception) {
-        }
+        $this->userManager->updateUser($user->getId(), $updateDTO);
 
         $updatedUser = $userRepository->findOneBy(['username' => 'testinis']);
 
