@@ -5,12 +5,15 @@ namespace App\Service;
 use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Exception\ValidationFailureException;
+use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserManager
 {
+    use LoggerTrait;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
@@ -34,8 +37,11 @@ class UserManager
             $this->entityManager->persist($admin);
             $this->entityManager->flush();
 
+            $this->logger->info("Admin with username $username and email $email created successfully.");
+
             return $admin;
         } catch (\Exception $e) {
+            $this->logger->critical('Exception occured while creating admin user: ' . $e->getMessage());
             return null;
         }
     }
@@ -57,6 +63,8 @@ class UserManager
         $this->entityManager->remove($user);
         $this->entityManager->flush();
 
+        $this->logger->info("User with ID $id has been deleted.");
+
         return true;
     }
 
@@ -72,6 +80,8 @@ class UserManager
 
         $this->entityManager->remove($user);
         $this->entityManager->flush();
+
+        $this->logger->info("Admin $email has been deleted.");
 
         return true;
     }
@@ -129,6 +139,8 @@ class UserManager
         ValidationFailureException::throwException($errors);
 
         $this->entityManager->flush();
+
+        $this->logger->info("User with ID $id has been updated.");
 
         return $user;
 
