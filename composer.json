@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.11",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.0",
+        "lcobucci/jwt": "^5.2",
         "nelmio/api-doc-bundle": "^4.19",
         "symfony/console": "7.0.*",
         "symfony/dotenv": "7.0.*",
@@ -73,6 +74,14 @@
             "php bin/console doctrine:database:create --env=test || echo 'db exists'",
             "php bin/console doctrine:migrations:migrate --env=test --no-interaction",
             "vendor/bin/codecept run"
+        ],
+        "cleardb": [
+            "php bin/console doctrine:database:drop --force --env=test || echo 'db does not exist'",
+            "php bin/console doctrine:database:create --env=test || echo 'db exists'",
+            "php bin/console doctrine:migrations:migrate --env=test --no-interaction"
+        ],
+        "coverage": [
+            "XDEBUG_MODE=coverage vendor/bin/codecept run --coverage --coverage-html"
         ]
     },
     "conflict": {
@@ -88,7 +97,9 @@
         "codeception/codeception": "^5.1",
         "codeception/module-asserts": "*",
         "codeception/module-db": "^3.1",
+        "codeception/module-doctrine": "^3.1",
         "codeception/module-phpbrowser": "*",
+        "codeception/module-rest": "^3.3",
         "codeception/module-symfony": "^3.3",
         "phpstan/phpstan": "^1.10",
         "slevomat/coding-standard": "^8.11",

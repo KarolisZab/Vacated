@@ -18,6 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected string $id;
 
     #[ORM\Column(type: "string", unique: true)]
+    #[Assert\NotBlank(groups: ['create'])]
     #[Assert\Length(
         min: 3,
         max: 255,
@@ -27,6 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected string $email;
 
     #[ORM\Column(type: "string", unique: true)]
+    #[Assert\NotBlank(groups: ['create'])]
     #[Assert\Length(['min' => 4, 'max' => 15])]
     protected string $username;
 

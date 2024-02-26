@@ -10,6 +10,16 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $jwtSecretKey: '%env(JWT_SECRET_KEY)%'
+
+    App\Security\JwtAuthenticator:
+        arguments:
+            $secretKey: '%env(string:JWT_SECRET_KEY)%'
+
+    App\Security\JwtValidator:
+        arguments:
+            $jwtIssuer: '@App\Security\JwtIssuer'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
