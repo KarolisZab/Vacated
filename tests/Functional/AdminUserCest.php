@@ -23,12 +23,12 @@ class CreateAdminCest
     {
         /** @var \App\Repository\UserRepository $repository */
         $repository = $this->entityManager->getRepository(User::class);
-        $usersBefore = $repository->findBy(['username' => 'Nemoksa']);
+        $usersBefore = $repository->findBy(['email' => 'karolis@karolis']);
 
         $I->assertEquals(0, count($usersBefore));
 
-        $this->userManager->createAdmin('Nemoksa', 'karolis@karolis', 'testas');
-        $users = $repository->findBy(['username' => 'Nemoksa']);
+        $this->userManager->createAdmin('karolis@karolis', 'testas');
+        $users = $repository->findBy(['email' => 'karolis@karolis']);
 
         $I->assertEquals(1, count($users));
     }
@@ -38,21 +38,10 @@ class CreateAdminCest
         /** @var \App\Repository\UserRepository $repository */
         // $repository = $this->entityManager->getRepository(User::class);
 
-        $this->userManager->createAdmin('Nemoksa', 'karolis@karolis', 'testas');
-        $user = $this->userManager->createAdmin('Test', 'karolis@karolis', 'test');
+        $this->userManager->createAdmin('karolis@karolis', 'testas');
+        $user = $this->userManager->createAdmin('karolis@karolis', 'test');
 
         $I->assertNull($user, "User not created, because user with the same email already exists");
-    }
-
-    public function testCreateAdminUserIfUserWithUsernameAlreadyExists(FunctionalTester $I)
-    {
-        /** @var \App\Repository\UserRepository $repository */
-        // $repository = $this->entityManager->getRepository(User::class);
-
-        $this->userManager->createAdmin('Nemoksa', 'karolis@karolis', 'testas');
-        $user = $this->userManager->createAdmin('Nemoksa', 'karolis@testinis.com', 'test');
-
-        $I->assertNull($user, "User not created, because user with the same username already exists");
     }
 
     public function testDeleteAdmin(FunctionalTester $I)
@@ -60,7 +49,7 @@ class CreateAdminCest
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        $this->userManager->createAdmin('Admin', 'admin@admin.lt', 'Admin');
+        $this->userManager->createAdmin('admin@admin.lt', 'Admin');
 
         $this->userManager->deleteAdmin('admin@admin.lt');
         $usersAfter = $userRepository->findBy(['email' => 'admin@admin.lt']);
@@ -73,7 +62,7 @@ class CreateAdminCest
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        $admin = $this->userManager->createAdmin('testas33', 'testas33@admin.com', 'test');
+        $admin = $this->userManager->createAdmin('testas33@admin.com', 'test');
 
         try {
             $this->userManager->deleteUser($admin->getId());
@@ -103,14 +92,14 @@ class CreateAdminCest
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        $this->userManager->createAdmin('testinis', 'testinis@tes.com', 'test');
-        $user = $userRepository->findOneBy(['username' => 'testinis']);
+        $this->userManager->createAdmin('testinis@tes.com', 'test');
+        $user = $userRepository->findOneBy(['email' => 'testinis@tes.com']);
 
-        $updateDTO = new UserDTO('', '', '', 'Karolis', 'Testinis', '123456789');
+        $updateDTO = new UserDTO('', '', 'Karolis', 'Testinis', '123456789');
 
         $this->userManager->updateUser($user->getId(), $updateDTO);
 
-        $updatedUser = $userRepository->findOneBy(['username' => 'testinis']);
+        $updatedUser = $userRepository->findOneBy(['email' => 'testinis@tes.com']);
 
         $I->assertEquals('Karolis', $updatedUser->getFirstName());
         $I->assertEquals('Testinis', $updatedUser->getLastName());
@@ -119,7 +108,7 @@ class CreateAdminCest
 
     public function testUpdateNonExistingUser(FunctionalTester $I)
     {
-        $updateDTO = new UserDTO('', '', '', 'Karolis', 'Testinis', '123456789');
+        $updateDTO = new UserDTO('', '', 'Karolis', 'Testinis', '123456789');
 
         $result = $this->userManager->updateUser('333', $updateDTO);
 
@@ -137,7 +126,6 @@ class CreateAdminCest
         $userDto = new UserDTO(
             'registrationtest@test.com',
             'registrationtest',
-            'registrationtest',
             'Karolis',
             'Zabinskis',
             '123456789'
@@ -154,7 +142,6 @@ class CreateAdminCest
         $existingUserDto = new UserDTO(
             'registrationtest@test.com',
             'existinguser',
-            'existinguser',
             'Existing',
             'User',
             '123456789'
@@ -163,7 +150,6 @@ class CreateAdminCest
 
         $userDto = new UserDTO(
             'registrationtest@test.com',
-            'regtest',
             'regtest',
             'Karo',
             'Lis',
@@ -173,32 +159,6 @@ class CreateAdminCest
         $user = $this->userManager->createUser($userDto);
 
         $I->assertNull($user, "User not created, because user with the same email already exists");
-    }
-
-    public function testUserCreateIfUserWithUsernameAlreadyExist(FunctionalTester $I)
-    {
-        $existingUserDto = new UserDTO(
-            'registrationtest@test.com',
-            'existinguser',
-            'existinguser',
-            'Existing',
-            'User',
-            '123456789'
-        );
-        $this->userManager->createUser($existingUserDto);
-
-        $userDto = new UserDTO(
-            'registrationtest2@test.com',
-            'existinguser',
-            'regtest',
-            'Karo',
-            'Lis',
-            '123456789'
-        );
-
-        $user = $this->userManager->createUser($userDto);
-
-        $I->assertNull($user, "User not created, because user with the same username already exists");
     }
 
     public function testGetUserThatDoesNotExist(FunctionalTester $I)

@@ -15,9 +15,6 @@ class UserDTO
             maxMessage: 'Email must not exceed {{ limit }} characters'
         )]
         public readonly ?string $email,
-        #[Assert\NotBlank(groups: ['create'])]
-        #[Assert\Length(['min' => 4, 'max' => 15])]
-        public readonly ?string $username,
         #[Assert\NotBlank(groups: ['create', 'update'])]
         public readonly ?string $password = null,
         #[Assert\NotBlank(groups: ['update'])]

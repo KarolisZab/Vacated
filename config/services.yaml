@@ -13,10 +13,6 @@ services:
         bind:
             $jwtSecretKey: '%env(JWT_SECRET_KEY)%'
 
-    App\Security\JwtAuthenticator:
-        arguments:
-            $secretKey: '%env(string:JWT_SECRET_KEY)%'
-
     App\Security\JwtValidator:
         arguments:
             $jwtIssuer: '@App\Security\JwtIssuer'

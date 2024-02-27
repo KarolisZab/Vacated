@@ -5,23 +5,25 @@ namespace App\Security;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
+use Psr\Clock\ClockInterface;
 
 class JwtIssuer
 {
     private Configuration $jwtConfiguration;
+    private ClockInterface $clock;
 
-    public function __construct(string $jwtSecretKey)
+    public function __construct(string $jwtSecretKey, ClockInterface $clock)
     {
         $this->jwtConfiguration = Configuration::forSymmetricSigner(
             new Sha256(),
             InMemory::plainText($jwtSecretKey)
         );
+        $this->clock = $clock;
     }
 
     public function issueToken(
         array $claims,
-        ?\DateTimeImmutable $issuedAt = null,
-        ?\DateTimeImmutable $expiresAt = null
+        int $ttl = 3600
     ): string {
         $builder = $this->jwtConfiguration->builder();
 
@@ -29,11 +31,8 @@ class JwtIssuer
             $builder = $builder->withClaim($claim, $value);
         }
 
-        $issuedAt = $issuedAt ?? new \DateTimeImmutable();
-        $expiresAt = $expiresAt ?? new \DateTimeImmutable('+1 hour');
-
-        // $builder = $builder->issuedAt(new \DateTimeImmutable())
-        //                 ->expiresAt(new \DateTimeImmutable('+1 hour'));
+        $issuedAt = $this->clock->now();
+        $expiresAt = $issuedAt->modify("+$ttl seconds");
 
         $builder = $builder->issuedAt($issuedAt)
                         ->expiresAt($expiresAt);

@@ -69,29 +69,6 @@ class FunctionalTester extends \Codeception\Actor
         ]);
     }
 
-    public function grabSoonToExpireToken(string $email): string
-    {
-        /** @var JwtIssuer $jwtIssuer */
-        $jwtIssuer = $this->grabService(JwtIssuer::class);
-        /** @var EntityManagerInterface $em */
-        $em = $this->grabService(EntityManagerInterface::class);
-
-        /** @var User $user */
-        $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
-
-        if (!$user) {
-            throw new \Exception('User not found in test');
-        }
-
-        $issuedAt = new \DateTimeImmutable();
-        $expiresAt = new \DateTimeImmutable('+10 seconds');
-
-        return $jwtIssuer->issueToken([
-            'email' => $user->getEmail(),
-            'roles' => $user->getRoles()
-        ], $issuedAt, $expiresAt);
-    }
-
     public function sendRequest(string $methodType, string $url, array $data = [])
     {
         $this->haveHttpHeader('Content-Type', 'application/json');

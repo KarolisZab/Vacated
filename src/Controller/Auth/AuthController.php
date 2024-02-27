@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,34 +27,19 @@ class AuthController extends AbstractController
     }
 
     #[Route('/api/register', name: 'user_register')]
-    public function register(Request $request)
+    public function register(Request $request, #[MapRequestPayload()] UserDTO $userDTO)
     {
-        try {
-            $decoded = json_decode($request->getContent(), true);
+        $user = $this->userManager->createUser($userDTO);
 
-            $userDTO = new UserDTO(
-                email: $decoded['email'] ?? null,
-                username: $decoded['username'] ?? null,
-                password: $decoded['password'] ?? null,
-                firstName: $decoded['firstName'] ?? null,
-                lastName: $decoded['lastName'] ?? null,
-                phoneNumber: $decoded['phoneNumber'] ?? null
+        if ($user !== null) {
+            return new JsonResponse(
+                $this->serializer->serialize($user, 'json'),
+                JsonResponse::HTTP_CREATED,
+                [],
+                true
             );
-
-            $user = $this->userManager->createUser($userDTO);
-
-            if ($user !== null) {
-                return new JsonResponse(
-                    $this->serializer->serialize($user, 'json'),
-                    JsonResponse::HTTP_CREATED,
-                    [],
-                    true
-                );
-            } else {
-                return new JsonResponse('User with this email or username already exists', JsonResponse::HTTP_CONFLICT);
-            }
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 400);
+        } else {
+            return new JsonResponse('User with this email already exists', JsonResponse::HTTP_CONFLICT);
         }
     }
 
@@ -66,11 +52,11 @@ class AuthController extends AbstractController
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
         if (!$user instanceof UserInterface) {
-            return new JsonResponse('Invalid email or password credentials', 401);
+            return new JsonResponse('Invalid email or password credentials', 400);
         }
 
         if (!$this->passwordHasher->isPasswordValid($user, $credentials['password'])) {
-            return new JsonResponse('Invalid email or password credentials', 401);
+            return new JsonResponse('Invalid email or password credentials', 400);
         }
 
         $token = $jwtIssuer->issueToken([

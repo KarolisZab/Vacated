@@ -75,7 +75,7 @@
             "php bin/console doctrine:migrations:migrate --env=test --no-interaction",
             "vendor/bin/codecept run"
         ],
-        "cleardb": [
+        "clear-db": [
             "php bin/console doctrine:database:drop --force --env=test || echo 'db does not exist'",
             "php bin/console doctrine:database:create --env=test || echo 'db exists'",
             "php bin/console doctrine:migrations:migrate --env=test --no-interaction"

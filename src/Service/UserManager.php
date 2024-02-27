@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Exception\ValidationFailureException;
 use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -27,15 +28,9 @@ class UserManager
             $existingUser = $this->entityManager->getRepository(User::class)->findOneBy([
                 'email' => $userDTO->email
             ]);
-            if ($existingUser !== null) {
-                throw new \Exception('User with this email already exists.');
-            }
 
-            $existingUser = $this->entityManager->getRepository(User::class)->findOneBy([
-                'username' => $userDTO->username
-            ]);
             if ($existingUser !== null) {
-                throw new \Exception('User with this username already exists.');
+                return null;
             }
 
             $user = new User();
@@ -43,8 +38,7 @@ class UserManager
                 $user,
                 $userDTO->password
             );
-            $user->setUsername($userDTO->username)
-                ->setEmail($userDTO->email)
+            $user->setEmail($userDTO->email)
                 ->setPassword($hashedPassword)
                 ->setRoles(['ROLE_USER'])
                 ->setFirstName($userDTO->firstName)
@@ -58,26 +52,21 @@ class UserManager
             $this->entityManager->flush();
 
             $this->logger
-                ->info("User with username {$userDTO->username} and email {$userDTO->email} created successfully.");
+                ->info("User with email {$userDTO->email} created successfully.");
 
             return $user;
-        } catch (\Exception $e) {
-            $this->logger->critical('Exception occured while creating user: ' . $e->getMessage());
-            return null;
+        } catch (ORMException $e) {
+            $this->logger->critical("Exception occured while creating user {$userDTO->email} : " . $e->getMessage());
+            throw $e;
         }
     }
 
-    public function createAdmin(string $username, string $email, string $password): ?User
+    public function createAdmin(string $email, string $password): ?User
     {
         try {
             $existingAdmin = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
             if ($existingAdmin !== null) {
-                throw new \Exception('Admin with this email already exists.');
-            }
-
-            $existingAdmin = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
-            if ($existingAdmin !== null) {
-                throw new \Exception('Admin with this username already exists.');
+                return null;
             }
 
             $admin = new User();
@@ -85,8 +74,7 @@ class UserManager
                 $admin,
                 $password
             );
-            $admin->setUsername($username)
-                ->setEmail($email)
+            $admin->setEmail($email)
                 ->setPassword($hashedPassword)
                 ->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
 
@@ -96,12 +84,12 @@ class UserManager
             $this->entityManager->persist($admin);
             $this->entityManager->flush();
 
-            $this->logger->info("Admin with username $username and email $email created successfully.");
+            $this->logger->info("Admin with email $email created successfully.");
 
             return $admin;
-        } catch (\Exception $e) {
-            $this->logger->critical('Exception occured while creating admin user: ' . $e->getMessage());
-            return null;
+        } catch (ORMException $e) {
+            $this->logger->critical("Exception occured while creating admin user {$email} : " . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -163,10 +151,6 @@ class UserManager
         $userRepository = $this->entityManager->getRepository(User::class);
         $user = $userRepository->find($id);
 
-        if ($user === null) {
-            return null;
-        }
-
         return $user;
     }
 
@@ -175,10 +159,6 @@ class UserManager
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
         $user = $userRepository->findOneBy(['email' => $email]);
-
-        if ($user === null) {
-            return null;
-        }
 
         return $user;
     }
