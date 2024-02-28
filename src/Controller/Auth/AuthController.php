@@ -29,17 +29,21 @@ class AuthController extends AbstractController
     #[Route('/api/register', name: 'user_register')]
     public function register(Request $request, #[MapRequestPayload()] UserDTO $userDTO)
     {
-        $user = $this->userManager->createUser($userDTO);
+        try {
+            $user = $this->userManager->createUser($userDTO);
 
-        if ($user !== null) {
-            return new JsonResponse(
-                $this->serializer->serialize($user, 'json'),
-                JsonResponse::HTTP_CREATED,
-                [],
-                true
-            );
-        } else {
-            return new JsonResponse('User with this email already exists', JsonResponse::HTTP_CONFLICT);
+            if ($user !== null) {
+                return new JsonResponse(
+                    $this->serializer->serialize($user, 'json'),
+                    JsonResponse::HTTP_CREATED,
+                    [],
+                    true
+                );
+            } else {
+                return new JsonResponse('User with this email already exists', JsonResponse::HTTP_CONFLICT);
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 400);
         }
     }
 

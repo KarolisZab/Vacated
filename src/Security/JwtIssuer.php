@@ -10,15 +10,13 @@ use Psr\Clock\ClockInterface;
 class JwtIssuer
 {
     private Configuration $jwtConfiguration;
-    private ClockInterface $clock;
 
-    public function __construct(string $jwtSecretKey, ClockInterface $clock)
+    public function __construct(string $jwtSecretKey, private ClockInterface $clock)
     {
         $this->jwtConfiguration = Configuration::forSymmetricSigner(
             new Sha256(),
             InMemory::plainText($jwtSecretKey)
         );
-        $this->clock = $clock;
     }
 
     public function issueToken(

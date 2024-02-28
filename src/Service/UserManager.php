@@ -140,27 +140,24 @@ class UserManager
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
-        $allUsers = $userRepository->findAll();
 
-        return $allUsers;
+        return $userRepository->findAll();
     }
 
     public function getUser(string $id): ?User
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
-        $user = $userRepository->find($id);
 
-        return $user;
+        return $userRepository->find($id);
     }
 
     public function getUserByEmail(string $email): ?User
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
-        $user = $userRepository->findOneBy(['email' => $email]);
 
-        return $user;
+        return $userRepository->findOneBy(['email' => $email]);
     }
 
     /**
