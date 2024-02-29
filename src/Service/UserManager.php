@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Exception\ValidationFailureException;
 use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -21,28 +22,74 @@ class UserManager
     ) {
     }
 
-    public function createAdmin(string $username, string $email, string $password): ?User
+    public function createUser(UserDTO $userDTO): ?User
     {
         try {
+            $existingUser = $this->entityManager->getRepository(User::class)->findOneBy([
+                'email' => $userDTO->email
+            ]);
+
+            if ($existingUser !== null) {
+                return null;
+            }
+
+            $user = new User();
+            $hashedPassword = $this->passwordHasher->hashPassword(
+                $user,
+                $userDTO->password
+            );
+            $user->setEmail($userDTO->email)
+                ->setPassword($hashedPassword)
+                ->setRoles(['ROLE_USER'])
+                ->setFirstName($userDTO->firstName)
+                ->setLastName($userDTO->lastName)
+                ->setPhoneNumber($userDTO->phoneNumber);
+
+            $errors = $this->validator->validate($user, null, ['create']);
+            ValidationFailureException::throwException($errors);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            $this->logger
+                ->info("User with email {$userDTO->email} created successfully.");
+
+            return $user;
+        } catch (ORMException $e) {
+            $this->logger->critical("Exception occured while creating user {$userDTO->email} : " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function createAdmin(string $email, string $password): ?User
+    {
+        try {
+            $existingAdmin = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+            if ($existingAdmin !== null) {
+                return null;
+            }
+
             $admin = new User();
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $admin,
                 $password
             );
-            $admin->setUsername($username)
-                ->setEmail($email)
+            $admin->setEmail($email)
                 ->setPassword($hashedPassword)
                 ->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
+
+            $errors = $this->validator->validate($admin, null, ['create']);
+            ValidationFailureException::throwException($errors);
 
             $this->entityManager->persist($admin);
             $this->entityManager->flush();
 
-            $this->logger->info("Admin with username $username and email $email created successfully.");
+            $this->logger->info("Admin with email $email created successfully.");
 
             return $admin;
-        } catch (\Exception $e) {
-            $this->logger->critical('Exception occured while creating admin user: ' . $e->getMessage());
-            return null;
+        } catch (ORMException $e) {
+            $this->logger->critical("Exception occured while creating admin user {$email} : " . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -93,22 +140,24 @@ class UserManager
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
-        $allUsers = $userRepository->findAll();
 
-        return $allUsers;
+        return $userRepository->findAll();
     }
 
     public function getUser(string $id): ?User
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
-        $user = $userRepository->find($id);
 
-        if ($user === null) {
-            return null;
-        }
+        return $userRepository->find($id);
+    }
 
-        return $user;
+    public function getUserByEmail(string $email): ?User
+    {
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+
+        return $userRepository->findOneBy(['email' => $email]);
     }
 
     /**
@@ -124,6 +173,7 @@ class UserManager
     {
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
+
         $user = $userRepository->find($id);
 
         if ($user === null) {
@@ -135,7 +185,6 @@ class UserManager
             ->setPhoneNumber($userDTO->phoneNumber);
 
         $errors = $this->validator->validate($user, null, ['update']);
-
         ValidationFailureException::throwException($errors);
 
         $this->entityManager->flush();

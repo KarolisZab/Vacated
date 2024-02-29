@@ -18,6 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected string $id;
 
     #[ORM\Column(type: "string", unique: true)]
+    #[Assert\NotBlank(groups: ['create'])]
     #[Assert\Length(
         min: 3,
         max: 255,
@@ -25,10 +26,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         maxMessage: 'Email must not exceed {{ limit }} characters'
     )]
     protected string $email;
-
-    #[ORM\Column(type: "string", unique: true)]
-    #[Assert\Length(['min' => 4, 'max' => 15])]
-    protected string $username;
 
     #[ORM\Column(type: "json")]
     protected array $roles = [];
@@ -68,31 +65,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): static
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): static
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
 
     /**
      * A visual identifier that represents this user.
@@ -155,6 +127,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+
+        return $this;
     }
 
     public function getLastName(): string
