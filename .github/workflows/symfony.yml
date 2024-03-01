@@ -51,22 +51,19 @@ jobs:
           
     - name: Install Composer dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-    - name: Run cache clean
-      run: "php bin/console cache:clear"
       
-    #- name: Run Migration
-     # run: 
-     #   php bin/console doctrine:database:create --env=test || echo 'db exists'
-      #  php bin/console doctrine:migrations:migrate --env=test --no-interaction
-      #env:
-       # DATABASE_URL: "postgresql://root:root@postgres:5432/vacated_test?serverVersion=16&charset=utf8"
+    - name: Run Migration
+      run: 
+        php bin/console doctrine:database:create --env=test || echo 'db exists'
+        php bin/console doctrine:migrations:migrate --env=test --no-interaction
+      env:
+        DATABASE_URL: "postgresql://root:root@postgres:5432/vacated_test?serverVersion=16&charset=utf8"
         
-    #- name: Execute PHPStan
-     # run: composer analyse
+    - name: Execute PHPStan
+      run: composer analyse
 
-    #- name: Execute Lint
-     # run: composer lint
+    - name: Execute Lint
+      run: composer lint
 
-    #- name: Execute codeception tests
-     # run: vendor/bin/codecept run
+    - name: Execute codeception tests
+      run: vendor/bin/codecept run
