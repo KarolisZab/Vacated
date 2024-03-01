@@ -54,7 +54,6 @@ jobs:
       
     - name: Run Migration
       run: |
-        composer require --dev symfony/orm-pack
         "php bin/console doctrine:database:create --env=test || echo 'db exists'"
         "php bin/console doctrine:migrations:migrate --env=test --no-interaction"
       env:
