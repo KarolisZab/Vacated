@@ -28,7 +28,7 @@ jobs:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: root
         ports:
-          - 5432/5432
+          - 5432/tcp
     
     steps:
     #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
