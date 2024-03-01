@@ -20,8 +20,6 @@ jobs:
     
     strategy:
       fail-fast: false
-      matrix:
-        php-versions: ['8.0', '8.1', '8.2', '8.3']
 
     services:
       postgres:
@@ -38,12 +36,9 @@ jobs:
     # uses: shivammathur/setup-php@v2
     - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
       with:
-        php-versions:  ${{ matrix.php-versions }}
+        php-version:  '8.2'
         tools: phpstan, phpcs, codeception, phpunit
     - uses: actions/checkout@v3
-    
-    - name: Copy .env.test.local
-      run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
       
     - name: Cache Composer packages
       id: composer-cache
