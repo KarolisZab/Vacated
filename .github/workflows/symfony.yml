@@ -29,7 +29,8 @@ jobs:
           POSTGRES_PASSWORD: root
           POSTGRES_DB: vacated_test
         ports:
-          - 5432/tcp
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     
     steps:
     #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
@@ -38,7 +39,7 @@ jobs:
     - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
       with:
         php-version:  '8.2'
-        tools: phpstan, phpcs, codeception, phpunit
+        tools: phpstan, phpcs, codeception
     - uses: actions/checkout@v3
       
     - name: Cache Composer packages
