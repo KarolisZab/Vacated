@@ -22,6 +22,7 @@ jobs:
           POSTGRES_DB: vacated_test
         ports:
           - 5432/tcp
+          #- 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
         
     strategy:
@@ -64,7 +65,8 @@ jobs:
       - name: Run Migration
         run: |
           composer require --dev symfony/orm-pack
-          php bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
+          php bin/console doctrine:database:drop --force --env=test || echo "db does not exist"
+          php bin/console doctrine:database:create --env=test || echo "db exists"
           php bin/console doctrine:migrations:migrate --env=test --no-interaction
         env:
           DATABASE_URL: postgresql://root:root@127.0.0.1:${{ job.services.postgres.ports[5432] }}/vacated_test?serverVersion=16&charset=utf8
@@ -74,3 +76,6 @@ jobs:
 
       - name: Execute Lint
         run: composer lint
+
+      - name: Execute Codeception tests
+        run: ./vendor/bin/codecept run
