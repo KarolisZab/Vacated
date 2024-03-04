@@ -78,5 +78,7 @@ jobs:
       - name: Get directory
         run: ls
 
+      #- name: Execute Codeception tests
+       # run: ./vendor/bin/codecept run
       - name: Execute Codeception tests
-        run: ./vendor/bin/codecept run
+        run: composer test
