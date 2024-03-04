@@ -69,4 +69,4 @@ jobs:
       run: composer lint
 
     - name: Execute codeception tests
-      run: vendor/bin/codecept run /var/www/html/tests
+      run: vendor/bin/codecept run src/tests
