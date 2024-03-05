@@ -75,6 +75,9 @@ jobs:
       - name: Execute Lint
         run: composer lint
 
+      - name: Change directory to root project directory
+        run: cd $GITHUB_WORKSPACE
+
       - name: Get directory
         #run: find /var/www/html/tests
         run: ls
