@@ -80,7 +80,7 @@ jobs:
         run: ls
 
       - name: Execute Codeception tests
-        working-directory:  /home/runner/work/Vacated/
+        working-directory:  ${GITHUB_WORKSPACE}
         run: vendor/bin/codecept run
       #- name: Execute Codeception tests
         #run: composer test
