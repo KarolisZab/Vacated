@@ -79,7 +79,7 @@ jobs:
         #run: find /var/www/html/tests
         run: ls
 
-      #- name: Execute Codeception tests
-       # run: ./vendor/bin/codecept run
       - name: Execute Codeception tests
-        run: composer test
+        run: ./vendor/bin/codecept run
+      #- name: Execute Codeception tests
+        #run: composer test
