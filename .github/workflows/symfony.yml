@@ -17,11 +17,9 @@ jobs:
       postgres:
         image: postgres:16.1
         env:
-          #POSTGRES_DB: vacated_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
-          #- 5432/tcp
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
         
@@ -54,8 +52,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          # Use composer.json for key, if composer.lock is not committed.
-          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
@@ -75,14 +71,11 @@ jobs:
       - name: Execute Lint
         run: composer lint
 
-      - name: Change directory to root project directory
-        run: cd $GITHUB_WORKSPACE
-
       - name: Get directory
         #run: find /var/www/html/tests
         run: ls
 
       - name: Execute Codeception tests
-        run: ./vendor/bin/codecept run
+        run: vendor/bin/codecept run
       #- name: Execute Codeception tests
         #run: composer test
