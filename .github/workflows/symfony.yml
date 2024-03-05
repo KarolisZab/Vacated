@@ -80,7 +80,7 @@ jobs:
         run: ls
 
       - name: Execute Codeception tests
-        #working-directory:  /home/karolis/Work/Vacated/
+        working-directory:  /home/runner/work/Vacated/
         run: vendor/bin/codecept run
       #- name: Execute Codeception tests
         #run: composer test
