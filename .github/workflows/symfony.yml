@@ -71,6 +71,11 @@ jobs:
       - name: Execute Lint
         run: composer lint
 
+      - name: Print GitHub Actions environment
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Workspace directory: $GITHUB_WORKSPACE"
+
       - name: Get directory
         #run: find /var/www/html/tests
         run: ls
