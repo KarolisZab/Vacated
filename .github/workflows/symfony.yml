@@ -15,11 +15,11 @@ jobs:
     # Docs: https://docs.github.com/en/actions/using-containerized-services
     services:
       postgres:
-        image: postgres:latest
+        image: postgres
         env:
+          POSTGRES_DB: vacated_test
           POSTGRES_USER: root
           POSTGRES_PASSWORD: root
-          POSTGRES_DB: vacated_test
         ports:
           #- 5432/tcp
           - 5432:5432
@@ -76,7 +76,7 @@ jobs:
         run: composer lint
 
       - name: Get directory
-        run: ls
+        run: find src
 
       #- name: Execute Codeception tests
        # run: ./vendor/bin/codecept run
