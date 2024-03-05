@@ -27,9 +27,6 @@ jobs:
       fail-fast: true
       
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       # Docs: https://github.com/shivammathur/setup-php
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -38,7 +35,9 @@ jobs:
           tools: phpstan, phpcs, codeception
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pgsql, pdo_pgsql
           coverage: xdebug
-
+          
+      - name: Checkout
+        uses: actions/checkout@v4
       # Local PostgreSQL service in GitHub hosted environments is disabled by default.
       # If you are using it instead of service containers, make sure you start it.
       # - name: Start postgresql service
@@ -81,7 +80,7 @@ jobs:
         run: ls
 
       - name: Execute Codeception tests
-        working-directory:  /home/karolis/Work/Vacated/
+        #working-directory:  /home/karolis/Work/Vacated/
         run: vendor/bin/codecept run
       #- name: Execute Codeception tests
         #run: composer test
