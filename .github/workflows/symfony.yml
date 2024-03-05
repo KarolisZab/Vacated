@@ -25,11 +25,7 @@ jobs:
         
     strategy:
       fail-fast: true
-
-    defaults:
-      run:
-        working-directory: /home/karolis/Work/Vacated/
-    
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,6 +81,7 @@ jobs:
         run: ls
 
       - name: Execute Codeception tests
+        working-directory:  /home/karolis/Work/Vacated/
         run: vendor/bin/codecept run
       #- name: Execute Codeception tests
         #run: composer test
