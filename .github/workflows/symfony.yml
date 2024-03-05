@@ -84,4 +84,4 @@ jobs:
         run: ls
 
       - name: Execute Codeception tests
-        run: cd /var/www/html && vendor/bin/codecept run
+        run: cd /home/runner/work/Vacated/ && vendor/bin/codecept run
