@@ -37,11 +37,6 @@ jobs:
           tools: phpstan, phpcs, codeception
           extensions: mbstring, xml, ctype, iconv, intl, pgsql, pdo_pgsql
           coverage: xdebug
-          
-      # Local PostgreSQL service in GitHub hosted environments is disabled by default.
-      # If you are using it instead of service containers, make sure you start it.
-      # - name: Start postgresql service
-      #   run: sudo systemctl start postgresql.service
 
       - name: Get composer cache directory
         id: composer-cache
@@ -69,15 +64,6 @@ jobs:
 
       - name: Execute Lint
         run: composer lint
-
-      - name: Print GitHub Actions environment
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Workspace directory: $GITHUB_WORKSPACE"
-
-      - name: Get directory
-        #run: find /var/www/html/tests
-        run: ls
 
       - name: Execute Codeception tests
         run: vendor/bin/codecept run
