@@ -35,16 +35,13 @@ jobs:
         with:
           php-version: '8.2'
           tools: phpstan, phpcs, codeception
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pgsql, pdo_pgsql
+          extensions: mbstring, xml, ctype, iconv, intl, pgsql, pdo_pgsql
           coverage: xdebug
           
       # Local PostgreSQL service in GitHub hosted environments is disabled by default.
       # If you are using it instead of service containers, make sure you start it.
       # - name: Start postgresql service
       #   run: sudo systemctl start postgresql.service
-
-      - name: Change working directory
-        run: cd /var/www/html
 
       - name: Get composer cache directory
         id: composer-cache
@@ -83,4 +80,4 @@ jobs:
         run: ls
 
       - name: Execute Codeception tests
-        run: cd /home/runner/work/Vacated/ && vendor/bin/codecept run
+        run: vendor/bin/codecept run
