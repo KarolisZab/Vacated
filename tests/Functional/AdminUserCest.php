@@ -169,4 +169,9 @@ class CreateAdminCest
         $result = $this->userManager->getUserByEmail('test@testget');
         $I->assertNull($result);
     }
+
+    public function failedTest(FunctionalTester $I)
+    {
+        $I->assertEquals(1, 0);
+    }
 }
