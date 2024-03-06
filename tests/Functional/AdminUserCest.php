@@ -148,7 +148,7 @@ class CreateAdminCest
         );
         $this->userManager->createUser($existingUserDto);
 
-        $userDto = new UserDTO ( 
+        $userDto = new UserDTO(
             'registrationtest@test.com',
             'regtest',
             'Karo',
