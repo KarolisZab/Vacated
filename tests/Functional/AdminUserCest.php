@@ -148,7 +148,7 @@ class CreateAdminCest
         );
         $this->userManager->createUser($existingUserDto);
 
-        $userDto = new UserDTO(
+        $userDto = new UserDTO ( 
             'registrationtest@test.com',
             'regtest',
             'Karo',
@@ -168,10 +168,5 @@ class CreateAdminCest
 
         $result = $this->userManager->getUserByEmail('test@testget');
         $I->assertNull($result);
-    }
-
-    public function failedTest(FunctionalTester $I)
-    {
-        $I->assertEquals(1, 0);
     }
 }
