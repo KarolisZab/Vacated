@@ -92,14 +92,14 @@ class CreateAdminCest
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        $this->userManager->createAdmin('testinis@tes.com', 'test');
-        $user = $userRepository->findOneBy(['email' => 'testinis@tes.com']);
+        $this->userManager->createAdmin('testinis@test.com', 'test');
+        $user = $userRepository->findOneBy(['email' => 'testinis@test.com']);
 
         $updateDTO = new UserDTO('', '', 'Karolis', 'Testinis', '123456789');
 
         $this->userManager->updateUser($user->getId(), $updateDTO);
 
-        $updatedUser = $userRepository->findOneBy(['email' => 'testinis@tes.com']);
+        $updatedUser = $userRepository->findOneBy(['email' => 'testinis@test.com']);
 
         $I->assertEquals('Karolis', $updatedUser->getFirstName());
         $I->assertEquals('Testinis', $updatedUser->getLastName());
