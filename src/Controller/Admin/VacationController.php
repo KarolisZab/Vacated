@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\DTO\VacationDTO;
 use App\Service\UserManager;
 use App\Service\VacationManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,7 +17,6 @@ class VacationController extends AbstractController
 {
     public function __construct(
         private UserManager $userManager,
-        private EntityManagerInterface $entityManager,
         private VacationManager $vacationManager,
         private SerializerInterface $serializer,
         private Security $security

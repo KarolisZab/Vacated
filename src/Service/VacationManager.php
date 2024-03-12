@@ -9,7 +9,6 @@ use App\Exception\ValidationFailureException;
 use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class VacationManager
@@ -19,8 +18,6 @@ class VacationManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
-        private UserManager $userManager,
-        private Security $security
     ) {
     }
 
@@ -113,7 +110,7 @@ class VacationManager
         $vacation = $vacationRepository->find($id);
 
         if ($vacation === null) {
-            return false;
+            return null;
         }
 
         $vacation->setReviewedAt(new \DateTimeImmutable())
@@ -164,13 +161,5 @@ class VacationManager
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
         return $vacationRepository->find($id);
-    }
-
-    public function getVacationRequestByEmail(string $email): array
-    {
-        /** @var \App\Repository\VacationRepository $vacationRepository */
-        $vacationRepository = $this->entityManager->getRepository(Vacation::class);
-
-        return $vacationRepository->findByUserEmail($email);
     }
 }
