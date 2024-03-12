@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Auth;
+namespace App\Controller;
 
 use App\DTO\UserDTO;
 use App\Entity\User;
