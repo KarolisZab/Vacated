@@ -15,7 +15,7 @@ class VacationDTO
         #[Assert\Length(max: 255)]
         public readonly ?string $note = '',
         #[Assert\NotBlank(groups: ['confirm', 'reject'])]
-        public readonly ?User $reviewedBy = null,
+        public ?User $reviewedBy = null,
         #[Assert\NotBlank(groups: ['reject'])]
         #[Assert\Length(max: 255)]
         public readonly ?string $rejectionNote = '',

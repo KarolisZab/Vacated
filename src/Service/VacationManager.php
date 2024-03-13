@@ -21,7 +21,7 @@ class VacationManager
     ) {
     }
 
-    public function requestVacation(User $user, VacationDTO $vacationDTO): ?Vacation
+    public function requestVacation(User $user, VacationDTO $vacationDTO): Vacation
     {
         try {
             $now = new \DateTimeImmutable();
@@ -50,57 +50,57 @@ class VacationManager
                 "Exception occured while creating vacation reservation for {$user->getEmail()}: " . $e->getMessage()
             );
             throw $e;
-        } catch (\InvalidArgumentException $e) {
-            $this->logger->error("Invalid argument: " . $e->getMessage());
-            throw $e;
         }
         // TODO: siusti laiska per maileri
     }
 
     public function updateRequestedVacation(string $id, User $user, VacationDTO $vacationDTO): ?Vacation
     {
-        try {
-            /** @var \App\Repository\VacationRepository $vacationRepository */
-            $vacationRepository = $this->entityManager->getRepository(Vacation::class);
-            $vacation = $vacationRepository->find($id);
+        /** @var \App\Repository\VacationRepository $vacationRepository */
+        $vacationRepository = $this->entityManager->getRepository(Vacation::class);
+        $vacation = $vacationRepository->find($id);
 
-            if ($vacation === null) {
-                return null;
-            }
-
-            if ($vacation->getRequestedBy() !== $user) {
-                throw new \InvalidArgumentException("You are not authorized to update this vacation request.", 400);
-            }
-
-            $now = new \DateTimeImmutable();
-            $from = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateFrom);
-            $to = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateTo);
-
-            if ($from < $now || $to < $now) {
-                throw new \InvalidArgumentException("Date cannot be in the past.");
-            }
-
-            $vacation->setDateFrom($from)
-                ->setDateTo($to)
-                ->setNote($vacationDTO->note);
-
-            $errors = $this->validator->validate($vacation, null, ['update']);
-            ValidationFailureException::throwException($errors);
-
-            $this->entityManager->flush();
-
-            return $vacation;
-        } catch (\InvalidArgumentException $e) {
-            $this->logger->error("Invalid argument: " . $e->getMessage());
-            throw $e;
+        if ($vacation === null) {
+            return null;
         }
+
+        if ($vacation->getRequestedBy() !== $user) {
+            throw new \InvalidArgumentException("You are not authorized to update this vacation request.", 400);
+        }
+
+        $now = new \DateTimeImmutable();
+
+        $from = $vacation->getDateFrom();
+        if ($vacationDTO->dateFrom !== null) {
+            $from = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateFrom);
+        }
+
+        $to = $vacation->getDateTo();
+        if ($vacationDTO->dateTo !== null) {
+            $to = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateTo);
+        }
+
+        if ($from < $now || $to < $now) {
+            throw new \InvalidArgumentException("Date cannot be in the past.");
+        }
+
+        $vacation->setDateFrom($from)
+            ->setDateTo($to)
+            ->setNote($vacationDTO->note);
+
+        $errors = $this->validator->validate($vacation, null, ['update']);
+        ValidationFailureException::throwException($errors);
+
+        $this->entityManager->flush();
+
+        return $vacation;
 
         //TODO: siusti laiska per maileri adminams po updeito probably
     }
 
-    public function rejectVacationRequest(string $id, User $user, VacationDTO $vacationDTO): ?Vacation
+    public function rejectVacationRequest(string $id, VacationDTO $vacationDTO): ?Vacation
     {
-        if (!$user->hasRole('ROLE_ADMIN')) {
+        if (!$vacationDTO->reviewedBy->hasRole('ROLE_ADMIN')) {
             throw new \Exception('Only administrators can reject vacation requests', 403);
         }
 
@@ -114,7 +114,7 @@ class VacationManager
         }
 
         $vacation->setReviewedAt(new \DateTimeImmutable())
-            ->setReviewedBy($user)
+            ->setReviewedBy($vacationDTO->reviewedBy)
             ->setRejectionNote($vacationDTO->rejectionNote);
 
         $errors = $this->validator->validate($vacation, null, ['reject']);
@@ -127,9 +127,9 @@ class VacationManager
         //TODO: siust laiska tures
     }
 
-    public function confirmVacationRequest(string $id, User $user): ?Vacation
+    public function confirmVacationRequest(string $id, VacationDTO $vacationDTO): ?Vacation
     {
-        if (!$user->hasRole('ROLE_ADMIN')) {
+        if (!$vacationDTO->reviewedBy->hasRole('ROLE_ADMIN')) {
             throw new \Exception('Only administrators can reject vacation requests', 403);
         }
 
@@ -142,7 +142,7 @@ class VacationManager
         }
 
         $vacation->setReviewedAt(new \DateTimeImmutable())
-            ->setReviewedBy($user)
+            ->setReviewedBy($vacationDTO->reviewedBy)
             ->setConfirmed(true);
 
         $errors = $this->validator->validate($vacation, null, ['confirm']);

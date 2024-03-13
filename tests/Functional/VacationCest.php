@@ -80,6 +80,18 @@ class VacationCest
         ]);
 
         $I->seeResponseCodeIs(200);
+
+        $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
+            'dateFrom' => null,
+            'dateTo' => '2024-04-15',
+            'note' => 'Keiciasi planai'
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'dateFrom' => (new \DateTimeImmutable('2024-04-12 00:00:00'))->format(\DateTimeImmutable::ATOM),
+            'dateTo' => (new \DateTimeImmutable('2024-04-15 23:59:59'))->format(\DateTimeImmutable::ATOM),
+        ]);
     }
 
     public function testUpdateOtherUserVacationRequestFailure(FunctionalTester $I)
@@ -126,7 +138,7 @@ class VacationCest
             'reviewedBy' => ['email' => 'apitest@test.com']
         ]);
 
-        $I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIs(200);
     }
 
     public function testIfUserCanRejectVacationRequest(FunctionalTester $I)
@@ -178,7 +190,7 @@ class VacationCest
             'reviewedBy' => ['email' => 'apitest@test.com']
         ]);
 
-        $I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIs(200);
     }
 
     public function testIfUserCanConfirmVacationRequest(FunctionalTester $I)
