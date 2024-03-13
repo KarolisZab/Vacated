@@ -54,7 +54,7 @@ jobs:
         run: |
           php bin/console doctrine:database:create --env=test || echo "db exists"
           php bin/console doctrine:migrations:migrate --env=test --no-interaction
-          php bin/console doctrine:fixtures:load --env=test
+          php bin/console doctrine:fixtures:load --force --env=test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/vacated_test?serverVersion=16&charset=utf8
 
