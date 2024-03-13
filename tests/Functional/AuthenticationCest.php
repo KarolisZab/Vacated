@@ -19,7 +19,6 @@ class AuthenticationCest
     {
         $this->entityManager = $I->grabService(EntityManagerInterface::class);
         $this->userManager = $I->grabService(UserManager::class);
-        $this->userManager->createAdmin('jwttest@test.com', 'test');
     }
 
     public function testSuccessfulUserLogin(FunctionalTester $I)
@@ -107,10 +106,6 @@ class AuthenticationCest
 
     public function testIfAdminIsAuthenticatedToDeleteUser(FunctionalTester $I)
     {
-        $userDto = new UserDTO('regtest@test.com', 'regtest', 'Karolis', 'Zabinskis', '123456789');
-
-        $this->userManager->createUser($userDto);
-
         /** @var User $user */
         $user = $this->userManager->getUserByEmail('regtest@test.com');
 
@@ -143,8 +138,6 @@ class AuthenticationCest
     {
         $clock = new MockedClock();
         Clock::set($clock);
-
-        $this->userManager->createAdmin('expiration@test', 'test');
 
         $I->authenticateUser('expiration@test', 'test');
 
