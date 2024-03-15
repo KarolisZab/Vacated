@@ -4,8 +4,6 @@ namespace App\Tests\Functional;
 
 // use App\Entity\Vacation;
 
-use App\DTO\UserDTO;
-use App\DTO\VacationDTO;
 use App\Entity\Vacation;
 use App\Service\UserManager;
 use App\Service\VacationManager;
@@ -23,19 +21,11 @@ class VacationCest
         $this->entityManager = $I->grabService(EntityManagerInterface::class);
         $this->userManager = $I->grabService(UserManager::class);
         $this->vacationManager = $I->grabService(VacationManager::class);
-        $this->userManager->createAdmin('jwttest@test.com', 'test');
-        $currentUser = $this->userManager->getUserByEmail('jwttest@test.com');
-        $vacationDTO = new VacationDTO(
-            '2024-04-12',
-            '2024-04-17',
-        );
-        $this->vacationManager->requestVacation($currentUser, $vacationDTO);
-        $this->userManager->createAdmin('apitest@test.com', 'test');
     }
 
     public function testRequestVacation(FunctionalTester $I)
     {
-        $token = $I->grabTokenForUser('jwttest@test.com');
+        $token = $I->grabTokenForUser('vacationtest@test.com');
 
         $I->amBearerAuthenticated($token);
         $I->sendRequest('post', '/api/request-vacation', [
@@ -46,7 +36,7 @@ class VacationCest
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseContainsJson([
-            'requestedBy' => ['email' => 'jwttest@test.com'],
+            'requestedBy' => ['email' => 'vacationtest@test.com'],
             'note' => 'Uzrasiukas testui',
             'confirmed' => false,
             'dateFrom' => (new \DateTimeImmutable('2024-04-12 00:00:00'))->format('c'),
@@ -57,10 +47,10 @@ class VacationCest
 
     public function testUpdateVacationRequest(FunctionalTester $I)
     {
-        $token = $I->grabTokenForUser('jwttest@test.com');
+        $token = $I->grabTokenForUser('vacationtest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $user = $this->userManager->getUserByEmail('jwttest@test.com');
+        $user = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -97,10 +87,10 @@ class VacationCest
 
     public function testIfUpdatingConfirmedVacationResetsConfirmedStatus(FunctionalTester $I)
     {
-        $token = $I->grabTokenForUser('jwttest@test.com');
+        $token = $I->grabTokenForUser('vacationtest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $user = $this->userManager->getUserByEmail('jwttest@test.com');
+        $user = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -111,9 +101,9 @@ class VacationCest
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'requestedBy' => ['email' => 'jwttest@test.com'],
+            'requestedBy' => ['email' => 'vacationtest@test.com'],
             'confirmed' => true,
-            'reviewedBy' => ['email' => 'jwttest@test.com']
+            'reviewedBy' => ['email' => 'vacationtest@test.com']
         ]);
 
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
@@ -136,7 +126,7 @@ class VacationCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $user = $this->userManager->getUserByEmail('jwttest@test.com');
+        $user = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -157,7 +147,7 @@ class VacationCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $userRequested = $this->userManager->getUserByEmail('jwttest@test.com');
+        $userRequested = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -170,7 +160,7 @@ class VacationCest
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'requestedBy' => ['email' => 'jwttest@test.com'],
+            'requestedBy' => ['email' => 'vacationtest@test.com'],
             'rejectionNote' => 'Tomis dienomis iseiti negalima',
             'confirmed' => false,
             'reviewedBy' => ['email' => 'apitest@test.com']
@@ -179,20 +169,10 @@ class VacationCest
 
     public function testIfUserCanRejectVacationRequest(FunctionalTester $I)
     {
-        $userDTO = new UserDTO(
-            'rejecttest@test.com',
-            'test',
-            'Karolis',
-            'Zabinskis',
-            '123456789'
-        );
-
-        $this->userManager->createUser($userDTO);
-
         $token = $I->grabTokenForUser('rejecttest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $userRequested = $this->userManager->getUserByEmail('jwttest@test.com');
+        $userRequested = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -211,7 +191,7 @@ class VacationCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $userRequested = $this->userManager->getUserByEmail('jwttest@test.com');
+        $userRequested = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -222,7 +202,7 @@ class VacationCest
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'requestedBy' => ['email' => 'jwttest@test.com'],
+            'requestedBy' => ['email' => 'vacationtest@test.com'],
             'confirmed' => true,
             'reviewedBy' => ['email' => 'apitest@test.com']
         ]);
@@ -230,20 +210,10 @@ class VacationCest
 
     public function testIfUserCanConfirmVacationRequest(FunctionalTester $I)
     {
-        $userDTO = new UserDTO(
-            'confirmtest@test.com',
-            'test',
-            'Karolis',
-            'Zabinskis',
-            '123456789'
-        );
-
-        $this->userManager->createUser($userDTO);
-
-        $token = $I->grabTokenForUser('confirmtest@test.com');
+        $token = $I->grabTokenForUser('userconfirmtest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $userRequested = $this->userManager->getUserByEmail('jwttest@test.com');
+        $userRequested = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -257,7 +227,7 @@ class VacationCest
 
     public function testVacationRequestWhenItStartsInThePast(FunctionalTester $I)
     {
-        $token = $I->grabTokenForUser('jwttest@test.com');
+        $token = $I->grabTokenForUser('vacationtest@test.com');
 
         $I->amBearerAuthenticated($token);
         $I->sendRequest('post', '/api/request-vacation', [
@@ -271,7 +241,7 @@ class VacationCest
 
     public function testVacationRequestWhenItStartsAndEndsInThePast(FunctionalTester $I)
     {
-        $token = $I->grabTokenForUser('jwttest@test.com');
+        $token = $I->grabTokenForUser('vacationtest@test.com');
 
         $I->amBearerAuthenticated($token);
         $I->sendRequest('post', '/api/request-vacation', [
