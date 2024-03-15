@@ -87,10 +87,10 @@ class VacationCest
 
     public function testIfUpdatingConfirmedVacationResetsConfirmedStatus(FunctionalTester $I)
     {
-        $token = $I->grabTokenForUser('jwttest@test.com');
+        $token = $I->grabTokenForUser('vacationtest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $user = $this->userManager->getUserByEmail('jwttest@test.com');
+        $user = $this->userManager->getUserByEmail('vacationtest@test.com');
 
         /** @var \App\Repository\VacationRepository $repository */
         $repository = $this->entityManager->getRepository(Vacation::class);
@@ -101,9 +101,9 @@ class VacationCest
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'requestedBy' => ['email' => 'jwttest@test.com'],
+            'requestedBy' => ['email' => 'vacationtest@test.com'],
             'confirmed' => true,
-            'reviewedBy' => ['email' => 'jwttest@test.com']
+            'reviewedBy' => ['email' => 'vacationtest@test.com']
         ]);
 
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [

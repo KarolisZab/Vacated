@@ -10,7 +10,7 @@ class VacationFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $user = $this->getReference('vacationtest');
+        $user = $this->getReference('admin_user');
 
         $vacation = new Vacation();
         $vacation->setRequestedBy($user)
