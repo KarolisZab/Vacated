@@ -217,4 +217,17 @@ class VacationCest
 
         $I->seeResponseCodeIs(400);
     }
+
+    public function testGetVacationsInTimePeriod(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/confirmed-vacations', [
+            'startDate' => '2024-03-01',
+            'endDate' => '2024-03-31'
+        ]);
+
+        $I->seeResponseCodeIs(200);
+    }
 }

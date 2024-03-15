@@ -75,7 +75,7 @@ class FunctionalTester extends \Codeception\Actor
 
         switch (strtoupper($methodType)) {
             case 'GET':
-                $this->sendGet($url);
+                $this->sendGet($url, $data);
                 break;
             case 'POST':
                 $this->sendPost($url, $data);

@@ -34,6 +34,9 @@ class Vacation
     #[ORM\Column(type: "boolean")]
     protected bool $isConfirmed = false;
 
+    #[ORM\Column(type: "boolean")]
+    protected bool $isRejected = false;
+
     #[ORM\Column(type: "datetime_immutable")]
     #[Assert\NotBlank(groups: ['create', 'update'])]
     protected \DateTimeImmutable $dateFrom;
@@ -125,6 +128,18 @@ class Vacation
     public function setConfirmed(bool $isConfirmed): static
     {
         $this->isConfirmed = $isConfirmed;
+
+        return $this;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->isRejected;
+    }
+
+    public function setRejected(bool $isRejected): static
+    {
+        $this->isRejected = $isRejected;
 
         return $this;
     }

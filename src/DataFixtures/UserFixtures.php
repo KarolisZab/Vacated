@@ -77,5 +77,6 @@ class UserFixtures extends Fixture
         $manager->flush();
 
         $this->addReference('vacationtest', $admin4);
+        $this->addReference('apitest', $admin3);
     }
 }
