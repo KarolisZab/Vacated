@@ -30,16 +30,12 @@ class VacationController extends AbstractController
             $currentUser = $this->security->getUser();
 
             if (!$currentUser) {
-                return new JsonResponse('Failed to authorize', JsonResponse::HTTP_UNAUTHORIZED);
+                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
             }
 
             $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
 
             $vacation = $this->vacationManager->requestVacation($user, $vacationDTO);
-
-            if ($vacation === null) {
-                return new JsonResponse('Failed to create vacation request', JsonResponse::HTTP_BAD_REQUEST);
-            };
 
             return new JsonResponse(
                 $this->serializer->serialize($vacation, 'json'),
@@ -61,7 +57,7 @@ class VacationController extends AbstractController
             $currentUser = $this->security->getUser();
 
             if (!$currentUser) {
-                return new JsonResponse('Failed to authorize', JsonResponse::HTTP_UNAUTHORIZED);
+                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
             }
 
             $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
@@ -79,7 +75,7 @@ class VacationController extends AbstractController
                 true
             );
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), $e->getCode());
+            return new JsonResponse($e->getMessage(), 400);
         }
     }
 

@@ -30,12 +30,12 @@ class VacationController extends AbstractController
             $currentUser = $this->security->getUser();
 
             if (!$currentUser) {
-                return new JsonResponse('Failed to authorize', JsonResponse::HTTP_UNAUTHORIZED);
+                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
             }
 
-            $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
+            $vacationDTO->reviewedBy = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
 
-            $vacation = $this->vacationManager->rejectVacationRequest($id, $user, $vacationDTO);
+            $vacation = $this->vacationManager->rejectVacationRequest($id, $vacationDTO);
 
             if ($vacation === null) {
                 return new JsonResponse('Vacation not found', JsonResponse::HTTP_NOT_FOUND);
@@ -43,30 +43,33 @@ class VacationController extends AbstractController
 
             return new JsonResponse(
                 $this->serializer->serialize($vacation, 'json'),
-                JsonResponse::HTTP_CREATED,
+                JsonResponse::HTTP_OK,
                 [],
                 true
             );
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), $e->getCode());
+            return new JsonResponse($e->getMessage(), 400);
         }
 
         // TODO: reikes sukurus siust per maileri notificationa adminams
     }
 
     #[Route('/api/admin/confirm-vacation/{id}', name: 'confirm_vacation', methods: ['PATCH'])]
-    public function confirmVacationRequest(Request $request, string $id)
-    {
+    public function confirmVacationRequest(
+        Request $request,
+        string $id,
+        #[MapRequestPayload()] VacationDTO $vacationDTO
+    ) {
         try {
             $currentUser = $this->security->getUser();
 
             if (!$currentUser) {
-                return new JsonResponse('Failed to authorize', JsonResponse::HTTP_UNAUTHORIZED);
+                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
             }
 
-            $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
+            $vacationDTO->reviewedBy = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
 
-            $vacation = $this->vacationManager->confirmVacationRequest($id, $user);
+            $vacation = $this->vacationManager->confirmVacationRequest($id, $vacationDTO);
 
             if ($vacation === null) {
                 return new JsonResponse('Vacation not found', JsonResponse::HTTP_NOT_FOUND);
@@ -74,12 +77,12 @@ class VacationController extends AbstractController
 
             return new JsonResponse(
                 $this->serializer->serialize($vacation, 'json'),
-                JsonResponse::HTTP_CREATED,
+                JsonResponse::HTTP_OK,
                 [],
                 true
             );
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), $e->getCode());
+            return new JsonResponse($e->getMessage(), 400);
         }
     }
 }
