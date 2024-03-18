@@ -171,6 +171,9 @@ class VacationManager
         return $vacationRepository->find($id);
     }
 
+    /**
+     * @return Vacation[]
+     */
     public function getVacationsDaysForCalendar(string $dateFrom, string $dateTo, User $user): array
     {
         // TODO: Get overlapping vacations aswell
@@ -196,6 +199,7 @@ class VacationManager
             $currentDay = $currentDay->modify('+1 day');
         }
 
+        /** @var Vacation $vacation */
         foreach ($vacations as $vacation) {
             $vacationStartDate = $vacation->getDateFrom();
             $vacationEndDate = $vacation->getDateTo();
