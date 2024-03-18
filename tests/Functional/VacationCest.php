@@ -81,6 +81,43 @@ class VacationCest
         $I->seeResponseContainsJson([
             'dateFrom' => (new \DateTimeImmutable('2024-04-12 00:00:00'))->format(\DateTimeImmutable::ATOM),
             'dateTo' => (new \DateTimeImmutable('2024-04-15 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'confirmed' => false
+        ]);
+    }
+
+    public function testIfUpdatingConfirmedVacationResetsConfirmedStatus(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+        $I->amBearerAuthenticated($token);
+
+        $user = $this->userManager->getUserByEmail('vacationtest@test.com');
+
+        /** @var \App\Repository\VacationRepository $repository */
+        $repository = $this->entityManager->getRepository(Vacation::class);
+        /** @var Vacation $vacation */
+        $vacation = $repository->findOneBy(['requestedBy' => $user->getId()]);
+
+        $I->sendRequest('patch', '/api/admin/confirm-vacation/' . $vacation->getId());
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'requestedBy' => ['email' => 'vacationtest@test.com'],
+            'confirmed' => true,
+            'reviewedBy' => ['email' => 'vacationtest@test.com']
+        ]);
+
+        $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
+            'dateFrom' => '2024-04-20',
+            'dateTo' => '2024-04-27',
+            'note' => 'Keiciasi planai'
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'dateFrom' => (new \DateTimeImmutable('2024-04-20 00:00:00'))->format(\DateTimeImmutable::ATOM),
+            'dateTo' => (new \DateTimeImmutable('2024-04-27 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'note' => 'Keiciasi planai',
+            'confirmed' => false
         ]);
     }
 
@@ -121,14 +158,13 @@ class VacationCest
             'rejectionNote' => 'Tomis dienomis iseiti negalima'
         ]);
 
+        $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
             'requestedBy' => ['email' => 'vacationtest@test.com'],
             'rejectionNote' => 'Tomis dienomis iseiti negalima',
             'confirmed' => false,
             'reviewedBy' => ['email' => 'apitest@test.com']
         ]);
-
-        $I->seeResponseCodeIs(200);
     }
 
     public function testIfUserCanRejectVacationRequest(FunctionalTester $I)
@@ -164,13 +200,12 @@ class VacationCest
 
         $I->sendRequest('patch', '/api/admin/confirm-vacation/' . $vacation->getId());
 
+        $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
             'requestedBy' => ['email' => 'vacationtest@test.com'],
             'confirmed' => true,
             'reviewedBy' => ['email' => 'apitest@test.com']
         ]);
-
-        $I->seeResponseCodeIs(200);
     }
 
     public function testIfUserCanConfirmVacationRequest(FunctionalTester $I)

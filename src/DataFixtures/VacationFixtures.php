@@ -10,8 +10,7 @@ class VacationFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $user = $this->getReference('vacationtest');
-        $user2 = $this->getReference('apitest');
+        $user = $this->getReference('admin_user');
 
         $vacation = new Vacation();
         $vacation->setRequestedBy($user)
@@ -39,7 +38,7 @@ class VacationFixtures extends Fixture
         $manager->persist($vacation);
 
         $vacation = new Vacation();
-        $vacation->setRequestedBy($user2)
+        $vacation->setRequestedBy($user)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-04'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-07'))
             ->setNote('');
