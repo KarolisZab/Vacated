@@ -176,8 +176,6 @@ class VacationManager
 
     public function getVacationsDaysForCalendar(string $dateFrom, string $dateTo, User $user): array
     {
-        // TODO: Get overlapping vacations aswell
-
         $vacationBucket = [];
 
         $startDate = \DateTimeImmutable::createFromFormat('Y-m-d', $dateFrom);
