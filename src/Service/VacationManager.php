@@ -181,6 +181,9 @@ class VacationManager
         return $vacationRepository->find($id);
     }
 
+    /**
+     * @return array<string, Vacation[]>
+     */
     public function getVacationsDaysForCalendar(string $dateFrom, string $dateTo, User $user): array
     {
         $vacationBucket = [];
@@ -204,6 +207,7 @@ class VacationManager
             $currentDay = $currentDay->modify('+1 day');
         }
 
+        /** @var Vacation $vacation */
         foreach ($vacations as $vacation) {
             $vacationStartDate = $vacation->getDateFrom();
             $vacationEndDate = $vacation->getDateTo();

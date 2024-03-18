@@ -16,16 +16,14 @@ class VacationFixtures extends Fixture
         $vacation = new Vacation();
         $vacation->setRequestedBy($user)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-04-12'))
-            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-04-17'))
-            ->setNote('');
+            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-04-17'));
 
         $manager->persist($vacation);
 
         $vacation = new Vacation();
         $vacation->setRequestedBy($user)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-13'))
-            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-15'))
-            ->setNote('');
+            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-15'));
 
         $manager->persist($vacation);
 
@@ -33,16 +31,14 @@ class VacationFixtures extends Fixture
         $vacation->setRequestedBy($user)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-01'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-05'))
-            ->setConfirmed(true)
-            ->setNote('');
+            ->setConfirmed(true);
 
         $manager->persist($vacation);
 
         $vacation = new Vacation();
         $vacation->setRequestedBy($user2)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-04'))
-            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-07'))
-            ->setNote('');
+            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-07'));
 
         $manager->persist($vacation);
 

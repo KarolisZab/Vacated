@@ -75,6 +75,7 @@ class FunctionalTester extends \Codeception\Actor
 
         switch (strtoupper($methodType)) {
             case 'GET':
+                // Codeception\REST sendGet method maps data to query params
                 $this->sendGet($url, $data);
                 break;
             case 'POST':
