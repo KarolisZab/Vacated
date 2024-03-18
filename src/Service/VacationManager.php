@@ -103,6 +103,13 @@ class VacationManager
             throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
         }
 
+        if ($vacation->isConfirmed() === true) {
+            $vacation->setConfirmed(false);
+            $this->logger->info('Confirmed vacation ' . $id . ' was updated and needs to be reviewed again.');
+        }
+
+        //TODO: issiuncia laiska adminui, kad confirmed vacation buvo paredaguotos
+
         $vacation->setDateFrom($from)
             ->setDateTo($to)
             ->setNote($vacationDTO->note);
