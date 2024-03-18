@@ -107,14 +107,14 @@ class VacationCest
         ]);
 
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
-            'dateFrom' => '2024-04-20',
+            'dateFrom' => '2024-04-21',
             'dateTo' => '2024-04-27',
             'note' => 'Keiciasi planai'
         ]);
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'dateFrom' => (new \DateTimeImmutable('2024-04-20 00:00:00'))->format(\DateTimeImmutable::ATOM),
+            'dateFrom' => (new \DateTimeImmutable('2024-04-21 00:00:00'))->format(\DateTimeImmutable::ATOM),
             'dateTo' => (new \DateTimeImmutable('2024-04-27 23:59:59'))->format(\DateTimeImmutable::ATOM),
             'note' => 'Keiciasi planai',
             'confirmed' => false
@@ -275,7 +275,7 @@ class VacationCest
         $I->seeResponseCodeIs(200);
 
         $I->sendRequest('patch', '/api/admin/confirm-vacation/22222');
-        $I->assertNull(null);
+        // $I->assertNull(null);
         $I->seeResponseCodeIs(404);
     }
 

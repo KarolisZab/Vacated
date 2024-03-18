@@ -4,9 +4,10 @@ namespace App\DataFixtures;
 
 use App\Entity\Vacation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class VacationFixtures extends Fixture
+class VacationFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -43,5 +44,12 @@ class VacationFixtures extends Fixture
         $manager->persist($vacation);
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            UserFixtures::class,
+        ];
     }
 }

@@ -60,12 +60,6 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->sendRequest('post', '/api/admin/reserved-day', [
-            'dateFrom' => '2024-04-19',
-            'dateTo' => '2024-04-20',
-            'note' => 'Important launch'
-        ]);
-
         $I->amBearerAuthenticated($token);
         $I->sendRequest('post', '/api/request-vacation', [
             'dateFrom' => '2024-04-18',
@@ -80,12 +74,6 @@ class ReservedDayCest
     {
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
-
-        $I->sendRequest('post', '/api/admin/reserved-day', [
-            'dateFrom' => '2024-04-19',
-            'dateTo' => '2024-04-20',
-            'note' => 'Important launch'
-        ]);
 
         $user = $this->userManager->getUserByEmail('apitest@test.com');
 
@@ -129,12 +117,6 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->sendRequest('post', '/api/admin/reserved-day', [
-            'dateFrom' => '2024-04-19',
-            'dateTo' => '2024-04-20',
-            'note' => 'Important launch'
-        ]);
-
         $user = $this->userManager->getUserByEmail('apitest@test.com');
 
         /** @var \App\Repository\ReservedDayRespository $repository */
@@ -154,12 +136,6 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->sendRequest('post', '/api/admin/reserved-day', [
-            'dateFrom' => '2024-04-19',
-            'dateTo' => '2024-04-20',
-            'note' => 'Important launch'
-        ]);// fixture
-
         $I->sendRequest('get', '/api/admin/reserved-day', [
             'startDate' => '2024-04-18',
             'endDate' => '2024-04-21'
@@ -172,12 +148,6 @@ class ReservedDayCest
     {
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
-
-        $I->sendRequest('post', '/api/admin/reserved-day', [
-            'dateFrom' => '2024-04-19',
-            'dateTo' => '2024-04-20',
-            'note' => 'Important launch'
-        ]);
 
         $user = $this->userManager->getUserByEmail('apitest@test.com');
 
