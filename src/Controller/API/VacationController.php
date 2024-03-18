@@ -112,12 +112,8 @@ class VacationController extends AbstractController
             );
         }
 
-        $vacation = $this->vacationManager->getVacationsDaysForCalendar($startDate, $endDate, $user);
+        $vacations = $this->vacationManager->getVacationsDaysForCalendar($startDate, $endDate, $user);
 
-        if ($vacation === null) {
-            return new JsonResponse('Vacation not found', JsonResponse::HTTP_NOT_FOUND);
-        }
-
-        return new JsonResponse($this->serializer->serialize($vacation, 'json'), JsonResponse::HTTP_OK, [], true);
+        return new JsonResponse($this->serializer->serialize($vacations, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 }
