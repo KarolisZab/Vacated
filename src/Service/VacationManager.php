@@ -122,7 +122,8 @@ class VacationManager
 
         $vacation->setReviewedAt(new \DateTimeImmutable())
             ->setReviewedBy($vacationDTO->reviewedBy)
-            ->setRejectionNote($vacationDTO->rejectionNote);
+            ->setRejectionNote($vacationDTO->rejectionNote)
+            ->setRejected(true);
 
         $errors = $this->validator->validate($vacation, null, ['reject']);
         ValidationFailureException::throwException($errors);
@@ -168,5 +169,49 @@ class VacationManager
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
         return $vacationRepository->find($id);
+    }
+
+    /**
+     * @return array<string, Vacation[]>
+     */
+    public function getVacationsDaysForCalendar(string $dateFrom, string $dateTo, User $user): array
+    {
+        // TODO: Get overlapping vacations aswell
+
+        $vacationBucket = [];
+
+        $startDate = \DateTimeImmutable::createFromFormat('Y-m-d', $dateFrom);
+        $endDate = \DateTimeImmutable::createFromFormat('Y-m-d', $dateTo);
+
+        $currentDay = $startDate;
+
+        /** @var \App\Repository\VacationRepository $vacationRepository */
+        $vacationRepository = $this->entityManager->getRepository(Vacation::class);
+
+        $confirmed = $vacationRepository->findAllConfirmedVacationsForPeriod($startDate, $endDate, false);
+        $requested = $vacationRepository->findAllRequestedVacationsForPeriodByUser($startDate, $endDate, $user);
+
+        $vacations = array_merge($confirmed, $requested);
+
+        while ($currentDay <= $endDate) {
+            $day = $currentDay->format('Y-m-d');
+            $vacationBucket[$day] = [];
+            $currentDay = $currentDay->modify('+1 day');
+        }
+
+        /** @var Vacation $vacation */
+        foreach ($vacations as $vacation) {
+            $vacationStartDate = $vacation->getDateFrom();
+            $vacationEndDate = $vacation->getDateTo();
+
+            $interval = \DateInterval::createFromDateString('1 day');
+            $period = new \DatePeriod($vacationStartDate, $interval, $vacationEndDate);
+
+            foreach ($period as $date) {
+                $vacationBucket[$date->format('Y-m-d')][] = $vacation;
+            }
+        }
+
+        return $vacationBucket;
     }
 }

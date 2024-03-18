@@ -90,4 +90,30 @@ class VacationController extends AbstractController
 
         return new JsonResponse($this->serializer->serialize($vacation, 'json'), JsonResponse::HTTP_OK, [], true);
     }
+
+    #[Route('/api/confirmed-vacations/', name: 'get_vacation', methods: ['GET'])]
+    public function getReservedVacationDays(Request $request)
+    {
+        $currentUser = $this->security->getUser();
+
+        if (!$currentUser) {
+            return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
+
+        $startDate = $request->query->get('startDate');
+        $endDate = $request->query->get('endDate');
+
+        if (!$startDate || !$endDate) {
+            return new JsonResponse(
+                'Invalid request. Start date and end date are required.',
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $vacations = $this->vacationManager->getVacationsDaysForCalendar($startDate, $endDate, $user);
+
+        return new JsonResponse($this->serializer->serialize($vacations, 'json'), JsonResponse::HTTP_OK, [], true);
+    }
 }
