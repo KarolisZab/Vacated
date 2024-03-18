@@ -57,7 +57,6 @@ class ReservedDayManager
     {
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-        /** @var ReservedDay $reservedDay */
         $reservedDay = $reservedDayRepository->find($id);
 
         if ($reservedDay === null) {

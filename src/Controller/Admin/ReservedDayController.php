@@ -108,10 +108,6 @@ class ReservedDayController extends AbstractController
 
         $reservedDays = $this->reservedDayManager->getReservedDays($startDate, $endDate);
 
-        if ($reservedDays === null) {
-            return new JsonResponse('Vacation not found', JsonResponse::HTTP_NOT_FOUND);
-        }
-
         return new JsonResponse($this->serializer->serialize($reservedDays, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 }
