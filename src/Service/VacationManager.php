@@ -29,16 +29,19 @@ class VacationManager
             $from = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateFrom);
             $to = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateTo);
 
-            if ($from < $now || $to < $now) {
+            if ($from < $now) {
                 throw new \InvalidArgumentException("Date cannot be in the past.", 400);
+            }
+
+            if ($to < $from) {
+                throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
             }
 
             /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
             $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-            /** @var ReservedDay $reservedDays */
             $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
 
-            if (!empty($reservedDays)) {
+            if (count($reservedDays) > 0) {
                 throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
             }
 
@@ -90,16 +93,19 @@ class VacationManager
             $to = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateTo);
         }
 
-        if ($from < $now || $to < $now) {
+        if ($from < $now) {
             throw new \InvalidArgumentException("Date cannot be in the past.", 400);
+        }
+
+        if ($to < $from) {
+            throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
         }
 
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-        /** @var ReservedDay $reservedDays */
         $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
 
-        if (!empty($reservedDays)) {
+        if (count($reservedDays) > 0) {
             throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
         }
 

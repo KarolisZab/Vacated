@@ -89,23 +89,17 @@ class ReservedDayController extends AbstractController
                 true
             );
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), $e->getCode());
+            return new JsonResponse($e->getMessage(), 400);
         }
     }
 
     #[Route('/api/admin/reserved-day', name: 'get_reserveddays', methods: ['GET'])]
     public function getReservedDays(Request $request)
     {
-        $currentUser = $this->security->getUser();
-
-        if (!$currentUser) {
-            return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
-        }
-
         $startDate = $request->query->get('startDate');
         $endDate = $request->query->get('endDate');
 
-        if (!$startDate || !$endDate) {
+        if (null === $startDate || null === $endDate) {
             return new JsonResponse(
                 'Invalid request. Start date and end date are required.',
                 JsonResponse::HTTP_BAD_REQUEST

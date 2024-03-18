@@ -158,7 +158,7 @@ class ReservedDayCest
             'dateFrom' => '2024-04-19',
             'dateTo' => '2024-04-20',
             'note' => 'Important launch'
-        ]);
+        ]);// fixture
 
         $I->sendRequest('get', '/api/admin/reserved-day', [
             'startDate' => '2024-04-18',
