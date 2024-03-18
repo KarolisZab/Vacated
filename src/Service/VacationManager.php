@@ -172,7 +172,7 @@ class VacationManager
     }
 
     /**
-     * @return Vacation[]
+     * @return array<string, Vacation[]>
      */
     public function getVacationsDaysForCalendar(string $dateFrom, string $dateTo, User $user): array
     {
