@@ -73,13 +73,14 @@
             "php bin/console doctrine:database:drop --force --env=test || echo 'db does not exist'",
             "php bin/console doctrine:database:create --env=test || echo 'db exists'",
             "php bin/console doctrine:migrations:migrate --env=test --no-interaction",
+            "php bin/console doctrine:fixtures:load --env=test --no-interaction",
             "vendor/bin/codecept run"
         ],
         "clear-db": [
-            "php bin/console doctrine:database:drop --force --env=test || echo 'db does not exist'",
-            "php bin/console doctrine:database:create --env=test || echo 'db exists'",
-            "php bin/console doctrine:migrations:migrate --env=test --no-interaction",
-            "echo 'yes' | php bin/console doctrine:fixtures:load --env=test"
+            "php bin/console doctrine:database:drop --force || echo 'db does not exist'",
+            "php bin/console doctrine:database:create || echo 'db exists'",
+            "php bin/console doctrine:migrations:migrate --no-interaction",
+            "php bin/console doctrine:fixtures:load --no-interaction"
         ],
         "coverage": [
             "XDEBUG_MODE=coverage vendor/bin/codecept run --coverage --coverage-html"

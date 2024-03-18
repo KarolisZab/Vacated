@@ -20,15 +20,15 @@ class ReservedDay
 
     #[ORM\Column(type: "datetime_immutable")]
     #[Assert\NotBlank(groups: ['create', 'update'])]
-    protected \DateTimeImmutable $reservedFrom;
+    protected \DateTimeImmutable $dateFrom;
 
     #[ORM\Column(type: "datetime_immutable")]
     #[Assert\NotBlank(groups: ['create', 'update'])]
-    protected \DateTimeImmutable $reservedTo;
+    protected \DateTimeImmutable $dateTo;
 
     #[ORM\Column(type: "string")]
     #[Assert\Length(max: 255)]
-    protected string $reservedNote = '';
+    protected string $note = '';
 
     public function getId(): string
     {
@@ -47,50 +47,50 @@ class ReservedDay
         return $this;
     }
 
-    public function getReservedFrom(): \DateTimeImmutable
+    public function getDateFrom(): \DateTimeImmutable
     {
-        return $this->reservedFrom;
+        return $this->dateFrom;
     }
 
-    public function setReservedFrom(\DateTimeImmutable | \DateTime $reservedFrom): static
+    public function setDateFrom(\DateTimeImmutable | \DateTime $dateFrom): static
     {
-        $reservedFrom = $reservedFrom->setTime(0, 0, 0);
+        $dateFrom = $dateFrom->setTime(0, 0, 0);
 
-        if ($reservedFrom instanceof \DateTimeImmutable) {
-            $this->reservedFrom = $reservedFrom;
+        if ($dateFrom instanceof \DateTimeImmutable) {
+            $this->dateFrom = $dateFrom;
         } else {
-            $this->reservedFrom = \DateTimeImmutable::createFromMutable($reservedFrom);
+            $this->dateFrom = \DateTimeImmutable::createFromMutable($dateFrom);
         }
 
         return $this;
     }
 
-    public function getReservedTo(): \DateTimeImmutable
+    public function getDateTo(): \DateTimeImmutable
     {
-        return $this->reservedTo;
+        return $this->dateTo;
     }
 
-    public function setReservedTo(\DateTimeImmutable | \DateTime $reservedTo): static
+    public function setDateTo(\DateTimeImmutable | \DateTime $dateTo): static
     {
-        $reservedTo = $reservedTo->setTime(23, 59, 59);
+        $dateTo = $dateTo->setTime(23, 59, 59);
 
-        if ($reservedTo instanceof \DateTimeImmutable) {
-            $this->reservedTo = $reservedTo;
+        if ($dateTo instanceof \DateTimeImmutable) {
+            $this->dateTo = $dateTo;
         } else {
-            $this->reservedTo = \DateTimeImmutable::createFromMutable($reservedTo);
+            $this->dateTo = \DateTimeImmutable::createFromMutable($dateTo);
         }
 
         return $this;
     }
 
-    public function getReservedNote(): string
+    public function getNote(): string
     {
-        return $this->reservedNote;
+        return $this->note;
     }
 
-    public function setReservedNote(string $reservedNote): static
+    public function setNote(string $note): static
     {
-        $this->reservedNote = $reservedNote;
+        $this->note = $note;
 
         return $this;
     }

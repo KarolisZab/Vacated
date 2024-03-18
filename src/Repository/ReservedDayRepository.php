@@ -21,6 +21,30 @@ class ReservedDayRepository extends ServiceEntityRepository
         parent::__construct($registry, ReservedDay::class);
     }
 
+    public function findReservedDaysInPeriod(\DateTimeImmutable $from, \DateTimeImmutable $to): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.dateFrom <= :to')
+            ->andWhere('r.dateTo >= :from')
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // public function findReservedDaysInPeriod(\DateTimeImmutable $from, \DateTimeImmutable $to): array
+    // {
+    //     return $this->createQueryBuilder('r')
+    //         ->where('r.dateFrom <= :from')
+    //         ->andWhere('r.dateTo >= :from')
+    //         ->orWhere('r.dateFrom <= :to')
+    //         ->andWhere('r.dateTo >= :to')
+    //         ->setParameter('from', $from)
+    //         ->setParameter('to', $to)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
 //    /**
 //     * @return ReservedDay[] Returns an array of ReservedDay objects
 //     */

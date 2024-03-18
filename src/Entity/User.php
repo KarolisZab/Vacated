@@ -23,7 +23,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         min: 3,
         max: 255,
         minMessage: 'Email must contain at least {{ limit }} characters',
-        maxMessage: 'Email must not exceed {{ limit }} characters'
+        maxMessage: 'Email must not exceed {{ limit }} characters',
+        groups: ['create']
     )]
     protected string $email;
 

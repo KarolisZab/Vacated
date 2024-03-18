@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\DTO\ReservedDayDTO;
-use App\Entity\User;
 use App\Entity\ReservedDay;
 use App\Exception\ValidationFailureException;
 use App\Trait\LoggerTrait;
@@ -21,12 +20,12 @@ class ReservedDayManager
     ) {
     }
 
-    public function reserveDays(User $user, ReservedDayDTO $reservedDayDTO): ReservedDay
+    public function reserveDays(ReservedDayDTO $reservedDayDTO): ReservedDay
     {
         try {
             $now = new \DateTimeImmutable();
-            $from = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->reservedFrom);
-            $to = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->reservedTo);
+            $from = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->dateFrom);
+            $to = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->dateTo);
 
             if ($from < $now || $to < $now) {
                 throw new \InvalidArgumentException("Date cannot be in the past.", 400);
@@ -34,10 +33,10 @@ class ReservedDayManager
 
             $reservedDay = new ReservedDay();
             $reservedDay
-                ->setReservedBy($user)
-                ->setReservedFrom($from)
-                ->setReservedTo($to)
-                ->setReservedNote($reservedDayDTO->reservedNote);
+                ->setReservedBy($reservedDayDTO->reservedBy)
+                ->setDateFrom($from)
+                ->setDateTo($to)
+                ->setNote($reservedDayDTO->note);
 
             $errors = $this->validator->validate($reservedDay, null, ['create']);
             ValidationFailureException::throwException($errors);
@@ -54,12 +53,8 @@ class ReservedDayManager
         }
     }
 
-    public function updateReservedDays(string $id, User $user, ReservedDayDTO $reservedDayDTO): ReservedDay
+    public function updateReservedDays(string $id, ReservedDayDTO $reservedDayDTO): ?ReservedDay
     {
-        if (!$user->hasRole('ROLE_ADMIN')) {
-            throw new \Exception('Forbidden', 403);
-        }
-
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
         /** @var ReservedDay $reservedDay */
@@ -71,41 +66,37 @@ class ReservedDayManager
 
         $now = new \DateTimeImmutable();
 
-        $from = $reservedDay->getReservedFrom();
-        if ($reservedDayDTO->reservedFrom !== null) {
-            $from = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->reservedFrom);
+        $from = $reservedDay->getDateFrom();
+        if ($reservedDayDTO->dateFrom !== null) {
+            $from = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->dateFrom);
         }
 
-        $to = $reservedDay->getReservedTo();
-        if ($reservedDayDTO->reservedTo !== null) {
-            $to = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->reservedTo);
+        $to = $reservedDay->getDateTo();
+        if ($reservedDayDTO->dateTo !== null) {
+            $to = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->dateTo);
         }
 
         if ($from < $now || $to < $now) {
-            throw new \InvalidArgumentException("Date cannot be in the past.");
+            throw new \InvalidArgumentException("Date cannot be in the past.", 400);
         }
 
         $reservedDay
-            ->setReservedFrom($from)
-            ->setReservedTo($to)
-            ->setReservedNote($reservedDayDTO->reservedNote);
+            ->setDateFrom($from)
+            ->setDateTo($to)
+            ->setNote($reservedDayDTO->note);
 
         $errors = $this->validator->validate($reservedDay, null, ['update']);
         ValidationFailureException::throwException($errors);
 
         $this->entityManager->flush();
 
-        $this->logger->info("Reserved days were updated by administrator {$user->getEmail()}");
+        $this->logger->info("Reserved days were updated by administrator {$reservedDayDTO->reservedBy->getEmail()}");
 
         return $reservedDay;
     }
 
-    public function deleteReservedDays(string $id, User $user): bool
+    public function deleteReservedDays(string $id): bool
     {
-        if (!$user->hasRole('ROLE_ADMIN')) {
-            throw new \Exception('Forbidden', 403);
-        }
-
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
         $reservedDay = $reservedDayRepository->find($id);
@@ -118,7 +109,8 @@ class ReservedDayManager
         $this->entityManager->flush();
 
         $this->logger->info(
-            "Reserved days from {$reservedDay->getReservedFrom()} to {$reservedDay->getReservedTo()} has been deleted."
+            "Reserved days from {$reservedDay->getDateFrom()->format('Y-m-d')} 
+            to {$reservedDay->getDateTo()->format('Y-m-d')} has been deleted."
         );
 
         return true;
@@ -130,5 +122,18 @@ class ReservedDayManager
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
 
         return $reservedDayRepository->find($id);
+
+        // ID nezinosiu, reiketu pasidaryt find pagal datas
+    }
+
+    public function getReservedDays(string $dateFrom, string $dateTo): array
+    {
+        $from = \DateTimeImmutable::createFromFormat('Y-m-d', $dateFrom);
+        $to = \DateTimeImmutable::createFromFormat('Y-m-d', $dateTo);
+
+        /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+        $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+
+        return $reservedDayRepository->findReservedDaysInPeriod($from, $to);
     }
 }

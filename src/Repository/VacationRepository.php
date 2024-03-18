@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
 use App\Entity\Vacation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,42 +21,44 @@ class VacationRepository extends ServiceEntityRepository
         parent::__construct($registry, Vacation::class);
     }
 
-    public function findAllConfirmedVacationsForPeriod(
+    private function filterOverlappingVacationsForPeriod(
         \DateTimeImmutable $startDate,
         \DateTimeImmutable $endDate,
-        bool $isRejected
-    ): array {
+    ) {
         return $this->createQueryBuilder('v')
             ->where('v.dateFrom <= :endDate')
             ->andWhere('v.dateTo >= :startDate')
-            ->andWhere('v.isRejected = :rejected')
-            ->andWhere('v.isConfirmed = :confirmed')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
-            ->setParameter('rejected', $isRejected)
+            ->orderBy('v.dateFrom', 'ASC');
+    }
+
+    public function getConfirmedVacationsForPeriod(
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+    ): array {
+
+        $query = $this->filterOverlappingVacationsForPeriod($startDate, $endDate);
+
+        return $query
+            ->andWhere('v.isConfirmed = :confirmed')
             ->setParameter('confirmed', true)
-            ->orderBy('v.dateFrom', 'ASC')
             ->getQuery()
             ->getResult();
     }
 
-    public function findAllRequestedVacationsForPeriodByUser(
+    public function getRequestedVacationsForPeriodByUser(
         \DateTimeImmutable $startDate,
         \DateTimeImmutable $endDate,
-        User $user
+        string $userId
     ): array {
-        return $this->createQueryBuilder('v')
-            ->where('v.dateFrom <= :endDate')
-            ->andWhere('v.dateTo >= :startDate')
-            ->andWhere('v.requestedBy = :user')
-            ->andWhere('v.isConfirmed = :confirmed')
-            ->andWhere('v.isRejected = :rejected')
-            ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate)
-            ->setParameter('user', $user)
-            ->setParameter('confirmed', false)
-            ->setParameter('rejected', false)
-            ->orderBy('v.dateFrom', 'ASC')
+        $query = $this->filterOverlappingVacationsForPeriod($startDate, $endDate);
+
+        return $query
+            ->andWhere('v.requestedBy = :userId')
+            ->andWhere('v.isConfirmed = FALSE')
+            ->andWhere('v.isRejected = FALSE')
+            ->setParameter('userId', $userId)
             ->getQuery()
             ->getResult();
     }
