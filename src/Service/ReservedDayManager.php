@@ -27,8 +27,12 @@ class ReservedDayManager
             $from = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->dateFrom);
             $to = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->dateTo);
 
-            if ($from < $now || $to < $now) {
+            if ($from < $now) {
                 throw new \InvalidArgumentException("Date cannot be in the past.", 400);
+            }
+
+            if ($to < $from) {
+                throw new \InvalidArgumentException("Raserved day cannot end before it starts.", 400);
             }
 
             $reservedDay = new ReservedDay();
@@ -75,8 +79,12 @@ class ReservedDayManager
             $to = \DateTimeImmutable::createFromFormat('Y-m-d', $reservedDayDTO->dateTo);
         }
 
-        if ($from < $now || $to < $now) {
+        if ($from < $now) {
             throw new \InvalidArgumentException("Date cannot be in the past.", 400);
+        }
+
+        if ($to < $from) {
+            throw new \InvalidArgumentException("Raserved day cannot end before it starts.", 400);
         }
 
         $reservedDay

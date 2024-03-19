@@ -41,8 +41,7 @@ class VacationRepository extends ServiceEntityRepository
         $query = $this->filterOverlappingVacationsForPeriod($startDate, $endDate);
 
         return $query
-            ->andWhere('v.isConfirmed = :confirmed')
-            ->setParameter('confirmed', true)
+            ->andWhere('v.isConfirmed = TRUE')
             ->getQuery()
             ->getResult();
     }

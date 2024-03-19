@@ -2,8 +2,6 @@
 
 namespace App\Tests\Functional;
 
-// use App\Entity\Vacation;
-
 use App\DTO\VacationDTO;
 use App\Entity\Vacation;
 use App\Service\UserManager;
@@ -126,7 +124,6 @@ class VacationCest
             'note' => 'Keiciasi planai'
         ]);
 
-        $I->assertNull(null);
         $I->seeResponseCodeIs(404);
     }
 
@@ -228,7 +225,6 @@ class VacationCest
         $I->sendRequest('patch', '/api/admin/reject-vacation/2222', [
             'rejectionNote' => 'Tomis dienomis iseiti negalima'
         ]);
-        $I->assertNull(null);
         $I->seeResponseCodeIs(404);
     }
 
@@ -275,7 +271,6 @@ class VacationCest
         $I->seeResponseCodeIs(200);
 
         $I->sendRequest('patch', '/api/admin/confirm-vacation/22222');
-        // $I->assertNull(null);
         $I->seeResponseCodeIs(404);
     }
 
@@ -374,5 +369,13 @@ class VacationCest
         ]);
 
         $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            '2024-04-01' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-02' => [],
+            '2024-04-12' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-13' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-29' => [],
+            '2024-04-30' => ['requestedBy' => ['email' => 'vacationtest@test.com']]
+        ]);
     }
 }

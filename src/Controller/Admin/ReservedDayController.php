@@ -58,7 +58,7 @@ class ReservedDayController extends AbstractController
             $reservedDay = $this->reservedDayManager->updateReservedDays($id, $reservedDayDTO);
 
             if ($reservedDay === null) {
-                return new JsonResponse('Vacation request not found', JsonResponse::HTTP_NOT_FOUND);
+                return new JsonResponse('Reserved days not found', JsonResponse::HTTP_NOT_FOUND);
             };
 
             return new JsonResponse(
@@ -79,7 +79,7 @@ class ReservedDayController extends AbstractController
             $reservedDay = $this->reservedDayManager->deleteReservedDays($id);
 
             if ($reservedDay === false) {
-                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+                return new JsonResponse('Reserved days not found', JsonResponse::HTTP_NOT_FOUND);
             }
 
             return new JsonResponse(

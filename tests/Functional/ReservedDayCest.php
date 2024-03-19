@@ -101,7 +101,6 @@ class ReservedDayCest
             'dateTo' => '2024-04-21',
             'note' => 'Keiciasi launch date',
         ]);
-        $I->assertNull(null);
         $I->seeResponseCodeIs(404);
 
         $I->sendRequest('patch', '/api/admin/reserved-day/' . $reservedDay->getId(), [
@@ -128,7 +127,7 @@ class ReservedDayCest
         $I->seeResponseCodeIs(200);
 
         $I->sendRequest('delete', '/api/admin/reserved-day/2222');
-        $I->assertFalse(false);
+        $I->seeResponseCodeIs(404);
     }
 
     public function testGetReservedDaysInTimePeriod(FunctionalTester $I)
@@ -156,7 +155,6 @@ class ReservedDayCest
         /** @var ReservedDay $reservedDay */
         $reservedDay = $repository->findOneBy(['reservedBy' => $user->getId()]);
 
-        // $I->sendRequest('get', '/api/admin/reserved-day' . $reservedDay->getId());
         $this->reservedDayManager->getReservedDay($reservedDay->getId());
         $resDay = $repository->findBy(['id' => $reservedDay->getId()]);
 
