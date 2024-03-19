@@ -36,6 +36,7 @@ class UserFixtures extends Fixture
             ->setPassword($password)
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
         $manager->persist($admin3);
+        $this->addReference('admin_user2', $admin3);
 
         $admin4 = new User();
         $password = $this->passwordHasher->hashPassword($admin4, 'test');

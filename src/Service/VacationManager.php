@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\DTO\VacationDTO;
+use App\Entity\ReservedDay;
 use App\Entity\User;
 use App\Entity\Vacation;
 use App\Exception\ValidationFailureException;
@@ -28,8 +29,20 @@ class VacationManager
             $from = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateFrom);
             $to = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateTo);
 
-            if ($from < $now || $to < $now) {
+            if ($from < $now) {
                 throw new \InvalidArgumentException("Date cannot be in the past.", 400);
+            }
+
+            if ($to < $from) {
+                throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
+            }
+
+            /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+            $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+            $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
+
+            if (count($reservedDays) > 0) {
+                throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
             }
 
             $vacation = new Vacation();
@@ -80,8 +93,20 @@ class VacationManager
             $to = \DateTimeImmutable::createFromFormat('Y-m-d', $vacationDTO->dateTo);
         }
 
-        if ($from < $now || $to < $now) {
-            throw new \InvalidArgumentException("Date cannot be in the past.");
+        if ($from < $now) {
+            throw new \InvalidArgumentException("Date cannot be in the past.", 400);
+        }
+
+        if ($to < $from) {
+            throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
+        }
+
+        /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+        $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+        $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
+
+        if (count($reservedDays) > 0) {
+            throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
         }
 
         if ($vacation->isConfirmed() === true) {
@@ -107,11 +132,6 @@ class VacationManager
 
     public function rejectVacationRequest(string $id, VacationDTO $vacationDTO): ?Vacation
     {
-        if (!$vacationDTO->reviewedBy->hasRole('ROLE_ADMIN')) {
-            throw new \Exception('Only administrators can reject vacation requests', 403);
-        }
-
-
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
         $vacation = $vacationRepository->find($id);
@@ -137,10 +157,6 @@ class VacationManager
 
     public function confirmVacationRequest(string $id, VacationDTO $vacationDTO): ?Vacation
     {
-        if (!$vacationDTO->reviewedBy->hasRole('ROLE_ADMIN')) {
-            throw new \Exception('Only administrators can reject vacation requests', 403);
-        }
-
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
         $vacation = $vacationRepository->find($id);
@@ -176,8 +192,6 @@ class VacationManager
      */
     public function getVacationsDaysForCalendar(string $dateFrom, string $dateTo, User $user): array
     {
-        // TODO: Get overlapping vacations aswell
-
         $vacationBucket = [];
 
         $startDate = \DateTimeImmutable::createFromFormat('Y-m-d', $dateFrom);
@@ -188,8 +202,8 @@ class VacationManager
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
-        $confirmed = $vacationRepository->findAllConfirmedVacationsForPeriod($startDate, $endDate, false);
-        $requested = $vacationRepository->findAllRequestedVacationsForPeriodByUser($startDate, $endDate, $user);
+        $confirmed = $vacationRepository->getConfirmedVacationsForPeriod($startDate, $endDate);
+        $requested = $vacationRepository->getRequestedVacationsForPeriodByUser($startDate, $endDate, $user->getId());
 
         $vacations = array_merge($confirmed, $requested);
 
@@ -203,6 +217,14 @@ class VacationManager
         foreach ($vacations as $vacation) {
             $vacationStartDate = $vacation->getDateFrom();
             $vacationEndDate = $vacation->getDateTo();
+
+            if ($vacationStartDate < $startDate) {
+                $vacationStartDate = $startDate;
+            }
+
+            if ($vacationEndDate > $endDate) {
+                $vacationEndDate = $endDate;
+            }
 
             $interval = \DateInterval::createFromDateString('1 day');
             $period = new \DatePeriod($vacationStartDate, $interval, $vacationEndDate);

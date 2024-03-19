@@ -29,10 +29,6 @@ class VacationController extends AbstractController
         try {
             $currentUser = $this->security->getUser();
 
-            if (!$currentUser) {
-                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
-            }
-
             $vacationDTO->reviewedBy = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
 
             $vacation = $this->vacationManager->rejectVacationRequest($id, $vacationDTO);
@@ -62,10 +58,6 @@ class VacationController extends AbstractController
     ) {
         try {
             $currentUser = $this->security->getUser();
-
-            if (!$currentUser) {
-                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
-            }
 
             $vacationDTO->reviewedBy = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
 
