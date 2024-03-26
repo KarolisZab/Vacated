@@ -1,5 +1,9 @@
 export default function Home() {
     return (
-        <h1>Vacated</h1>
+        <div className="Home">
+            <div className="container">
+                <h1>Calendar</h1>
+            </div>
+        </div>
     )
 }
