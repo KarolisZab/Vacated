@@ -7,9 +7,9 @@ export default function Navbar() {
 
     return (
         <nav className="navigation">
-            <a href="/home" className="brand-name">
+            <Link to="/home" className="brand-name">
                 Vacated
-            </a>
+            </Link>
             <button
                 className="hamburger"
                 onClick={() => {
@@ -36,15 +36,15 @@ export default function Navbar() {
             >
                 <ul>
                     <li>
-                        <a href="/home">Home</a>
+                        <Link to="/home">Home</Link>
                     </li>
                     <li>
-                        <a href="/employees">Employees</a>
+                        <Link to="/employees">Employees</Link>
                     </li>
                 </ul>
             </div>
             <div className="login">
-                <a href="/login">Login</a>
+                <Link to="/login">Login</Link>
             </div>
         </nav>
     );
