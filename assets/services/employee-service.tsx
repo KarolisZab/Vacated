@@ -1,6 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 import authService from "./auth-service";
+import { API_URL } from "../config";
 
 interface Employee {
     id: string;
@@ -11,8 +12,6 @@ interface Employee {
     phoneNumber: string;
     access_token: string;
 }
-
-const API_URL = "/api/admin/users";
 
 class EmployeeService {
     async getAllEmployees(): Promise<Employee[]> {

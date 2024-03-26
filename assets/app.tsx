@@ -21,16 +21,15 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <NavbarWrapper />,
+        errorElement: <ErrorPage />,
         children: [
+            {
+                path: "/",
+                element: <Login />
+            },
             {
                 path: "/home",
                 element: <Home />,
-                errorElement: <ErrorPage />
-            },
-            {
-                path: "/login",
-                element: <Login />
-                // cia reikes padaryt "/" path ir idet virs "/home", kadangi tik iejus i psl bus login
             },
             {
                 path: "/register",
@@ -39,7 +38,6 @@ const router = createBrowserRouter([
             {
                 path: "/employees",
                 element: <EmployeesList />,
-                errorElement: <ErrorPage />,
             },
             {
                 path: "/employees/:id",
@@ -51,38 +49,10 @@ const router = createBrowserRouter([
             }
         ]
     }
-    // {
-    //     path: "/home",
-    //     element: <Home />,
-    //     errorElement: <ErrorPage />
-    // },
-    // {
-    //     path: "/login",
-    //     element: <Login />
-    // },
-    // {
-    //     path: "/register",
-    //     element: <Register />
-    // },
-    // {
-    //     path: "/employees",
-    //     element: <EmployeesList />,
-    //     errorElement: <ErrorPage />,
-    // },
-    // {
-    //     path: "/employees/:id",
-    //     element: <EmployeeDetails />
-    // },
-    // {
-    //     path: "/employees/:id/update",
-    //     element: <EmployeeEdit />
-    // }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        {/* <Navbar /> */}
-        <RouterProvider router={router}>
-        </RouterProvider>
+        <RouterProvider router={router} />
     </React.StrictMode>
 );
