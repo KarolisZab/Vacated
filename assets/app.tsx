@@ -6,7 +6,7 @@ import {
     RouterProvider,
 } from "react-router-dom";
 import './styles/app.css';
-import Navbar from "./components/Navbar";
+import Root from "./routes/root";
 import 'semantic-ui-css/semantic.min.css'
 import Home from './routes/home';
 import ErrorPage from "./error-page";
@@ -15,12 +15,11 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import EmployeeDetails from "./components/EmployeeDetails"
 import EmployeeEdit from "./components/EmployeeEdit"
-import NavbarWrapper from "./components/NavbarWrapper";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <NavbarWrapper />,
+        element: <Root />,
         errorElement: <ErrorPage />,
         children: [
             {
