@@ -79,7 +79,7 @@ class AuthenticationCest
 
         $updateDTO = new UserDTO('', 'Karolis', 'Zabinskis', '123456789', '');
 
-        $I->sendRequest('patch', '/api/admin/update-user/' . $user->getId(), [
+        $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
             'firstName' => $updateDTO->firstName,
             'lastName' => $updateDTO->lastName,
             'phoneNumber' => $updateDTO->phoneNumber
@@ -90,7 +90,7 @@ class AuthenticationCest
         $token = $I->grabTokenForUser('jwttest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->sendRequest('patch', '/api/admin/update-user/' . $user->getId(), [
+        $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
             'firstName' => $updateDTO->firstName,
             'lastName' => $updateDTO->lastName,
             'phoneNumber' => $updateDTO->phoneNumber
@@ -109,13 +109,13 @@ class AuthenticationCest
         /** @var User $user */
         $user = $this->userManager->getUserByEmail('regtest@test.com');
 
-        $I->sendRequest('delete', '/api/admin/delete-user/' . $user->getId());
+        $I->sendRequest('delete', '/api/admin/users/' . $user->getId());
         $I->seeResponseCodeIs(401);
 
         $token = $I->grabTokenForUser('jwttest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->sendRequest('delete', '/api/admin/delete-user/' . $user->getId());
+        $I->sendRequest('delete', '/api/admin/users/' . $user->getId());
         $I->seeResponseCodeIs(200);
     }
 
@@ -124,13 +124,13 @@ class AuthenticationCest
         /** @var User $user */
         $user = $this->userManager->getUserByEmail('jwttest@test.com');
 
-        $I->sendRequest('delete', '/api/admin/delete-user/' . $user->getId());
+        $I->sendRequest('delete', '/api/admin/users/' . $user->getId());
         $I->seeResponseCodeIs(401);
 
         $token = $I->grabTokenForUser('jwttest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->sendRequest('delete', '/api/admin/delete-user/' . $user->getId());
+        $I->sendRequest('delete', '/api/admin/users/' . $user->getId());
         $I->seeResponseCodeIs(403);
     }
 
