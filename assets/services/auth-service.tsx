@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_URL } from "../config";
 
 interface User {
     id: string;
@@ -9,8 +10,6 @@ interface User {
     phoneNumber: string;
     access_token: string;
 }
-
-const API_URL = "http://localhost:8080/api/";
 
 class AuthService {
     login(email: string, password: string): Promise<User> {
