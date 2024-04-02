@@ -1,10 +1,4 @@
-import axios from "axios";
-import { API_URL } from "../config";
 import apiService from "./api-service";
-import authHeader from "./auth-header";
-// import handler from "./handler";
-import { NavigateFunction } from "react-router-dom";
-import handleAuthenticationError from "./handler";
 
 const URL = '/admin/users';
 
