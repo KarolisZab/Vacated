@@ -1,7 +1,12 @@
 import axios from "axios";
-import authHeader from "./auth-header";
-import authService from "./auth-service";
 import { API_URL } from "../config";
+import apiService from "./api-service";
+import authHeader from "./auth-header";
+// import handler from "./handler";
+import { NavigateFunction } from "react-router-dom";
+import handleAuthenticationError from "./handler";
+
+const URL = '/admin/users';
 
 interface Employee {
     id: string;
@@ -14,47 +19,21 @@ interface Employee {
 }
 
 class EmployeeService {
+    
     async getAllEmployees(): Promise<Employee[]> {
-        try {
-            const response = await axios.get<Employee[]>(API_URL, {
-                headers: authHeader()
-            });
-            return response.data;
-        } catch (error) {
-            throw new Error(`Error fetching employees: ${error.message}`);
-        }
+        return await apiService.get<Employee[]>(URL);
     }
 
     async getEmployeeById(employeeId: string): Promise<Employee> {
-        try {
-            const response = await axios.get<Employee>(`${API_URL}/${employeeId}`, {
-                headers: authHeader()
-            });
-            return response.data;
-        } catch (error) {
-            throw new Error(`Error fetching employee with ID ${employeeId}: ${error.message}`);
-        }
+        return await apiService.get<Employee>(`${URL}/${employeeId}`);
     }
 
     async updateEmployee(employeeId: string, employeeData: Partial<Employee>): Promise<Employee> {
-        try {
-            const response = await axios.patch<Employee>(`${API_URL}/${employeeId}`, employeeData, {
-                headers: authHeader()
-            });
-            return response.data;
-        } catch (error) {
-            throw new Error(`Error updating employee with ID ${employeeId}: ${error.message}`);
-        }
+        return await apiService.patch<Employee>(`${URL}/${employeeId}`, employeeData);
     }
 
     async deleteEmployee(employeeId: string): Promise<void> {
-        try {
-            await axios.delete(`${API_URL}/${employeeId}`, {
-                headers: authHeader()
-            });
-        } catch (error) {
-            throw new Error(`Error deleting employee with ID ${employeeId}: ${error.message}`);
-        }
+        return await apiService.delete(`${URL}/${employeeId}`);
     }
 }
 

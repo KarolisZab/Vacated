@@ -1,6 +1,8 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
 import { Link, useNavigate } from 'react-router-dom';
+import { Button, Card, List, Message, Table } from 'semantic-ui-react';
+import '../styles/employee-list.scss'
 
 interface Employee {
     id: string;
@@ -22,6 +24,7 @@ const EmployeesList: React.FC = () => {
                 const employees = await employeeService.getAllEmployees();
                 setEmployees(employees);
             } catch (error) {
+                navigate("/");
                 setError('Unauthorized. ' + (error as Error).message);
             }
         };
@@ -29,37 +32,40 @@ const EmployeesList: React.FC = () => {
         fetchEmployees();
     }, []);
 
-    const handleDelete = async (id: string) => {
-        try {
-            await employeeService.deleteEmployee(id);
-            setEmployees(prevEmployees => prevEmployees.filter(employee => employee.id !== id));
-        } catch (error) {
-            setError('Error deleting employee: ' + (error as Error).message);
-        }
-    };
+    const sortedEmployees = [...(employees ?? [])].sort((a, b) => (a.id > b.id ? 1 : -1));
 
-    const handleUpdate = (employeeId) => {
-        navigate(`/employees/${employeeId}/update`);
-    }
-
-    const sortedEmployees = [...employees].sort((a, b) => (a.id > b.id ? 1 : -1));
 
     return (
-        <div>
-            <h1>Employee List</h1>
-            {error && <p>{error}</p>}
-            {sortedEmployees.map((employee) => {
-                return (
-                    <div key={employee.id}>
-                        <p>{employee.id}</p>
-                        <p>{employee.email}</p>
-                        <Link to={`/employees/${employee.id}`}>View details</Link>
-                        {/* <Link to={`/employees/${employee.id}/update`}>Update</Link> */}
-                        <button onClick={() => handleUpdate(employee.id)}>Update</button>
-                        <button onClick={() => handleDelete(employee.id)}>Delete</button>
-                    </div>
-                )
-            })}
+        <div className="employees-list">
+            <h1>Employees</h1>
+            {error && <Message negative>{error}</Message>}
+            <div style={{ marginRight: '2rem' }}>
+                <Table celled inverted selectable>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>ID</Table.HeaderCell>
+                            <Table.HeaderCell>Name</Table.HeaderCell>
+                            <Table.HeaderCell>Email</Table.HeaderCell>
+                            <Table.HeaderCell>Phone No.</Table.HeaderCell>
+                            <Table.HeaderCell></Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        {sortedEmployees.map((employee) => (
+                            <Table.Row key={employee.id}>
+                                <Table.Cell>{employee.id}</Table.Cell>
+                                <Table.Cell>{employee.firstName} {employee.lastName}</Table.Cell>
+                                <Table.Cell>{employee.email}</Table.Cell>
+                                <Table.Cell>{employee.phoneNumber}</Table.Cell>
+                                <Table.Cell>
+                                    <Link to={`/employees/${employee.id}`}>View details</Link>
+                                </Table.Cell>
+                            </Table.Row>
+                        ))}
+                    </Table.Body>
+                </Table>
+            </div>
         </div>
     );
 };

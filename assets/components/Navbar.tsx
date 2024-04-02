@@ -1,9 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import "../styles/navbar.css";
+import "../styles/navbar.scss";
+import authService from "../services/auth-service";
 
 export default function Navbar() {
     const [isNavbarExpanded, setIsNavbarExpanded] = useState<boolean>(false);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
+    const [user, setUser] = useState<any>(authService.getCurrentUser());
+
+    useEffect(() => {
+        const handleAuthenticationChange = () => {
+            setIsAuthenticated(authService.isAuthenticated());
+            setUser(authService.getCurrentUser());
+        };
+
+        authService.subscribe(handleAuthenticationChange);
+
+        return () => {
+            authService.unsubscribe(handleAuthenticationChange);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            setIsAdmin(user.roles.includes("ROLE_ADMIN"));
+        } else {
+            setIsAdmin(false);
+        }
+    }, [user]);
+
+    const handleLogout = () => {
+        authService.logout();
+    };
 
     return (
         <nav className="navigation">
@@ -35,16 +64,22 @@ export default function Navbar() {
                 }
             >
                 <ul>
-                    <li>
-                        <Link to="/home">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/employees">Employees</Link>
-                    </li>
+                    {isAuthenticated && (
+                        <>
+                            <li>
+                                <Link to="/home">Home</Link>
+                            </li>
+                            {isAdmin && (
+                                <li>
+                                    <Link to="/employees">Employees</Link>
+                                </li>
+                            )}
+                            <li>
+                                <Link to="/" onClick={handleLogout}>Logout</Link>
+                            </li>
+                        </>
+                    )}
                 </ul>
-            </div>
-            <div className="login">
-                <Link to="/">Login</Link>
             </div>
         </nav>
     );

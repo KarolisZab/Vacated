@@ -1,20 +1,20 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom/client";
+import * as React from "react"
+import * as ReactDOM from "react-dom/client"
 import {
-    BrowserRouter,
     createBrowserRouter,
     RouterProvider,
-} from "react-router-dom";
-import './styles/app.css';
-import Root from "./routes/root";
+} from "react-router-dom"
+import './styles/app.scss'
+import Root from "./routes/root"
 import 'semantic-ui-css/semantic.min.css'
-import Home from './routes/home';
-import ErrorPage from "./error-page";
-import EmployeesList from "./components/EmployeesList";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import Home from './routes/home'
+import ErrorPage from "./error-page"
+import EmployeesList from "./components/EmployeesList"
+import Login from "./components/Login"
+import Register from "./components/Register"
 import EmployeeDetails from "./components/EmployeeDetails"
 import EmployeeEdit from "./components/EmployeeEdit"
+import PrivateRoute from "./routes/PrivateRoutes"
 
 const router = createBrowserRouter([
     {
@@ -28,7 +28,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "/home",
-                element: <Home />,
+                element: (
+                    <PrivateRoute>
+                        <Home />
+                    </PrivateRoute>
+                )
             },
             {
                 path: "/register",
@@ -36,15 +40,29 @@ const router = createBrowserRouter([
             },
             {
                 path: "/employees",
-                element: <EmployeesList />,
+                element: (
+                    <PrivateRoute>
+                        <EmployeesList />
+                    </PrivateRoute>
+                )
             },
             {
                 path: "/employees/:id",
-                element: <EmployeeDetails />
+                element: (
+                    <PrivateRoute>
+                        <EmployeeDetails />
+                    </PrivateRoute>
+                ),
+                errorElement: <ErrorPage />,
             },
             {
                 path: "/employees/:id/update",
-                element: <EmployeeEdit />
+                element: (
+                    <PrivateRoute>
+                        <EmployeeEdit />
+                    </PrivateRoute>
+                ),
+                errorElement: <ErrorPage />,
             }
         ]
     }
