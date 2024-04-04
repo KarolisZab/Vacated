@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Message, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
-import handleError from '../services/handler';
 
 const EmployeesList: React.FC = () => {
     const navigate = useNavigate();
