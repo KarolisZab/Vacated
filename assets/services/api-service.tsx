@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+/* eslint-disable */
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import authHeader from './auth-header';
 import { API_URL } from '../config';
 import handleError from './handler';

@@ -1,9 +1,8 @@
-import axios, { AxiosError } from "axios";
-import { useNavigate, Navigate, redirect } from "react-router-dom";
+import axios from "axios";
 import { API_URL } from "../config";
-import React = require("react");
+import { EmployeeRegistrationData } from "./types";
 
-interface User {
+export interface User {
     id: string;
     email: string;
     roles: string[];
@@ -33,25 +32,17 @@ class AuthService {
     }
 
     logout(): void {
-        try {
+        if(localStorage.getItem("user")) {
             localStorage.removeItem("user");
             this.notifySubscribers();
-        } catch (error) {
-            console.error("Error removing user from localStorage:", error);
         }
     }
 
-    register(email: string, password: string, firstName: string, lastName: string, phoneNumber: string): Promise<any> {
-        return axios.post(API_URL + "/register", {
-            email,
-            password,
-            firstName,
-            lastName,
-            phoneNumber
-        });
+    register(data: EmployeeRegistrationData): Promise<void> {
+        return axios.post(API_URL + "/register", data);
     }
 
-    getCurrentUser(): User {
+    getCurrentUser(): User | null {
         const userStr = localStorage.getItem("user");
         if (userStr) {
             return JSON.parse(userStr);

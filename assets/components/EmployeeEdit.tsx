@@ -1,36 +1,37 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import employeeService from '../services/employee-service';
-import authService from "../services/auth-service";
-import { Button, Form, FormCheckbox, FormInput, Segment } from "semantic-ui-react";
-
-interface Employee {
-    id: string;
-    email: string;
-    roles: string[];
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-}
+import { Button, Dimmer, Form, FormInput, Loader, Segment } from "semantic-ui-react";
+import { EmployeeType } from '../services/types';
+import handleError from "../services/handler";
+import errorProcessor from "../services/errorProcessor";
 
 const UpdateEmployee: React.FC = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
-    const [employee, setEmployee] = useState<Partial<Employee>>({
+    const [employee, setEmployee] = useState<Partial<EmployeeType>>({
         id: id,
         firstName: '',
         lastName: '',
         phoneNumber: ''
     });
+    /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         const fetchEmployee = async () => {
             try {
+                setLoading(true);
                 const employeeData = await employeeService.getEmployeeById(id);
                 setEmployee(employeeData);
             } catch (error) {
-                setError('Unauthorized. ' + (error as Error).message);
+                handleError(error);
+                setError('Error: ' + (error as Error).message);
+                navigate('/');
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -39,16 +40,24 @@ const UpdateEmployee: React.FC = () => {
 
     const handleUpdate = async () => {
         try {
+            setFormErrors({});
             await employeeService.updateEmployee(id, employee);
-            navigate('/employees');
+            navigate(-1);
         } catch (error) {
-            navigate('/');
-            setError('Error updating employee: ' + (error as Error).message);
+            errorProcessor(error, setError, setFormErrors)
         }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        
+        if (value.trim() === '') {
+            setFormErrors(prevErrors => ({
+                ...prevErrors,
+                [name]: 'Field should not be empty'
+            }));
+        } 
+        
         setEmployee(prevEmployee => ({
             ...prevEmployee,
             [name]: value
@@ -56,13 +65,20 @@ const UpdateEmployee: React.FC = () => {
     };
 
     const handleCancel = () => {
-        navigate('/employees');
+        navigate(-1);
     };
+
+    if (loading) {
+        return (
+            <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
+                <Loader>Loading</Loader>
+            </Dimmer>
+        );
+    }
 
     return (
         <div style={{ margin: '3rem auto', maxWidth: '500px' }}>
             <h1>Update Employee</h1>
-            {error && <p>{error}</p>}
             <Segment inverted>
                 <Form inverted>
                     <Form.Group widths='equal'>
@@ -72,7 +88,8 @@ const UpdateEmployee: React.FC = () => {
                             placeholder='First name' 
                             name="firstName" 
                             value={employee.firstName} 
-                            onChange={handleChange} 
+                            onChange={handleChange}
+                            error={formErrors['firstName']}
                         />
                         <FormInput 
                             fluid 
@@ -80,7 +97,8 @@ const UpdateEmployee: React.FC = () => {
                             placeholder='Last name' 
                             name="lastName" 
                             value={employee.lastName} 
-                            onChange={handleChange} 
+                            onChange={handleChange}
+                            error={formErrors['lastName']}
                         />
                     </Form.Group>
                     <FormInput 
@@ -89,7 +107,8 @@ const UpdateEmployee: React.FC = () => {
                         placeholder='Phone number' 
                         name="phoneNumber" 
                         value={employee.phoneNumber} 
-                        onChange={handleChange} 
+                        onChange={handleChange}
+                        error={formErrors['phoneNumber']}
                     />
                     <Button type='button' onClick={handleUpdate}>Submit</Button>
                     <Button type='button' onClick={handleCancel}>Cancel</Button>

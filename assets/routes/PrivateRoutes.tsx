@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import authService from '../services/auth-service'
+import * as React from 'react';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -7,9 +8,8 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const isAuthenticated = authService.isAuthenticated();
-  console.log('isAuthenticated', isAuthenticated);
-  
-  return isAuthenticated ? <>{children}</> : <Navigate to="/" />;
+
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;

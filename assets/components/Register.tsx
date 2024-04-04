@@ -2,56 +2,43 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 import authService from '../services/auth-service';
+import { EmployeeRegistrationData } from '../services/types';
+import errorProcessor from '../services/errorProcessor';
 
 
 const Register: React.FC = () => {
     
     const navigate = useNavigate();
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [firstName, setFirstName] = useState<string>('');
-    const [lastName, setLastName] = useState<string>('');
-    const [phoneNumber, setPhoneNumber] = useState<string>('');
+    const [registrationData, setRegistrationData] = useState<EmployeeRegistrationData>({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        firstName: '',
+        lastName: '',
+        phoneNumber: ''
+    });
     const [error, setError] = useState<string>('');
+    const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
-    const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-    };
-
-    const handleChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-    };
-
-    const handleChangeConfirmPassword = (e: ChangeEvent<HTMLInputElement>) => {
-        setConfirmPassword(e.target.value);
-    };
-
-    const handleChangeFirstName = (e: ChangeEvent<HTMLInputElement>) => {
-        setFirstName(e.target.value);
-    };
-
-    const handleChangeLastName = (e: ChangeEvent<HTMLInputElement>) => {
-        setLastName(e.target.value);
-    };
-
-    const handleChangePhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
-        setPhoneNumber(e.target.value);
+    const handleChange = (e: ChangeEvent<HTMLInputElement>, field: keyof EmployeeRegistrationData) => {
+        setRegistrationData({
+            ...registrationData,
+            [field]: e.target.value
+        });
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (password !== confirmPassword) {
+        if (registrationData.password !== registrationData.confirmPassword) {
             setError('Passwords do not match');
             return;
         }
         try {
-            const response = await authService.register(email, password, firstName, lastName, phoneNumber);
-            // window.location.href = '/home';
-            navigate('/home');
+            await authService.register(registrationData);
+            navigate('/');
         } catch (error) {
-            setError('Error registering user: ' + error.message);
+            errorProcessor(error, setError, setFormErrors);
         }
     };
 
@@ -62,14 +49,16 @@ const Register: React.FC = () => {
                     Register an account
                 </Header>
                 <Form size='large' onSubmit={handleSubmit} error={!!error}>
+                {error && <Message error style={{ backgroundColor: 'rgb(31, 31, 32)' }} content={error} />}
                     <Segment stacked>
                     <Form.Input
                             fluid
                             icon='user'
                             iconPosition='left'
                             placeholder='E-mail address'
-                            value={email}
-                            onChange={handleChangeEmail}
+                            value={registrationData.email}
+                            onChange={(e) => handleChange(e, 'email')}
+                            error={formErrors['email']}
                             required
                         />
                         <Form.Input
@@ -78,8 +67,9 @@ const Register: React.FC = () => {
                             iconPosition='left'
                             placeholder='Password'
                             type='password'
-                            value={password}
-                            onChange={handleChangePassword}
+                            value={registrationData.password}
+                            onChange={(e) => handleChange(e, 'password')}
+                            error={formErrors['password']}
                             required
                         />
                         <Form.Input
@@ -88,8 +78,9 @@ const Register: React.FC = () => {
                             iconPosition='left'
                             placeholder='Confirm Password'
                             type='password'
-                            value={confirmPassword}
-                            onChange={handleChangeConfirmPassword}
+                            value={registrationData.confirmPassword}
+                            onChange={(e) => handleChange(e, 'confirmPassword')}
+                            error={formErrors['confirmPassword']}
                             required
                         />
                         <Form.Input
@@ -97,8 +88,9 @@ const Register: React.FC = () => {
                             icon='user'
                             iconPosition='left'
                             placeholder='First Name'
-                            value={firstName}
-                            onChange={handleChangeFirstName}
+                            value={registrationData.firstName}
+                            onChange={(e) => handleChange(e, 'firstName')}
+                            error={formErrors['firstName']}
                             required
                         />
                         <Form.Input
@@ -106,8 +98,9 @@ const Register: React.FC = () => {
                             icon='user'
                             iconPosition='left'
                             placeholder='Last Name'
-                            value={lastName}
-                            onChange={handleChangeLastName}
+                            value={registrationData.lastName}
+                            onChange={(e) => handleChange(e, 'lastName')}
+                            error={formErrors['lastName']}
                             required
                         />
                         <Form.Input
@@ -115,15 +108,15 @@ const Register: React.FC = () => {
                             icon='phone'
                             iconPosition='left'
                             placeholder='Phone Number'
-                            value={phoneNumber}
-                            onChange={handleChangePhoneNumber}
+                            value={registrationData.phoneNumber}
+                            onChange={(e) => handleChange(e, 'phoneNumber')}
+                            error={formErrors['phoneNumber']}
                             required
                         />
                         <Button color='teal' fluid size='large' type='submit'>
                             Register
                         </Button>
                     </Segment>
-                    {error && <Message error content={error} />}
                 </Form>
             </Grid.Column>
         </Grid>
