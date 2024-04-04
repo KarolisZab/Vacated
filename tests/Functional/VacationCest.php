@@ -358,7 +358,7 @@ class VacationCest
 
         $user = $this->userManager->getUserByEmail('vacationtest@test.com');
 
-        $vacationDTO1 = new VacationDTO('2024-04-04', '2024-04-07');
+        $vacationDTO1 = new VacationDTO('2024-04-05', '2024-04-07');
         $vacationDTO2 = new VacationDTO('2024-04-30', '2024-05-01');
         $this->vacationManager->requestVacation($user, $vacationDTO1);
         $this->vacationManager->requestVacation($user, $vacationDTO2);
