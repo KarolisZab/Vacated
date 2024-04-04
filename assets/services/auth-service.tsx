@@ -1,7 +1,8 @@
 import axios from "axios";
 import { API_URL } from "../config";
+import { EmployeeRegistrationData } from "./types";
 
-interface User {
+export interface User {
     id: string;
     email: string;
     roles: string[];
@@ -12,15 +13,18 @@ interface User {
 }
 
 class AuthService {
+    private authenticationChangeSubscribers: (() => void)[] = [];
+    
     login(email: string, password: string): Promise<User> {
         return axios
-        .post(API_URL + "login", {
+        .post(API_URL + "/login", {
             email,
             password
         })
         .then(response => {
             if (response.data.access_token) {
                 localStorage.setItem("user", JSON.stringify(response.data));
+                this.notifySubscribers();
             }
 
             return response.data;
@@ -28,20 +32,17 @@ class AuthService {
     }
 
     logout(): void {
-        localStorage.removeItem("user");
+        if(localStorage.getItem("user")) {
+            localStorage.removeItem("user");
+            this.notifySubscribers();
+        }
     }
 
-    register(email: string, password: string, firstName: string, lastName: string, phoneNumber: string): Promise<any> {
-        return axios.post(API_URL + "register", {
-            email,
-            password,
-            firstName,
-            lastName,
-            phoneNumber
-        });
+    register(data: EmployeeRegistrationData): Promise<void> {
+        return axios.post(API_URL + "/register", data);
     }
 
-    getCurrentUser(): User {
+    getCurrentUser(): User | null {
         const userStr = localStorage.getItem("user");
         if (userStr) {
             return JSON.parse(userStr);
@@ -50,10 +51,22 @@ class AuthService {
         return null;
     }
 
-    // getCurrentUserToken(): string | null {
-    //     const user = this.getCurrentUser();
-    //     return user ? user.access_token : null;
-    // }
+    isAuthenticated(): boolean {
+        const user = this.getCurrentUser();
+        return !!user && !!user.access_token;
+    }
+
+    subscribe(callback: () => void): void {
+        this.authenticationChangeSubscribers.push(callback);
+    }
+
+    unsubscribe(callback: () => void): void {
+        this.authenticationChangeSubscribers = this.authenticationChangeSubscribers.filter(subscriber => subscriber !== callback);
+    }
+
+    private notifySubscribers(): void {
+        this.authenticationChangeSubscribers.forEach(subscriber => subscriber());
+    }
 }
 
 export default new AuthService();

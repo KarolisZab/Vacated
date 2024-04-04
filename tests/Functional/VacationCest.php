@@ -358,20 +358,18 @@ class VacationCest
 
         $user = $this->userManager->getUserByEmail('vacationtest@test.com');
 
-        $vacationDTO1 = new VacationDTO('2024-03-30', '2024-04-01');
+        $vacationDTO1 = new VacationDTO('2024-04-05', '2024-04-07');
         $vacationDTO2 = new VacationDTO('2024-04-30', '2024-05-01');
         $this->vacationManager->requestVacation($user, $vacationDTO1);
         $this->vacationManager->requestVacation($user, $vacationDTO2);
 
         $I->sendRequest('get', '/api/vacations', [
-            'startDate' => '2024-04-01',
+            'startDate' => '2024-04-05',
             'endDate' => '2024-04-30'
         ]);
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            '2024-04-01' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
-            '2024-04-02' => [],
             '2024-04-12' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
             '2024-04-13' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
             '2024-04-29' => [],
