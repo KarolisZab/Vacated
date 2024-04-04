@@ -1,0 +1,15 @@
+#error-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+  
+#error-page h1,
+#error-page p {
+    text-align: center;
+    margin: 10px;
+}
+  

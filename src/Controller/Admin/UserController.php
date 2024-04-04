@@ -40,7 +40,7 @@ class UserController extends AbstractController
         return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
-    #[Route('/delete-user/{id}', name: 'delete_user', methods: ['DELETE'])]
+    #[Route('/users/{id}', name: 'delete_user', methods: ['DELETE'])]
     public function deleteUser(Request $request, string $id)
     {
         try {
@@ -56,7 +56,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/update-user/{id}', name: 'update_user', methods: ['PATCH'])]
+    #[Route('/users/{id}', name: 'update_user', methods: ['PATCH'])]
     public function updateUser(Request $request, string $id, #[MapRequestPayload()] UserDTO $userDTO)
     {
         try {

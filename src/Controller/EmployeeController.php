@@ -6,9 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HomeController extends AbstractController
+class EmployeeController extends AbstractController
 {
-    #[Route('/', name: 'home_control')]
+    #[Route('/{reactRoute}', name: 'employee_control')]
     public function index(): Response
     {
         return $this->render('default/index.html.twig');

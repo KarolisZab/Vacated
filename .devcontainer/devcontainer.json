@@ -5,7 +5,7 @@
     ],
     "service": "vacated-backend",
     "workspaceFolder": "/var/www/html",
-    "shutdownAction": "none",
+    //"shutdownAction": "none",
     "customizations": {
         "vscode": {
             "extensions": [

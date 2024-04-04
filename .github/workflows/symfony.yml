@@ -64,6 +64,12 @@ jobs:
       - name: Execute Lint
         run: composer lint
 
+      - name: Install ESLint
+        run: yarn add eslint --dev
+
+      - name: Run ESLint
+        run: yarn run eslint ./assets
+
       - name: Execute Codeception tests
         run: vendor/bin/codecept run
         env: 
