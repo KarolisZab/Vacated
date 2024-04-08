@@ -10,7 +10,7 @@ const UpdateEmployee: React.FC = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const [employee, setEmployee] = useState<Partial<EmployeeType>>({
-        id: id,
+        id,
         firstName: '',
         lastName: '',
         phoneNumber: ''

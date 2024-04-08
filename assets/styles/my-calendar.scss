@@ -1,0 +1,52 @@
+.fc-toolbar-title {
+    color: white;
+}
+
+// .fc-daygrid-day.fc-day {
+//     color: white !important;
+// }
+
+.fc-day-sun,
+.fc-day-sat { 
+    background-color: #303030;
+}
+
+.fc-day-sat .fc-daygrid-day-events {
+    display: none !important;
+}
+
+.fc-day-sun .fc-daygrid-day-events {
+    display: none !important;
+}
+
+.fc-col-header-cell {
+    background-color: rgb(48, 48, 48);
+    color: white !important;
+}
+
+.fc-daygrid-day-number {
+    color: white;
+}
+
+// 
+.fc-daygrid-day {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.fc-daygrid-event-dot {
+    display: none;
+}
+//
+
+.fc-day-today {
+    background-color: #5f5f5f33 !important;
+}
+
+
+.fc-day.fc-day-sun.fc-day-event.fc-day-past.fc-day-other-month.fc-day-today {
+    .reserved-day {
+      background-color: var(--fc-today-bg-color) !important;
+    }
+}
+  
