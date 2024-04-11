@@ -13,3 +13,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 };
 
 export default PrivateRoute;
+
+export const AdminPrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+  const isAuthenticated = authService.isAuthenticated();
+  const isAdmin = authService.isAdmin();
+
+  return isAuthenticated && isAdmin ? <>{children}</> : <Navigate to="/" />;
+};

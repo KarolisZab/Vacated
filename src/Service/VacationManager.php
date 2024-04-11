@@ -187,6 +187,22 @@ class VacationManager
         return $vacationRepository->find($id);
     }
 
+    public function getAllVacations(): array
+    {
+        /** @var \App\Repository\VacationRepository $vacationRepository */
+        $vacationRepository = $this->entityManager->getRepository(User::class);
+
+        return $vacationRepository->findAll();
+    }
+
+    public function getAllCurrentUserVacations(User $user): array
+    {
+        /** @var \App\Repository\VacationRepository $vacationRepository */
+        $vacationRepository = $this->entityManager->getRepository(Vacation::class);
+
+        return $vacationRepository->findBy(['requestedBy' => $user]);
+    }
+
     /**
      * @return array<string, Vacation[]>
      */

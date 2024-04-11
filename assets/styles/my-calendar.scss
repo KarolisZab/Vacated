@@ -2,10 +2,6 @@
     color: white;
 }
 
-// .fc-daygrid-day.fc-day {
-//     color: white !important;
-// }
-
 .fc-day-sun,
 .fc-day-sat { 
     background-color: #303030;
@@ -43,10 +39,22 @@
     background-color: #5f5f5f33 !important;
 }
 
-
-.fc-day.fc-day-sun.fc-day-event.fc-day-past.fc-day-other-month.fc-day-today {
-    .reserved-day {
-      background-color: var(--fc-today-bg-color) !important;
-    }
+.calendar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
-  
+
+.selected-dates {
+    width: 30%;
+}
+
+.request-button {
+    // margin-left: auto;
+    margin: 0; 
+}
+
+.calendar {
+    width: 70%;
+}

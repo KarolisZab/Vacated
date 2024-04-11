@@ -17,15 +17,15 @@ class AuthService {
     
     login(email: string, password: string): Promise<User> {
         return axios
-        .post(API_URL + "/login", {
-            email,
-            password
-        })
-        .then(response => {
-            if (response.data.access_token) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-                this.notifySubscribers();
-            }
+            .post(API_URL + "/login", {
+                email,
+                password
+            })
+            .then(response => {
+                if (response.data.access_token) {
+                    localStorage.setItem("user", JSON.stringify(response.data));
+                    this.notifySubscribers();
+                }
 
             return response.data;
         });
@@ -54,6 +54,11 @@ class AuthService {
     isAuthenticated(): boolean {
         const user = this.getCurrentUser();
         return !!user && !!user.access_token;
+    }
+
+    isAdmin(): boolean {
+        const user = this.getCurrentUser();
+        return !!user && user.roles.includes("ROLE_ADMIN");
     }
 
     subscribe(callback: () => void): void {

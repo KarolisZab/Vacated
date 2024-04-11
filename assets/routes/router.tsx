@@ -11,6 +11,10 @@ import EmployeeDetails from "../components/EmployeeDetails"
 import EmployeeEdit from "../components/EmployeeEdit"
 import PrivateRoute from "./PrivateRoutes"
 import ServerErrorPage from "../server-error-page"
+import MyVacations from "../components/MyVacations"
+import AdminRoot from "./admin"
+import { AdminPrivateRoute } from "./PrivateRoutes"
+import AdminHome from "../components/AdminHome"
 
 const router = createBrowserRouter([
     {
@@ -35,37 +39,64 @@ const router = createBrowserRouter([
                 element: <Register />
             },
             {
-                path: "employees",
-                element: (
-                    <PrivateRoute>
-                        <EmployeesList />
-                    </PrivateRoute>
-                )
-            },
-            {
-                path: "employees/:id",
-                element: (
-                    <PrivateRoute>
-                        <EmployeeDetails />
-                    </PrivateRoute>
-                ),
-            },
-            {
-                path: "employees/:id/update",
-                element: (
-                    <PrivateRoute>
-                        <EmployeeEdit />
-                    </PrivateRoute>
-                ),
-            },
-            {
                 path: "500",
                 element: (
                     <PrivateRoute>
                         <ServerErrorPage />
                     </PrivateRoute>
                 )
+            },
+            {
+                path: "vacations",
+                element: (
+                    <PrivateRoute>
+                        <MyVacations />
+                    </PrivateRoute>
+                )
             }
+        ]
+    },
+    {
+        path: "/admin",
+        element: (
+            <AdminPrivateRoute>
+                <AdminRoot />
+            </AdminPrivateRoute>
+        ),
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: "/admin",
+                element: (
+                    <AdminPrivateRoute>
+                        <AdminHome />
+                    </AdminPrivateRoute>
+                )
+            },
+            {
+                path: "employees",
+                element: (
+                    <AdminPrivateRoute>
+                        <EmployeesList />
+                    </AdminPrivateRoute>
+                )
+            },
+            {
+                path: "employees/:id",
+                element: (
+                    <AdminPrivateRoute>
+                        <EmployeeDetails />
+                    </AdminPrivateRoute>
+                ),
+            },
+            {
+                path: "employees/:id/update",
+                element: (
+                    <AdminPrivateRoute>
+                        <EmployeeEdit />
+                    </AdminPrivateRoute>
+                ),
+            },
         ]
     }
 ]);

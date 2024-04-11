@@ -21,7 +21,6 @@ export default function Navbar() {
         return () => {
             authService.unsubscribe(handleAuthenticationChange);
         };
-
     }, []);
 
     useEffect(() => {
@@ -36,39 +35,12 @@ export default function Navbar() {
         authService.logout();
     };
 
-    // const employee = 
-    // <>
-    //     <li>
-    //         <Link to="/">Home</Link>
-    //     </li>
-    //     <li>
-    //         <Link to="/vacations">My Vacations</Link>
-    //     </li>
-    // </>
-
-    // const admin = 
-    // <>
-    //     <li>
-    //         <Link to="/admin">Home</Link>
-    //     </li>
-    //     <li>
-    //         {/* All user vacations */}
-    //         <Link to="/admin/vacations">Vacations</Link>
-    //     </li>
-    //     <li>
-    //         <Link to="/admin/employees">Employees</Link>
-    //     </li>
-    //     <li>
-    //         <Link to="/admin/reservations">Reservations</Link>
-    //     </li>
-    // </>
-
     return (
         <nav className="navigation">
             <div className="links-container">
-                <Link to="/" className="brand-name">
+                <h1 className="brand-name">
                     Vacated
-                </Link>
+                </h1>
                 <div
                     className={
                         isNavbarExpanded ? "navigation-menu expanded" : "navigation-menu"
@@ -78,19 +50,19 @@ export default function Navbar() {
                         {isAuthenticated && (
                             <>
                                 <li>
-                                    <Link to="/">Home</Link>
+                                    <Link to="/admin">Home</Link>
                                 </li>
                                 <li>
-                                    <Link to="/vacations">My Vacations</Link>
+                                    {/* All user vacations */}
+                                    <Link to="/admin/vacations">Vacations</Link>
+                                </li>
+                                <li>
+                                    <Link to="/admin/employees">Employees</Link>
+                                </li>
+                                <li>
+                                    <Link to="/admin/reservations">Reserved days</Link>
                                 </li>
                             </>
-                            // <>
-                            //     {isAdmin ? (
-                            //         admin
-                            //     ) : (
-                            //         employee
-                            //     )}
-                            // </>
                         )}
                     </ul>
                 </div>
@@ -101,7 +73,7 @@ export default function Navbar() {
                         {isAdmin && (
                             <ul>
                                 <li>
-                                    <Link to="/admin">Admin Dashboard</Link>
+                                    <Link to="/">Exit admin dashboard</Link>
                                 </li>
                             </ul>
                         )}

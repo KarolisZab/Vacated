@@ -5,89 +5,67 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType } from '../services/types';
-import apiService from '../services/api-service';
-import { Dimmer, Loader } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
+import vacationService from '../services/vacation-service';
+import reservedDayService from '../services/reserved-day-service';
+import { useNavigate } from 'react-router-dom';
 
 export default function MyCalendar() {
-    // const [selectedDate, setSelectedDate] = useState<{ startDate: string | null; endDate: string | null }>({
-    //     startDate: null,
-    //     endDate: null
-    // });
-
+    const navigate = useNavigate();
     const [selectedDate, setSelectedDate] = useState<{ startDate: string | null; endDate: string | null }>(() => {
-        const today = new Date();
-        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         return {
-          startDate: firstDayOfMonth.toISOString().split('T')[0],
-          endDate: lastDayOfMonth.toISOString().split('T')[0]
+          startDate: null,
+          endDate: null
         };
-      });
-
-    // TODO: gettina pradzioj sitas tuscias/null string reiksmes, turetu negettint.
-    // const [calendarDays, setCalendarDays] = useState<{ startDate: string; endDate: string }>({
-    //     // TODO: pagooglint kaip firstDay ir lastDay of month ir cia paduot string ne datetime, formatuot
-    //     startDate: '',
-    //     endDate: ''
-    // });
+    });
 
     const [calendarDays, setCalendarDays] = useState<{ startDate: string; endDate: string }>(() => {
         const today = new Date();
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1);
         return {
           startDate: firstDayOfMonth.toISOString().split('T')[0],
           endDate: lastDayOfMonth.toISOString().split('T')[0]
         };
-      });
+    });
 
     const uniqueEventIds = new Set<string>();
     const [confirmedVacations, setConfirmedVacations] = useState<CalendarDays>({});
     const calendarRef = useRef<FullCalendar>();
     const [reservedDays, setReservedDays] = useState<ReservedDayType[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-
+    const [note, setNote] = useState<string>('');
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [modalError, setModalError] = useState<string>('');
 
     useEffect(() => {
-        const fetchConfirmedVacations = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
+                
                 const { startDate, endDate } = calendarDays;
-                // ne api service, o repositorija ir nedet query params i route, pasidaryt, kad priima argumentus, array key startdate, kitas key enddate ir value enddate
-                // api turi sumapint/subuildint querius
-                const vacations = await apiService.get<CalendarDays>(`/vacations/`, {startDate, endDate});
-
-                console.log(vacations);
+                
+                const [vacations, reserved] = await Promise.all([
+                    vacationService.getConfirmedAndSelfRequestedVacations(startDate, endDate),
+                    reservedDayService.getReservedDays(startDate, endDate)
+                ]);
+                
                 setConfirmedVacations(vacations);
-            } catch (error) {
-                // TODO: handle
-                console.error('Error fetching confirmed vacations:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        const fetchReservedDays = async () => {
-            try {
-                setLoading(true);
-                const { startDate, endDate } = calendarDays;
-                const reserved = await apiService.get<ReservedDayType[]>(`/admin/reserved-day/?startDate=${startDate}&endDate=${endDate}`);
-
-                console.log(reserved);
                 setReservedDays(reserved);
             } catch (error) {
-            // TODO: handle
-                console.error('Error fetching reserved days:', error);
+                // TODO: handle errors
+                // console.error('Error fetching data:', error);
+                navigate('/login')
             } finally {
                 setLoading(false);
             }
         };
-
-        fetchConfirmedVacations();
-        fetchReservedDays();
-
+    
+        fetchData();
     }, [calendarDays]);
 
+
+    // cia gal async await reik
     const handleDatesSet = () => {
         const calendarApi = calendarRef.current?.getApi();
         if (calendarApi) {
@@ -99,10 +77,47 @@ export default function MyCalendar() {
 
     const handleDateSelect = (selectInfo: { startStr: string; endStr: string }) => {
         const { startStr: startDate, endStr: endDate } = selectInfo;
+        const adjustedEndDate = new Date(endDate);
+        adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
 
-        setSelectedDate({ startDate, endDate });
+        setSelectedDate({ startDate, endDate: adjustedEndDate.toISOString().split('T')[0] });
     };
 
+    const handleRequestVacation = async () => {
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setSelectedDate({ startDate: null, endDate: null });
+        setModalError('');
+    };    
+
+    const handleConfirmVacationRequest = async () => {
+        try {
+            if (selectedDate.startDate && selectedDate.endDate) {
+                setModalError('');
+                await vacationService.requestVacation({ 
+                    dateFrom: selectedDate.startDate,
+                    dateTo: selectedDate.endDate,
+                    note: note
+                });
+
+                const { startDate, endDate } = calendarDays;
+                const updatedVacations = await vacationService.getConfirmedAndSelfRequestedVacations(startDate, endDate);
+                setConfirmedVacations(updatedVacations);
+                setCalendarDays(calendarDays);
+                setSelectedDate({ startDate: null, endDate: null });
+                setNote('');
+                setShowModal(false);
+            } else {
+                console.error('Start date and end date must be selected.');
+            }
+        } catch (error) {
+            // console.log('Modal error: ', error.response);
+            setModalError(error.response.data);
+        }
+    };
 
     const handleEventClick = (clickInfo: any) => {
         const event = clickInfo.event;
@@ -132,7 +147,6 @@ export default function MyCalendar() {
             })
         )
         .filter(event => event !== null);
-        console.log('Vacations', vacations);
         return vacations;
     };
 
@@ -150,7 +164,6 @@ export default function MyCalendar() {
                 classNames: ['reserved-day']
             };
         });
-        console.log('Reserved Days', reservedEvents);
         return reservedEvents;
     };
 
@@ -162,36 +175,72 @@ export default function MyCalendar() {
     //     );
     // }
 
-    const combinedEvents = [];
-    combinedEvents.push(...mapCalendarList());
-    combinedEvents.push(...mapReservedDays());
-
     return (
-    <div>
-        <FullCalendar
-            ref={calendarRef}
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            selectable={true}
-            // events={[...mapCalendarList(), ...mapReservedDays()]}
-            events={combinedEvents}
-            select={handleDateSelect}
-            firstDay={1}
-            datesSet={handleDatesSet}
-            fixedWeekCount={false}
-            timeZone="Europe/London"
-            displayEventTime={false}
-            eventClick={handleEventClick}
-            dayMaxEventRows={true}
-            dayMaxEvents={3}
-            aspectRatio={1.75}
-        />
-        {selectedDate.startDate && selectedDate.endDate && (
-            <p>
-                Selected start date: {selectedDate.startDate} <br />
-                Selected end date: {selectedDate.endDate}
-            </p>
-        )}
-    </div>
+        <div>
+            <div className="calendar-container">
+                <div className="selected-dates">
+                    {selectedDate.startDate && selectedDate.endDate && (
+                        <p>
+                            Selected start date: {selectedDate.startDate} <br />
+                            Selected end date: {selectedDate.endDate}
+                        </p>
+                    )}
+                </div>
+                <Modal open={showModal} onClose={() => handleCloseModal()}>
+                    <Modal.Header>Request vacation</Modal.Header>
+                    <Modal.Content>
+                        {modalError && <Message negative>{modalError}</Message>}
+                        <p style={{ color: 'black' }}>
+                            Selected start date: {selectedDate.startDate} <br />
+                            Selected end date: {selectedDate.endDate}
+                        </p>
+                        <Form>
+                            <Form.TextArea 
+                                label='Note'
+                                placeholder='Enter your note here'
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                            />
+                        </Form>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='black' onClick={() => handleCloseModal()}>
+                            Cancel
+                        </Button>
+                        <Button
+                            content="Request"
+                            labelPosition='left'
+                            icon='checkmark'
+                            onClick={handleConfirmVacationRequest}
+                            positive
+                        />
+                    </Modal.Actions>
+                </Modal>
+
+                <div className="request-button">
+                    <Button primary disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
+                        Request vacation
+                    </Button>
+                </div>
+            </div>
+
+            <FullCalendar
+                ref={calendarRef}
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                selectable={true}
+                events={[...mapCalendarList(), ...mapReservedDays()]}
+                select={handleDateSelect}
+                firstDay={1}
+                datesSet={handleDatesSet}
+                fixedWeekCount={false}
+                timeZone="Europe/London"
+                displayEventTime={false}
+                eventClick={handleEventClick}
+                dayMaxEventRows={true}
+                dayMaxEvents={3}
+                aspectRatio={1.75}
+            />
+        </div>
     )
 }

@@ -3,7 +3,7 @@
     // margin-right: 2rem; 
   
     .employee-card {
-      background-color: rgba(64, 64, 64, 0.8) !important; // Add !important
+      background-color: rgba(64, 64, 64, 0.8) !important;
       color: white;
   
       .card-content {
@@ -17,4 +17,15 @@
         color: white !important;
       }
     }
-  }
+
+    .loader-container {
+      position: relative;
+    }
+    
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+}

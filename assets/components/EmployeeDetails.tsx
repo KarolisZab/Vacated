@@ -19,7 +19,7 @@ const EmployeeDetails: React.FC = () => {
                 const employeeData = await employeeService.getEmployeeById(id);
                 setEmployee(employeeData);
             } catch (error) {
-                navigate('/employees');
+                navigate('/admin/employees');
                 setError('Error fetching employee: ' + (error as Error).message);
             } 
             finally {
@@ -37,34 +37,30 @@ const EmployeeDetails: React.FC = () => {
     const confirmDelete = async (id: string) => {
         try {
             await employeeService.deleteEmployee(id);
-            navigate('/employees');
+            navigate('/admin/employees');
         } catch (error) {
-            navigate('/employees');
+            navigate('/admin/employees');
             setError('Error deleting employee: ' + (error as Error).message);
         }
         setDeleteModalOpen(false);
     };
 
     const handleUpdate = (employeeId) => {
-        navigate(`/employees/${employeeId}/update`);
-    }
-
-    if (isLoading) {
-        return (
-            <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
-                <Loader>Loading</Loader>
-            </Dimmer>
-        );
+        navigate(`/admin/employees/${employeeId}/update`);
     }
 
     if (!employee) {
-        return (
-            <div color="rgb(31, 31, 32)">No employee</div>
-        )
+        return null;
     }
 
     return (
         <Container style={{ marginTop: '2rem' }}>
+            {/* possibly reik divo */}
+            {isLoading && (
+                <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }} >
+                    <Loader>Loading</Loader>
+                </Dimmer>
+            )}
             <Header as='h1' style={{ color: 'white'}}>Employee Details</Header>
             {error && <Message negative>{error}</Message>}
             <Card fluid style={{ backgroundColor: '#252525'}}>

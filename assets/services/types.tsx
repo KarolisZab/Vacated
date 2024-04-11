@@ -23,6 +23,7 @@ export type VacationType = {
     rejected: boolean;
     reviewedAt: string;
     reviewedBy: EmployeeType;
+    rejectionNote: string;
 }
 
 export type CalendarDays = {

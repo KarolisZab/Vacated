@@ -5,6 +5,7 @@ import { Button, Dimmer, Form, FormInput, Loader, Segment } from "semantic-ui-re
 import { EmployeeType } from '../services/types';
 import handleError from "../services/handler";
 import errorProcessor from "../services/errorProcessor";
+import '../styles/employee-list.scss'
 
 const UpdateEmployee: React.FC = () => {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ const UpdateEmployee: React.FC = () => {
             } catch (error) {
                 handleError(error);
                 setError('Error: ' + (error as Error).message);
-                navigate('/');
+                navigate(-1);
             } finally {
                 setLoading(false);
             }
@@ -68,52 +69,51 @@ const UpdateEmployee: React.FC = () => {
         navigate(-1);
     };
 
-    if (loading) {
-        return (
-            <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
-                <Loader>Loading</Loader>
-            </Dimmer>
-        );
-    }
-
     return (
         <div style={{ margin: '3rem auto', maxWidth: '500px' }}>
             <h1>Update Employee</h1>
-            <Segment inverted>
-                <Form inverted>
-                    <Form.Group widths='equal'>
+            <div className="loader-container">
+                <Segment inverted>
+                    {loading && (
+                        <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }} >
+                            <Loader>Loading</Loader>
+                        </Dimmer>
+                    )}
+                    <Form inverted>
+                        <Form.Group widths='equal'>
+                            <FormInput 
+                                fluid 
+                                label='First name' 
+                                placeholder='First name' 
+                                name="firstName" 
+                                value={employee.firstName} 
+                                onChange={handleChange}
+                                error={formErrors['firstName']}
+                            />
+                            <FormInput 
+                                fluid 
+                                label='Last name' 
+                                placeholder='Last name' 
+                                name="lastName" 
+                                value={employee.lastName} 
+                                onChange={handleChange}
+                                error={formErrors['lastName']}
+                            />
+                        </Form.Group>
                         <FormInput 
                             fluid 
-                            label='First name' 
-                            placeholder='First name' 
-                            name="firstName" 
-                            value={employee.firstName} 
+                            label='Phone number' 
+                            placeholder='Phone number' 
+                            name="phoneNumber" 
+                            value={employee.phoneNumber} 
                             onChange={handleChange}
-                            error={formErrors['firstName']}
+                            error={formErrors['phoneNumber']}
                         />
-                        <FormInput 
-                            fluid 
-                            label='Last name' 
-                            placeholder='Last name' 
-                            name="lastName" 
-                            value={employee.lastName} 
-                            onChange={handleChange}
-                            error={formErrors['lastName']}
-                        />
-                    </Form.Group>
-                    <FormInput 
-                        fluid 
-                        label='Phone number' 
-                        placeholder='Phone number' 
-                        name="phoneNumber" 
-                        value={employee.phoneNumber} 
-                        onChange={handleChange}
-                        error={formErrors['phoneNumber']}
-                    />
-                    <Button type='button' onClick={handleUpdate}>Submit</Button>
-                    <Button type='button' onClick={handleCancel}>Cancel</Button>
-                </Form>
-            </Segment>
+                        <Button type='button' onClick={handleUpdate}>Submit</Button>
+                        <Button type='button' onClick={handleCancel}>Cancel</Button>
+                    </Form>
+                </Segment>
+            </div>
         </div>
     );
 };

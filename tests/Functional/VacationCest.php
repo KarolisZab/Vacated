@@ -376,4 +376,24 @@ class VacationCest
             '2024-04-30' => ['requestedBy' => ['email' => 'vacationtest@test.com']]
         ]);
     }
+
+    public function testGetAllVacations(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/all-vacations');
+
+        $I->seeResponseCodeIs(200);
+    }
+
+    public function testGetAllCurrentUserVacations(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/user-vacations');
+
+        $I->seeResponseCodeIs(200);
+    }
 }

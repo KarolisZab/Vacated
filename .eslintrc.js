@@ -35,6 +35,9 @@ module.exports = {
         "react"
     ],
     "rules": {
-        "no-console": "error"
+        "no-console": "error",
+        '@typescript-eslint/no-unused-vars': 'error',
+        indent: ['error', 4, { MemberExpression: 1 }],
+        'newline-per-chained-call': ['error', { ignoreChainWithDepth: 2 }],
     }
 }

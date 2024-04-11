@@ -1,37 +1,43 @@
 .navigation {
   position: relative;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   height: 60px;
   width: 100%;
-  padding: 0.5rem 0rem;
+  padding: 0.5rem 2rem;
   background-color: black;
   color: white;
   box-shadow: 0 2px 2px 2px rgba(9, 9, 9, 0.23);
 }
-  
+
 .brand-name {
   text-decoration: none;
   color: white;
-  font-size: 1.5rem;
-  margin-left: 2rem;
+  margin-bottom: 0;
+  font-size: 2rem;
+  display: inline-block;
+  //
+  vertical-align: middle;
+  line-height: 60px;
 }
 
 .brand-name:hover {
   color: white;
 }
-  
+
 .navigation-menu {
-  /* margin-left: auto; */
-  margin-left: 4rem;
-  /* color: white; */
+  margin-left: 3rem;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 60px;
 }
-  
+
 .navigation-menu ul {
   display: flex;
   padding: 0;
 }
-  
+
 .navigation-menu li {
   list-style-type: none;
   margin: 0 1rem;
@@ -53,25 +59,62 @@
   color: lightgray;
 }
 
+// .logout-container {
+//   margin-left: auto;
+// }
+
+.right-container {
+  display: flex;
+  align-items: center; /* Center vertically */
+
+  .ul {
+    display: flex;
+    padding: 0;
+  }
+
+  li {
+    list-style-type: none;
+    margin: 0 1rem;
+    color: white;
+  }
+
+  li a {
+    text-decoration: none;
+    display: block;
+    color: white;
+  }
+
+  li:hover {
+    color: lightgray;
+  }
+
+  li a:hover {
+    color: lightgray;
+  }
+
+  .logout-button {
+    border: 0;
+    background: none;
+    color: white;
+    cursor: pointer;
+  }
+
+  .logout-button:hover {
+    color: lightgray;
+  }
+}
+
 .hamburger {
   border: 0;
   height: 40px;
   width: 40px;
-  // padding: 0.5rem;
   border-radius: 50%;
   background-color: #52555e;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
-  position: absolute;
-  top: 50%;
-  right: 25px;
-  transform: translateY(-50%);
-  display: none;
-
-  padding: 0;  // Remove any padding
-  margin: 0;   // Remove any margin
+  display: none; 
 }
-  
+
 .hamburger .icon {
   margin: 0;
 }
@@ -79,22 +122,26 @@
 .hamburger:hover {
   background-color: #3e4149;
 }
-  
+
 @media screen and (max-width: 550px) {
   .hamburger {
     display: block;
   }
 
-  .navigation-menu ul {
-    flex-direction: column;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 60px);
-    background-color: black;
-    border-top: 1px solid white;
-    display: none;
+  .navigation-menu {
+    background-color: black; /* Add background color */
+    ul {
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 60px);
+      border-top: 1px solid white;
+      display: none;
+      background-color: black;
+      z-index: 9998;
+    }
   }
 
   .navigation-menu li {
