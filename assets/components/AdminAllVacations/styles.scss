@@ -1,0 +1,34 @@
+$backgroundColor: #1b1c1d;
+
+.tab-container {
+    .ui.menu .item {
+        background-color: #1b1c1d;
+        color: #ffffff;
+        border-color: #1b1c1d; 
+        border: none;
+    }
+  
+    .ui.menu .active.item {
+        background-color: #393a3b;
+        color: #ffffff;
+        border: none;
+    }
+  
+    .ui.menu .item:hover {
+        background-color: #393a3b; 
+    }
+
+    .ui.segment {
+        background-color: #1b1c1d;
+        color: #ffffff;
+        border: none;
+    }
+
+    .ui.tabular.menu {
+        border-bottom: 0px;
+    }
+
+    .ui.loading.segment::before {
+        background-color: #1b1c1d !important;
+    }
+}

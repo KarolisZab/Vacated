@@ -218,7 +218,7 @@ export default function MyCalendar() {
                 </Modal>
 
                 <div className="request-button">
-                    <Button primary disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
+                    <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
                         Request vacation
                     </Button>
                 </div>

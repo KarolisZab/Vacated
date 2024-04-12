@@ -92,4 +92,12 @@ class ReservedDayController extends AbstractController
             return new JsonResponse($e->getMessage(), 400);
         }
     }
+
+    #[Route('/api/admin/all-reserveddays/', name: 'get_all_reserved_days', methods: ['GET'])]
+    public function getAllReservedDays(Request $request)
+    {
+        $allReservedDay = $this->reservedDayManager->getAllReservedDays();
+
+        return new JsonResponse($this->serializer->serialize($allReservedDay, 'json'), JsonResponse::HTTP_OK, [], true);
+    }
 }

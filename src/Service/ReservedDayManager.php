@@ -133,6 +133,14 @@ class ReservedDayManager
         // ID nezinosiu, reiketu pasidaryt find pagal datas
     }
 
+    public function getAllReservedDays(): array
+    {
+        /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+        $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+
+        return $reservedDayRepository->findAll();
+    }
+
     public function getReservedDays(string $dateFrom, string $dateTo): array
     {
         $from = \DateTimeImmutable::createFromFormat('Y-m-d', $dateFrom);

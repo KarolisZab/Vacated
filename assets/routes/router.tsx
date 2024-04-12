@@ -15,6 +15,8 @@ import MyVacations from "../components/MyVacations"
 import AdminRoot from "./admin"
 import { AdminPrivateRoute } from "./PrivateRoutes"
 import AdminHome from "../components/AdminHome"
+import ReservedDaysList from "../components/ReservedDaysList"
+import AllVacations from "../components/AdminAllVacations/index"
 
 const router = createBrowserRouter([
     {
@@ -97,6 +99,22 @@ const router = createBrowserRouter([
                     </AdminPrivateRoute>
                 ),
             },
+            {
+                path: "reserved-days",
+                element: (
+                    <AdminPrivateRoute>
+                        <ReservedDaysList />
+                    </AdminPrivateRoute>
+                )
+            },
+            {
+                path: "vacations",
+                element: (
+                    <AdminPrivateRoute>
+                        <AllVacations />
+                    </AdminPrivateRoute>
+                )
+            }
         ]
     }
 ]);

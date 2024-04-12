@@ -35,7 +35,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     };
     
     if (!vacations || vacations.length === 0) {
-        return <Message>You do not have any confirmed vacations yet.</Message>;
+        return <Message>There is no confirmed vacations yet.</Message>;
     }
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
@@ -67,7 +67,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                             <Table.HeaderCell>Note</Table.HeaderCell>
                             <Table.HeaderCell>Reviewed by</Table.HeaderCell>
                             <Table.HeaderCell>Reviewed at</Table.HeaderCell>
-                            <Table.HeaderCell></Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 

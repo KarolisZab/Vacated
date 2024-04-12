@@ -11,7 +11,6 @@ export default function Home() {
                         <Card.Content>
                             <div className="admin-card-header">
                                 <Card.Header>Statistics</Card.Header>
-                                <Card.Meta>This year</Card.Meta>
                             </div>
                             <div className="admin-card-content">
                                 <Card.Description>

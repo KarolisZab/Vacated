@@ -190,7 +190,7 @@ class VacationManager
     public function getAllVacations(): array
     {
         /** @var \App\Repository\VacationRepository $vacationRepository */
-        $vacationRepository = $this->entityManager->getRepository(User::class);
+        $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
         return $vacationRepository->findAll();
     }

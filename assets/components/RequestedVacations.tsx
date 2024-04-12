@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { VacationType } from '../services/types';
 import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import vacationService from '../services/vacation-service';
 
 interface Props {
@@ -65,7 +65,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                             <Table.HeaderCell>Start date</Table.HeaderCell>
                             <Table.HeaderCell>End date</Table.HeaderCell>
                             <Table.HeaderCell>Note</Table.HeaderCell>
-                            <Table.HeaderCell></Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 

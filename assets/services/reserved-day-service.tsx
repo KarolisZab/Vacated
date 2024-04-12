@@ -16,7 +16,7 @@ class ReservedDayService {
 
     // Admin
     async reserveDays(reserveDayData: Partial<ReservedDayType>): Promise<ReservedDayType> {
-        return await apiService.post<ReservedDayType>(`${URL}/`, reserveDayData);
+        return await apiService.post<ReservedDayType>(`${URL}`, reserveDayData);
     }
 
     async updateReservedDays(reservedDayId: string, reserveDayData: Partial<ReservedDayType>): Promise<ReservedDayType> {

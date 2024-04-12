@@ -45,7 +45,7 @@ const EmployeesList: React.FC = () => {
                                 <Table.HeaderCell>Name</Table.HeaderCell>
                                 <Table.HeaderCell>Email</Table.HeaderCell>
                                 <Table.HeaderCell>Phone No.</Table.HeaderCell>
-                                <Table.HeaderCell></Table.HeaderCell>
+                                <Table.HeaderCell>Actions</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
 

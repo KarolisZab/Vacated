@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/navbar.scss";
 import authService, { User } from "../services/auth-service";
-import { Icon } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 
 export default function Navbar() {
     const [isNavbarExpanded, setIsNavbarExpanded] = useState<boolean>(false);
@@ -101,7 +101,9 @@ export default function Navbar() {
                         {isAdmin && (
                             <ul>
                                 <li>
-                                    <Link to="/admin">Admin Dashboard</Link>
+                                    <Link to="/admin">
+                                        <Button basic color="teal">Admin dashboard</Button>
+                                    </Link>
                                 </li>
                             </ul>
                         )}

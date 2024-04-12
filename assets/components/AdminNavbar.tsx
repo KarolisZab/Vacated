@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/navbar.scss";
 import authService, { User } from "../services/auth-service";
-import { Icon } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 
 export default function Navbar() {
     const [isNavbarExpanded, setIsNavbarExpanded] = useState<boolean>(false);
@@ -60,7 +60,7 @@ export default function Navbar() {
                                     <Link to="/admin/employees">Employees</Link>
                                 </li>
                                 <li>
-                                    <Link to="/admin/reservations">Reserved days</Link>
+                                    <Link to="/admin/reserved-days">Reserved days</Link>
                                 </li>
                             </>
                         )}
@@ -73,7 +73,9 @@ export default function Navbar() {
                         {isAdmin && (
                             <ul>
                                 <li>
-                                    <Link to="/">Exit admin dashboard</Link>
+                                    <Link to="/">
+                                        <Button basic color="teal">Exit admin dashboard</Button>
+                                    </Link>
                                 </li>
                             </ul>
                         )}

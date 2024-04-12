@@ -15,7 +15,7 @@ class VacationService {
     }
 
     async getAllVacations(): Promise<VacationType[]> {
-        return await apiService.get<VacationType[]>('/all-vacations');
+        return await apiService.get<VacationType[]>('/admin/all-vacations');
     }
 
     async getAllCurrentUserVacations(): Promise<VacationType[]> {
