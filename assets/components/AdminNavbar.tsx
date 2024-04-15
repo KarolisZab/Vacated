@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.scss";
 import authService, { User } from "../services/auth-service";
 import { Button, Icon } from "semantic-ui-react";
 
 export default function Navbar() {
+    const navigate = useNavigate();
     const [isNavbarExpanded, setIsNavbarExpanded] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
@@ -33,6 +34,7 @@ export default function Navbar() {
 
     const handleLogout = () => {
         authService.logout();
+        navigate('/login');
     };
 
     return (
@@ -81,7 +83,10 @@ export default function Navbar() {
                         )}
                         <ul>
                             <li>
-                                <Link to="/login" onClick={handleLogout}>Logout</Link>
+                                {/* <Link to="/login" onClick={handleLogout}>Logout</Link> */}
+                                <Button icon basic onClick={handleLogout} inverted>
+                                    <Icon name='sign-out' size="large"/> {/* Use the 'log out' icon */}
+                                </Button>
                             </li>
                         </ul>
                     </>

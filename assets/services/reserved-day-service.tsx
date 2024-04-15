@@ -26,6 +26,10 @@ class ReservedDayService {
     async deleteReservedDay(reservedDayId: string): Promise<void> {
         return await apiService.delete(`${URL}/${reservedDayId}`);
     }
+
+    async getReservedDaysCount(): Promise<number> {
+        return await apiService.get<number>('/admin/all-reserved-count');
+    }
 }
 
 export default new ReservedDayService();

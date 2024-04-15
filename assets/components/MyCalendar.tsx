@@ -53,8 +53,6 @@ export default function MyCalendar() {
                 setConfirmedVacations(vacations);
                 setReservedDays(reserved);
             } catch (error) {
-                // TODO: handle errors
-                // console.error('Error fetching data:', error);
                 navigate('/login')
             } finally {
                 setLoading(false);
@@ -63,7 +61,6 @@ export default function MyCalendar() {
     
         fetchData();
     }, [calendarDays]);
-
 
     // cia gal async await reik
     const handleDatesSet = () => {
@@ -178,14 +175,6 @@ export default function MyCalendar() {
     return (
         <div>
             <div className="calendar-container">
-                <div className="selected-dates">
-                    {selectedDate.startDate && selectedDate.endDate && (
-                        <p>
-                            Selected start date: {selectedDate.startDate} <br />
-                            Selected end date: {selectedDate.endDate}
-                        </p>
-                    )}
-                </div>
                 <Modal open={showModal} onClose={() => handleCloseModal()}>
                     <Modal.Header>Request vacation</Modal.Header>
                     <Modal.Content>

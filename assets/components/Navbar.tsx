@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.scss";
 import authService, { User } from "../services/auth-service";
 import { Button, Icon } from "semantic-ui-react";
 
 export default function Navbar() {
+    const navigate = useNavigate();
     const [isNavbarExpanded, setIsNavbarExpanded] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
@@ -34,34 +35,8 @@ export default function Navbar() {
 
     const handleLogout = () => {
         authService.logout();
+        navigate('/login');
     };
-
-    // const employee = 
-    // <>
-    //     <li>
-    //         <Link to="/">Home</Link>
-    //     </li>
-    //     <li>
-    //         <Link to="/vacations">My Vacations</Link>
-    //     </li>
-    // </>
-
-    // const admin = 
-    // <>
-    //     <li>
-    //         <Link to="/admin">Home</Link>
-    //     </li>
-    //     <li>
-    //         {/* All user vacations */}
-    //         <Link to="/admin/vacations">Vacations</Link>
-    //     </li>
-    //     <li>
-    //         <Link to="/admin/employees">Employees</Link>
-    //     </li>
-    //     <li>
-    //         <Link to="/admin/reservations">Reservations</Link>
-    //     </li>
-    // </>
 
     return (
         <nav className="navigation">
@@ -84,13 +59,6 @@ export default function Navbar() {
                                     <Link to="/vacations">My Vacations</Link>
                                 </li>
                             </>
-                            // <>
-                            //     {isAdmin ? (
-                            //         admin
-                            //     ) : (
-                            //         employee
-                            //     )}
-                            // </>
                         )}
                     </ul>
                 </div>
@@ -109,7 +77,9 @@ export default function Navbar() {
                         )}
                         <ul>
                             <li>
-                                <Link to="/login" onClick={handleLogout}>Logout</Link>
+                                <Button icon basic onClick={handleLogout} inverted>
+                                    <Icon name='sign-out' size="large"/> {/* Use the 'log out' icon */}
+                                </Button>
                             </li>
                         </ul>
                     </>

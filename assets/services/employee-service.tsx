@@ -20,6 +20,10 @@ class EmployeeService {
     async deleteEmployee(employeeId: string): Promise<void> {
         return await apiService.delete(`${URL}/${employeeId}`);
     }
+
+    async getEmployeesCount(): Promise<number> {
+        return await apiService.get<number>(`/admin/employee-count`);
+    }
 }
 
 export default new EmployeeService();

@@ -14,10 +14,6 @@ class VacationService {
         return await apiService.get<CalendarDays>(`${URL}/${vacationId}`);
     }
 
-    async getAllVacations(): Promise<VacationType[]> {
-        return await apiService.get<VacationType[]>('/admin/all-vacations');
-    }
-
     async getAllCurrentUserVacations(): Promise<VacationType[]> {
         return await apiService.get<VacationType[]>('/user-vacations');
     }
@@ -37,6 +33,18 @@ class VacationService {
 
     async confirmVacation(vacationId: string, vacationData: Partial<VacationType>): Promise<VacationType> {
         return await apiService.patch<VacationType>(`/admin/confirm-vacation/${vacationId}`, vacationData);
+    }
+
+    async getAllVacations(): Promise<VacationType[]> {
+        return await apiService.get<VacationType[]>('/admin/all-vacations');
+    }
+
+    async getConfirmedVacationsDaysCountInThisYear(): Promise<number> {
+        return await apiService.get<number>('/admin/all-confirmed-days');
+    }
+
+    async getPendingVacationsDaysCountInThisYear(): Promise<number> {
+        return await apiService.get<number>('/admin/pending-vacations');
     }
 }
 
