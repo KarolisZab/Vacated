@@ -252,4 +252,37 @@ class VacationManager
 
         return $vacationBucket;
     }
+
+    public function getConfirmedVacationDaysInYear(): int
+    {
+        $currentYear = date("Y");
+
+        $startDate = new \DateTimeImmutable("$currentYear-01-01");
+        $endDate = new \DateTimeImmutable("$currentYear-12-31");
+
+        /** @var \App\Repository\VacationRepository $vacationRepository */
+        $vacationRepository = $this->entityManager->getRepository(Vacation::class);
+
+        $confirmedVacations = $vacationRepository->getConfirmedVacationsForPeriod($startDate, $endDate);
+
+        $confirmedVacationDays = 0;
+
+        foreach ($confirmedVacations as $vacation) {
+            $vacationStartDate = $vacation->getDateFrom();
+            $vacationEndDate = $vacation->getDateTo();
+
+            $interval = $vacationStartDate->diff($vacationEndDate);
+            $confirmedVacationDays += $interval->days + 1;
+        }
+
+        return $confirmedVacationDays;
+    }
+
+    public function getPendingVacationRequestCount(): int
+    {
+        /** @var \App\Repository\VacationRepository $vacationRepository */
+        $vacationRepository = $this->entityManager->getRepository(Vacation::class);
+
+        return $vacationRepository->count(['isConfirmed' => false, 'isRejected' => false]);
+    }
 }

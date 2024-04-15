@@ -26,17 +26,20 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
+        $dateFrom = (new \DateTimeImmutable())->modify('+7 days');
+        $dateTo = $dateFrom->modify('+1 day');
+
         $I->sendRequest('post', '/api/admin/reserved-day', [
-            'dateFrom' => '2024-04-19',
-            'dateTo' => '2024-04-20',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Important launch'
         ]);
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseContainsJson([
             'reservedBy' => ['email' => 'apitest@test.com'],
-            'dateFrom' => (new \DateTimeImmutable('2024-04-19 00:00:00'))->format(\DateTimeImmutable::ATOM),
-            'dateTo' => (new \DateTimeImmutable('2024-04-20 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'note' => 'Important launch'
         ]);
     }
@@ -60,10 +63,12 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->amBearerAuthenticated($token);
+        $dateFrom = (new \DateTimeImmutable())->modify('+6 days');
+        $dateTo = $dateFrom->modify('+7 days');
+
         $I->sendRequest('post', '/api/request-vacation', [
-            'dateFrom' => '2024-04-18',
-            'dateTo' => '2024-04-25',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Testuojamas vacation request kai yra rezervuota diena'
         ]);
 
@@ -82,24 +87,27 @@ class ReservedDayCest
         /** @var Vacation $vacation */
         $reservedDay = $repository->findOneBy(['reservedBy' => $user->getId()]);
 
+        $dateFrom = (new \DateTimeImmutable())->modify('+8 days');
+        $dateTo = $dateFrom->modify('+1 days');
+
         $I->sendRequest('patch', '/api/admin/reserved-day/' . $reservedDay->getId(), [
-            'dateFrom' => '2024-04-20',
-            'dateTo' => '2024-04-21',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Keiciasi launch date',
         ]);
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
             'reservedBy' => ['email' => 'apitest@test.com'],
-            'dateFrom' => (new \DateTimeImmutable('2024-04-20 00:00:00'))->format(\DateTimeImmutable::ATOM),
-            'dateTo' => (new \DateTimeImmutable('2024-04-21 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'note' => 'Keiciasi launch date'
         ]);
 
         $I->sendRequest('patch', '/api/admin/reserved-day/22222', [
-            'dateFrom' => '2024-04-20',
-            'dateTo' => '2024-04-21',
-            'note' => 'Keiciasi launch date',
+            'dateFrom' => null,
+            'dateTo' => null,
+            'note' => '',
         ]);
         $I->seeResponseCodeIs(404);
 

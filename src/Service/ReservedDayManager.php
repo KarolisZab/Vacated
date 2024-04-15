@@ -151,4 +151,29 @@ class ReservedDayManager
 
         return $reservedDayRepository->findReservedDaysInPeriod($from, $to);
     }
+
+    public function getReservedDaysInYear(): int
+    {
+        $currentYear = date("Y");
+
+        $startDate = new \DateTimeImmutable("$currentYear-01-01");
+        $endDate = new \DateTimeImmutable("$currentYear-12-31");
+
+        /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+        $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+
+        $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($startDate, $endDate);
+
+        $reservedDaysCount = 0;
+
+        foreach ($reservedDays as $reservedDay) {
+            $reservedDayStartDate = $reservedDay->getDateFrom();
+            $reservedDayEndDate = $reservedDay->getDateTo();
+
+            $interval = $reservedDayStartDate->diff($reservedDayEndDate);
+            $reservedDaysCount += $interval->days + 1;
+        }
+
+        return $reservedDaysCount;
+    }
 }

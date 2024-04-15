@@ -13,6 +13,16 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function countAllUsers(): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u)')
+            ->where('CONTAINS(TO_JSONB(u.roles), :role) = TRUE')
+            ->setParameter('role', '["ROLE_USER"]')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

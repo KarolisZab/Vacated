@@ -13,11 +13,14 @@ class ReservedDayFixtures extends Fixture implements DependentFixtureInterface
     {
         $user = $this->getReference('admin_user2');
 
+        $dateFrom = (new \DateTimeImmutable())->modify('+7 days');
+        $dateTo = $dateFrom->modify('+1 day');
+
         $reservedDay = new ReservedDay();
         $reservedDay
             ->setReservedBy($user)
-            ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-04-19'))
-            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-04-20'))
+            ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', $dateFrom->format('Y-m-d')))
+            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', $dateTo->format('Y-m-d')))
             ->setNote('Important launch');
         $manager->persist($reservedDay);
 

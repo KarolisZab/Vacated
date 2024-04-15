@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\DTO\UserDTO;
 use App\Service\UserManager;
+use App\Trait\LoggerTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/admin')]
 class UserController extends AbstractController
 {
+    use LoggerTrait;
+
     public function __construct(
         private SerializerInterface $serializer,
         private UserManager $userManager
@@ -69,6 +72,19 @@ class UserController extends AbstractController
             return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
         } catch (\Exception $exception) {
             return new JsonResponse($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('/employee-count', name: 'get_users_count_with_role_user_only', methods: ['GET'])]
+    public function getUsersCountWithRoleUserOnly(Request $request)
+    {
+        try {
+            $count = $this->userManager->getEmployeeCount();
+
+            return new JsonResponse($count, JsonResponse::HTTP_OK);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            return new JsonResponse($e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
         }
     }
 }

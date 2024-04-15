@@ -76,7 +76,8 @@ class UserManager
             );
             $admin->setEmail($email)
                 ->setPassword($hashedPassword)
-                ->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
+                ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
+                ->setIsAdmin(true);
 
             $errors = $this->validator->validate($admin, null, ['create']);
             ValidationFailureException::throwException($errors);
@@ -194,5 +195,16 @@ class UserManager
         return $user;
 
         // TODO: Adminas updatint visus userius ir save, bet ne kitus adminus.
+    }
+
+    public function getEmployeeCount(): int
+    {
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+
+        // $users = $userRepository->findBy(['roles' => '["ROLE_USER"]']);
+        // return count($users);
+
+        return $userRepository->countAllUsers('ROLE_USER');
     }
 }

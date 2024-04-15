@@ -129,11 +129,11 @@ class VacationController extends AbstractController
         );
     }
 
-    #[Route('/api/admin/all-vacations/', name: 'get_all_vacations', methods: ['GET'])]
-    public function getAllVacations(Request $request)
-    {
-        $allVacations = $this->vacationManager->getAllVacations();
+    // #[Route('/api/admin/all-vacations/', name: 'get_all_vacations', methods: ['GET'])]
+    // public function getAllVacations(Request $request)
+    // {
+    //     $allVacations = $this->vacationManager->getAllVacations();
 
-        return new JsonResponse($this->serializer->serialize($allVacations, 'json'), JsonResponse::HTTP_OK, [], true);
-    }
+    //   return new JsonResponse($this->serializer->serialize($allVacations, 'json'), JsonResponse::HTTP_OK, [], true);
+    // }
 }
