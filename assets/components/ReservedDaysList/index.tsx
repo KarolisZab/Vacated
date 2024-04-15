@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import reservedDayService from '../../services/reserved-day-service';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Dimmer, Form, Loader, Message, Modal, Table } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Loader, Message, Modal, Pagination, Table } from 'semantic-ui-react';
 import './styles.scss';
 import { ReservedDayType } from '../../services/types';
 
@@ -26,7 +26,8 @@ const ReservedDaysList: React.FC = () => {
         dateTo: '',
         note: ''
     });
-
+    const [page, setPage] = useState<number>(1);
+    const [totalItems, setTotalItems] = useState<number>(0);
 
     const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
         const date = new Date(dateTimeString);
@@ -53,8 +54,11 @@ const ReservedDaysList: React.FC = () => {
             const startDate = firstDayOfYear.toISOString().split('T')[0];
             const endDate = lastDayOfYear.toISOString().split('T')[0];
 
-            const reservedDays = await reservedDayService.getReservedDays(startDate, endDate);
-            setReservedDays(reservedDays);
+            const results = await reservedDayService.getReservedDaysList(startDate, endDate, page);
+            console.log('Results: ', results);
+            setReservedDays(results.items);
+            console.log('Results items: ', results.items);
+            setTotalItems(results.totalItems);
         } catch (error) {
             setError('Error' + (error as Error).message);
             navigate("/");
@@ -65,7 +69,7 @@ const ReservedDaysList: React.FC = () => {
 
     useEffect(() => {
         fetchReservedDays();
-    }, []);
+    }, [page]);
 
     const closeModal = () => {
         setModalOpen(false);
@@ -111,6 +115,10 @@ const ReservedDaysList: React.FC = () => {
             setError('Error' + (error as Error).message);
             navigate("/");
         }
+    };
+
+    const handlePaginationChange = (event: React.MouseEvent, data: any) => {
+        setPage(data.activePage);
     };
 
     return (
@@ -161,6 +169,12 @@ const ReservedDaysList: React.FC = () => {
                             ))}
                         </Table.Body>
                     </Table>
+                    <Pagination
+                        totalPages={Math.ceil(totalItems / 10)}
+                        activePage={page}
+                        onPageChange={handlePaginationChange}
+                        size="mini"
+                    />
                 </div>
                 <Modal open={modalOpen} onClose={closeModal}>
                     <Modal.Header>Update Vacation</Modal.Header>

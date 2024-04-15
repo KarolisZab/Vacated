@@ -133,12 +133,12 @@ class ReservedDayManager
         // ID nezinosiu, reiketu pasidaryt find pagal datas
     }
 
-    public function getAllReservedDays(): array
+    public function getAllReservedDays(int $limit = 10, int $offset = 0, ?string $filter = null): array
     {
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
 
-        return $reservedDayRepository->findAll();
+        return $reservedDayRepository->findPaginatedReservedDays($limit, $offset, $filter);
     }
 
     public function getReservedDays(string $dateFrom, string $dateTo): array

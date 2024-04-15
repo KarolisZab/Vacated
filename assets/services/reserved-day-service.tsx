@@ -1,5 +1,5 @@
 import apiService from "./api-service";
-import { ReservedDayType } from '../services/types';
+import { ReservedDayType, GetReservedDaysResultType } from '../services/types';
 
 const URL = '/admin/reserved-day';
 
@@ -13,6 +13,16 @@ class ReservedDayService {
     // async ReservedDay(vacationId: string): Promise<CalendarDays> {
     //     return await apiService.get<CalendarDays>(`${URL}/${vacationId}`);
     // }
+
+    async getReservedDaysList(startDate: string,
+            endDate: string,
+            page: number,
+            limit?: number,
+            filter?: string
+        ): Promise<GetReservedDaysResultType> {
+        const params = { startDate, endDate, page, limit, filter }
+        return await apiService.get<GetReservedDaysResultType>('/admin/all-reserveddays', params);
+    }
 
     // Admin
     async reserveDays(reserveDayData: Partial<ReservedDayType>): Promise<ReservedDayType> {

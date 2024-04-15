@@ -18,14 +18,13 @@ export default function Home() {
                         vacationService.getConfirmedVacationsDaysCountInThisYear(),
                         vacationService.getPendingVacationsDaysCountInThisYear(),
                         reservedDayService.getReservedDaysCount(),
-                        employeeService.getAllEmployees()
+                        employeeService.getEmployeesCount()
                 ]);
 
                 setConfirmedDays(confirmedDays);
                 setPendingDays(pendingDays);
                 setReservedDays(reservedDays);
-                const count = employeeCount.length;
-                setEmployeeCount(count);
+                setEmployeeCount(employeeCount);
             } catch (error) {
                 console.error("Error");
             }

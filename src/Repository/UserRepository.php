@@ -13,14 +13,48 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function countAllUsers(): int
+    public function countAllUsers(?string $filter = null): int
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(u)');
+
+        if (null !== $filter) {
+            $qb
+                ->where('u.firstName LIKE :filter OR 
+                    u.lastName LIKE :filter OR 
+                    u.email LIKE :filter OR 
+                    u.phoneNumber LIKE :filter')
+                ->setParameter('filter', '%' . $filter . '%');
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getUsers(int $limit = 10, int $offset = 0, ?string $filter = null): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        if (null !== $filter) {
+            $qb
+                ->where('u.firstName LIKE :filter OR 
+                    u.lastName LIKE :filter OR 
+                    u.email LIKE :filter OR 
+                    u.phoneNumber LIKE :filter')
+                ->setParameter('filter', '%' . $filter . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getEmployeesCount(?string $filter = null): int
     {
         return $this->createQueryBuilder('u')
             ->select('COUNT(u)')
-            ->where('CONTAINS(TO_JSONB(u.roles), :role) = TRUE')
-            ->setParameter('role', '["ROLE_USER"]')
+            ->where('u.isAdmin = FALSE')
             ->getQuery()
-            ->getResult();
+            ->getSingleScalarResult();
     }
 
 //    /**

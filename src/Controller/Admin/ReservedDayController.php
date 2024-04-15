@@ -96,9 +96,17 @@ class ReservedDayController extends AbstractController
     #[Route('/api/admin/all-reserveddays/', name: 'get_all_reserved_days', methods: ['GET'])]
     public function getAllReservedDays(Request $request)
     {
-        $allReservedDay = $this->reservedDayManager->getAllReservedDays();
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 10);
+        $filter = $request->query->get('filter');
 
-        return new JsonResponse($this->serializer->serialize($allReservedDay, 'json'), JsonResponse::HTTP_OK, [], true);
+        $reservedDays = $this->reservedDayManager->getAllReservedDays($limit, ($page - 1) * $limit, $filter);
+        $reservedDaysCount = $this->reservedDayManager->getReservedDaysInYear($filter);
+
+        $results = ['totalItems' => $reservedDaysCount, 'items' => $reservedDays];
+
+
+        return new JsonResponse($this->serializer->serialize($results, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
     #[Route('/api/admin/all-reserved-count', name: 'get_all_reserved_days_count', methods: ['GET'])]

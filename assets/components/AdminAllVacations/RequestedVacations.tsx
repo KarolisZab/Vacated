@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { VacationType } from '../../services/types';
-import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
+import { Button, Form, Message, Modal, Pagination, Table } from 'semantic-ui-react';
 import { useState } from 'react';
 import vacationService from '../../services/vacation-service';
 

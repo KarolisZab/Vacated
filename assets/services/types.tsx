@@ -12,6 +12,11 @@ export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "rol
     confirmPassword: string;
 }
 
+export type EmployeesGetResultType = {
+    totalItems: number;
+    items: EmployeeType[];
+}
+
 export type VacationType = {
     id: string;
     note: string;
@@ -36,4 +41,9 @@ export type ReservedDayType = {
     dateFrom: string;
     dateTo: string;
     note: string;
+}
+
+export type GetReservedDaysResultType = {
+    totalItems: number;
+    items: ReservedDayType[];
 }

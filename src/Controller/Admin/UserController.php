@@ -23,12 +23,19 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('/users', name: 'get_all_users', methods: ['GET'])]
-    public function getAllUsers(Request $request)
+    #[Route('/users', name: 'get_users', methods: ['GET'])]
+    public function getUsers(Request $request)
     {
-        $allUsers = $this->userManager->getAllUsers();
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 10);
+        $filter = $request->query->get('filter');
 
-        return new JsonResponse($this->serializer->serialize($allUsers, 'json'), JsonResponse::HTTP_OK, [], true);
+        $users = $this->userManager->getUsers($limit, ($page - 1) * $limit, $filter);
+        $usersCount = $this->userManager->getUsersCount($filter);
+
+        $results = ['totalItems' => $usersCount, 'items' => $users];
+
+        return new JsonResponse($this->serializer->serialize($results, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
     #[Route('/users/{id}', name: 'get_user', methods: ['GET'])]

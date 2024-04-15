@@ -145,6 +145,17 @@ class UserManager
         return $userRepository->findAll();
     }
 
+    /**
+     * @return \App\Entity\User[]
+     */
+    public function getUsers(int $limit = 10, int $offset = 0, ?string $filter = null): array
+    {
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+
+        return $userRepository->getUsers($limit, $offset, $filter);
+    }
+
     public function getUser(string $id): ?User
     {
         /** @var \App\Repository\UserRepository $userRepository */
@@ -202,9 +213,14 @@ class UserManager
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        // $users = $userRepository->findBy(['roles' => '["ROLE_USER"]']);
-        // return count($users);
+        return $userRepository->getEmployeesCount();
+    }
 
-        return $userRepository->countAllUsers('ROLE_USER');
+    public function getUsersCount(?string $filter = null): int
+    {
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+
+        return $userRepository->countAllUsers($filter);
     }
 }

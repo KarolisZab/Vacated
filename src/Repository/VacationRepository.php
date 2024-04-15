@@ -62,6 +62,23 @@ class VacationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getVacations(int $limit, int $offset): array
+    {
+        return $this->createQueryBuilder('v')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getVacationsCount(?string $filter = null): int
+    {
+        return $this->createQueryBuilder('v')
+            ->select('COUNT(v)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return Vacation[] Returns an array of Vacation objects
 //     */

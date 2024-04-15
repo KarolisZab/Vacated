@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
 import { Link, useNavigate } from 'react-router-dom';
-import { Dimmer, Loader, Message, Table } from 'semantic-ui-react';
+import { Dimmer, Input, Loader, Message, Pagination, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
 
@@ -10,13 +10,18 @@ const EmployeesList: React.FC = () => {
     const [employees, setEmployees] = useState<EmployeeType[]>([]);
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(1);
+    const [totalItems, setTotalItems] = useState<number>(0);
+    const [filter, setFilter] = useState<string>('');
+    const [limit, setLimit] = useState<number>(10);
 
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
                 setLoading(true);
-                const employees = await employeeService.getAllEmployees();
-                setEmployees(employees);
+                const result = await employeeService.getEmployees(page, limit, filter);
+                setEmployees(result.items);
+                setTotalItems(result.totalItems);
             } catch (error) {
                 setError('Error' + (error as Error).message);
                 navigate("/");
@@ -26,11 +31,26 @@ const EmployeesList: React.FC = () => {
         };
 
         fetchEmployees();
-    }, []);
+    }, [page, filter]);
+
+    const handlePaginationChange = (event: React.MouseEvent, data: any) => {
+        setPage(data.activePage);
+    };
+
+    const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFilter(event.target.value);
+    };
 
     return (
         <div className="employees-list">
             <h1>Employees</h1>
+            <Input inverted
+                icon='search'
+                placeholder='Search...'
+                value={filter}
+                onChange={handleFilterChange}
+                style={{ marginBottom: '1rem' }}
+            />
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
                 {loading && (
@@ -62,6 +82,14 @@ const EmployeesList: React.FC = () => {
                             ))}
                         </Table.Body>
                     </Table>
+                    {totalItems > 0 && (
+                        <Pagination
+                            totalPages={Math.ceil(totalItems / 10)}
+                            activePage={page}
+                            onPageChange={handlePaginationChange}
+                            size="mini"
+                        />
+                    )}
                 </div>
             </div>
         </div>

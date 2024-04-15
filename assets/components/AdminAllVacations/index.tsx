@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { VacationType } from '../../services/types';
 import vacationService from '../../services/vacation-service';
 import RequestedVacations from './RequestedVacations';
-import ConfirmedVacations from '../../components/ConfirmedVacations';
+import ConfirmedVacations from './ConfirmedVacations';
 import RejectedVacations from './RejectedVacations';
 import { useNavigate } from 'react-router-dom';
 

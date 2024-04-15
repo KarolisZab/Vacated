@@ -1,12 +1,13 @@
 import apiService from "./api-service";
-import { EmployeeType } from '../services/types';
+import { EmployeeType, EmployeesGetResultType } from '../services/types';
 
 const URL = '/admin/users';
 
 class EmployeeService {
     
-    async getAllEmployees(): Promise<EmployeeType[]> {
-        return await apiService.get<EmployeeType[]>(URL);
+    async getEmployees(page: number, limit?: number, filter?: string): Promise<EmployeesGetResultType> {
+        const params = { page, limit, filter }
+        return await apiService.get<EmployeesGetResultType>(URL, params);
     }
 
     async getEmployeeById(employeeId: string): Promise<EmployeeType> {
