@@ -20,15 +20,20 @@ use Google\Service\Oauth2;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use App\Trait\LoggerTrait;
 
 class AuthController extends AbstractController
 {
+    use LoggerTrait;
+
     public function __construct(
         private SerializerInterface $serializer,
         private UserManager $userManager,
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
-        private Security $security
+        private Security $security,
+        private JwtIssuer $jwtIssuer,
+        private Client $googleClient
     ) {
     }
 
@@ -58,23 +63,69 @@ class AuthController extends AbstractController
     {
         $credentials = json_decode($request->getContent(), true);
 
+        if ($credentials['google_code']) {
+            return $this->loginWithGoogle($credentials['google_code']);
+        }
+
+        return $this->loginWithCredentials($credentials['email'], $credentials['password']);
+    }
+
+    private function loginWithCredentials(string $username, string $password): Response
+    {
         /** @var User $user */
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $username]);
 
         if (!$user instanceof UserInterface) {
             return new JsonResponse('Invalid email or password credentials', 400);
         }
 
-        if (!$this->passwordHasher->isPasswordValid($user, $credentials['password'])) {
+        if (!$this->passwordHasher->isPasswordValid($user, $password)) {
             return new JsonResponse('Invalid email or password credentials', 400);
         }
 
-        $token = $jwtIssuer->issueToken([
+        $token = $this->jwtIssuer->issueToken([
             'email' => $user->getEmail(),
             'roles' => $user->getRoles()
         ]);
 
         return new JsonResponse(['email' => $user->getEmail(), 'roles' => $user->getRoles(), 'access_token' => $token]);
+    }
+
+    private function loginWithGoogle(string $code)
+    {
+        // handles google oauth callback
+        // $code = $request->query->get('code');
+
+        if (null === $code) {
+            return new RedirectResponse('/error-page');
+        }
+
+        try {
+            // exchanges authorization code for an access token
+            $accessToken = $this->googleClient->fetchAccessTokenWithAuthCode($code);
+
+            // uses the access token to fetch user information
+            $this->googleClient->setAccessToken($accessToken);
+            $googleService = new Oauth2($this->googleClient);
+            $userInfo = $googleService->userinfo->get();
+        } catch (\Exception $e) {
+            $this->logger->error('Error: ' . $e->getMessage());
+            return new JsonResponse($e->getMessage(), $e->getCode());
+        }
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $userInfo['email']]);
+
+        if (!$user) {
+            // Redirect page
+            return new RedirectResponse('/error-page');
+        }
+
+        $token = $this->jwtIssuer->issueToken([
+            'email' => $userInfo['email'],
+            'roles' => $user->getRoles()
+        ]);
+
+        return new JsonResponse(['access_token' => $token, 'email' => $user->getEmail(), 'roles' => $user->getRoles()]);
     }
 
     #[Route('/oauth', name: 'google_login', methods:['GET'])]
@@ -87,34 +138,5 @@ class AuthController extends AbstractController
 
         // redirects user to the google oauth consent screen
         return new RedirectResponse($authUrl);
-    }
-
-    #[Route('/google-callback', name: 'google_callback', methods:['GET'])]
-    public function googleCallback(Request $request, Client $googleClient, JwtIssuer $jwtIssuer): Response
-    {
-        // handles google oauth callback
-        $code = $request->query->get('code');
-
-        // exchanges authorization code for an access token
-        $accessToken = $googleClient->fetchAccessTokenWithAuthCode($code);
-
-        // uses the access token to fetch user information
-        $googleClient->setAccessToken($accessToken);
-        $googleService = new Oauth2($googleClient);
-        $userInfo = $googleService->userinfo->get();
-
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $userInfo['email']]);
-
-        if (!$user) {
-            return new JsonResponse('User does not exist', JsonResponse::HTTP_CONFLICT);
-        }
-
-        // Issue a JWT token for the user
-        $token = $jwtIssuer->issueToken([
-            'email' => $userInfo['email'],
-            'roles' => $user->getRoles()
-        ]);
-
-        return new JsonResponse(['email' => $user->getEmail(), 'roles' => $user->getRoles(), 'access_token' => $token]);
     }
 }

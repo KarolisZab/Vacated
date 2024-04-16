@@ -41,7 +41,7 @@ const router = createBrowserRouter([
                 element: <Register />
             },
             {
-                path: "500",
+                path: "error-page",
                 element: (
                     <PrivateRoute>
                         <ServerErrorPage />

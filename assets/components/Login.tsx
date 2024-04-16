@@ -1,16 +1,28 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Icon, Message, Segment } from 'semantic-ui-react';
 import authService from '../services/auth-service';
-// import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const [isLoading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
+        const loginWithGoogle = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+
+            //loader
+
+            if (code) {
+                await authService.loginWithCode(code);
+                navigate('/');
+            }
+        }
+        
         const checkAuthentication = async () => {
             if (authService.isAuthenticated()) {
                 navigate('/');
@@ -18,6 +30,7 @@ const Login: React.FC = () => {
         };
         
         checkAuthentication();
+        loginWithGoogle();
     }, [navigate]);
 
     const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,11 +44,16 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            setLoading(true);
             await authService.login(email, password);
             navigate('/');
         } catch (error) {
             setError('Invalid email or password');
+        } finally {
+            setLoading(false);
         }
+
+        // TODO: per visa page loaderis OR tik ant formos loaderis OR buttona padisablint ir buttono loaderi padaryt
     };
 
     return (
@@ -67,11 +85,15 @@ const Login: React.FC = () => {
                             required
                         />
 
-                        <Button color='teal' fluid size='large' type='submit'>
+                        <Button color='teal' fluid size='large' type='submit' loading={isLoading}>
                             Login
                         </Button>
                     </Segment>
                 </Form>
+                <Button color='google plus' fluid onClick={() => (window.location.href='/oauth')}>
+                    <Icon name='google' />
+                    Log-in with Google
+                </Button>
             </Grid.Column>
         </Grid>
     );
