@@ -1,9 +1,9 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
-import authService from '../services/auth-service';
 import { EmployeeRegistrationData } from '../services/types';
 import errorProcessor from '../services/errorProcessor';
+import employeeService from '../services/employee-service';
 
 
 const Register: React.FC = () => {
@@ -11,8 +11,6 @@ const Register: React.FC = () => {
     const navigate = useNavigate();
     const [registrationData, setRegistrationData] = useState<EmployeeRegistrationData>({
         email: '',
-        password: '',
-        confirmPassword: '',
         firstName: '',
         lastName: '',
         phoneNumber: ''
@@ -29,14 +27,9 @@ const Register: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if (registrationData.password !== registrationData.confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
         try {
-            await authService.register(registrationData);
-            navigate('/');
+            await employeeService.createUser(registrationData);
+            navigate(-1);
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
         }
@@ -46,7 +39,7 @@ const Register: React.FC = () => {
         <Grid textAlign='center' style={{ height: '90vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
                 <Header as='h2' color='teal' textAlign='center'>
-                    Register an account
+                    Create a new user account
                 </Header>
                 <Form size='large' onSubmit={handleSubmit} error={!!error}>
                 {error && <Message error style={{ backgroundColor: 'rgb(31, 31, 32)' }} content={error} />}
@@ -59,28 +52,6 @@ const Register: React.FC = () => {
                             value={registrationData.email}
                             onChange={(e) => handleChange(e, 'email')}
                             error={formErrors['email']}
-                            required
-                        />
-                        <Form.Input
-                            fluid
-                            icon='lock'
-                            iconPosition='left'
-                            placeholder='Password'
-                            type='password'
-                            value={registrationData.password}
-                            onChange={(e) => handleChange(e, 'password')}
-                            error={formErrors['password']}
-                            required
-                        />
-                        <Form.Input
-                            fluid
-                            icon='lock'
-                            iconPosition='left'
-                            placeholder='Confirm Password'
-                            type='password'
-                            value={registrationData.confirmPassword}
-                            onChange={(e) => handleChange(e, 'confirmPassword')}
-                            error={formErrors['confirmPassword']}
                             required
                         />
                         <Form.Input

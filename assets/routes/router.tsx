@@ -114,7 +114,11 @@ const router = createBrowserRouter([
                         <AllVacations />
                     </AdminPrivateRoute>
                 )
-            }
+            },
+            {
+                path: "create-user",
+                element: <Register />
+            },
         ]
     }
 ]);

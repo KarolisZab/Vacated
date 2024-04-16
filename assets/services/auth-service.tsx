@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_URL } from "../config";
 import { EmployeeRegistrationData } from "./types";
+import { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 
 export interface User {
     id: string;
@@ -38,10 +39,6 @@ class AuthService {
         }
     }
 
-    register(data: EmployeeRegistrationData): Promise<void> {
-        return axios.post(API_URL + "/register", data);
-    }
-
     getCurrentUser(): User | null {
         const userStr = localStorage.getItem("user");
         if (userStr) {
@@ -71,6 +68,39 @@ class AuthService {
 
     private notifySubscribers(): void {
         this.authenticationChangeSubscribers.forEach(subscriber => subscriber());
+    }
+
+    async loginWithGoogle(response: GoogleLoginResponse | GoogleLoginResponseOffline): Promise<void> {
+        if ('tokenId' in response) {
+            // Handle successful Google login
+            // Send the tokenId to your backend to authenticate the user
+            const tokenId = response.tokenId;
+            try {
+                // Send the tokenId to your backend to authenticate the user
+                const response = await fetch('/api/google-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ tokenId }),
+                });
+
+                if (response.ok) {
+                    // Handle successful authentication
+                    console.log('Logged in with Google successfully');
+                } else {
+                    // Handle authentication failure
+                    console.error('Failed to log in with Google:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error logging in with Google:', error.message);
+                throw new Error('Failed to log in with Google');
+            }
+        } else {
+            // Handle Google login failure
+            console.error('Google login failed:', response);
+            throw new Error('Failed to log in with Google');
+        }
     }
 }
 

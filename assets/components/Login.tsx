@@ -2,6 +2,7 @@ import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 import authService from '../services/auth-service';
+import GoogleLogin from 'react-google-login';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -37,6 +38,22 @@ const Login: React.FC = () => {
         }
     };
 
+    const responseGoogle = async (response: any) => {
+        try {
+            // Send the Google login response to your backend for authentication
+            const googleToken = response.tokenId; // Access the Google token ID
+            await authService.loginWithGoogle(googleToken); // Send the token to your backend
+            navigate('/'); // Redirect the user to the home page after successful login
+        } catch (error) {
+            setError('Failed to log in with Google');
+        }
+    };
+
+    const handleGoogleFailure = (error: any) => {
+        setError('Failed to log in with Google');
+        console.error('Google login failed:', error);
+    };
+
     return (
         <Grid textAlign='center' style={{ height: '90vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
@@ -69,6 +86,14 @@ const Login: React.FC = () => {
                         <Button color='teal' fluid size='large' type='submit'>
                             Login
                         </Button>
+
+                        <GoogleLogin
+                            clientId="769722632491-67se6s8oujt54d90tnakekk27jbj1hii.apps.googleusercontent.com"
+                            buttonText="Login with Google"
+                            onSuccess={responseGoogle}
+                            onFailure={handleGoogleFailure}
+                            cookiePolicy={'single_host_origin'}
+                        />
                     </Segment>
                 </Form>
             </Grid.Column>

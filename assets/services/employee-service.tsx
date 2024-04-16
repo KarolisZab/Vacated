@@ -1,5 +1,5 @@
 import apiService from "./api-service";
-import { EmployeeType, EmployeesGetResultType } from '../services/types';
+import { EmployeeType, EmployeesGetResultType, EmployeeRegistrationData } from '../services/types';
 
 const URL = '/admin/users';
 
@@ -24,6 +24,10 @@ class EmployeeService {
 
     async getEmployeesCount(): Promise<number> {
         return await apiService.get<number>(`/admin/employee-count`);
+    }
+
+    async createUser(data: EmployeeRegistrationData): Promise<void> {
+        return await apiService.post("/admin/create-user", data);
     }
 }
 

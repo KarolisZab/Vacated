@@ -9,7 +9,7 @@ class UserDTO
         public readonly ?string $firstName,
         public readonly ?string $lastName,
         public readonly ?string $phoneNumber,
-        public readonly ?string $password = null,
+        public ?string $password = null,
     ) {
     }
 }

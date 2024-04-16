@@ -126,7 +126,6 @@ class CreateAdminCest
 
         $userDto = new UserDTO(
             'registrationtest@test.com',
-            'registrationtest',
             'Karolis',
             'Zabinskis',
             '123456789'
