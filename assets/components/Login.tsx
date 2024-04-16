@@ -2,7 +2,8 @@ import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 import authService from '../services/auth-service';
-import GoogleLogin from 'react-google-login';
+import { GoogleLogin } from '@react-oauth/google';
+// import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -38,20 +39,21 @@ const Login: React.FC = () => {
         }
     };
 
-    const responseGoogle = async (response: any) => {
+    const responseGoogle = async (credentialResponse: any) => {
         try {
             // Send the Google login response to your backend for authentication
-            const googleToken = response.tokenId; // Access the Google token ID
-            await authService.loginWithGoogle(googleToken); // Send the token to your backend
+            // const googleToken = response.tokenId; // Access the Google token ID
+            await authService.loginWithGoogle(credentialResponse); // Send the token to your backend
             navigate('/'); // Redirect the user to the home page after successful login
         } catch (error) {
             setError('Failed to log in with Google');
+            console.error('Google login failed:', error);
         }
     };
 
-    const handleGoogleFailure = (error: any) => {
-        setError('Failed to log in with Google');
-        console.error('Google login failed:', error);
+    const responseGoogleFailure = () => {
+        console.log('Failed to log in with Google');
+        // You can handle the failure case here
     };
 
     return (
@@ -88,11 +90,8 @@ const Login: React.FC = () => {
                         </Button>
 
                         <GoogleLogin
-                            clientId="769722632491-67se6s8oujt54d90tnakekk27jbj1hii.apps.googleusercontent.com"
-                            buttonText="Login with Google"
                             onSuccess={responseGoogle}
-                            onFailure={handleGoogleFailure}
-                            cookiePolicy={'single_host_origin'}
+                            onError={responseGoogleFailure}
                         />
                     </Segment>
                 </Form>

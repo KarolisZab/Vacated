@@ -179,4 +179,12 @@ class AuthenticationCest
         ]);
         $I->seeResponseCodeIs(409);
     }
+
+    public function testGoogleAuthLogin(FunctionalTester $I)
+    {
+        $user = $this->userManager->getUserByEmail('jwttest@test.com');
+
+        $I->sendRequest('GET', '/api/google-login');
+        $I->seeResponseCodeIs(200);
+    }
 }

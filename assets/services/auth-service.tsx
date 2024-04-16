@@ -86,10 +86,8 @@ class AuthService {
                 });
 
                 if (response.ok) {
-                    // Handle successful authentication
                     console.log('Logged in with Google successfully');
                 } else {
-                    // Handle authentication failure
                     console.error('Failed to log in with Google:', response.statusText);
                 }
             } catch (error) {
@@ -97,7 +95,6 @@ class AuthService {
                 throw new Error('Failed to log in with Google');
             }
         } else {
-            // Handle Google login failure
             console.error('Google login failed:', response);
             throw new Error('Failed to log in with Google');
         }
