@@ -70,15 +70,17 @@ class AuthService {
         this.authenticationChangeSubscribers.forEach(subscriber => subscriber());
     }
 
-    async loginWithGoogle(response: GoogleLoginResponse | GoogleLoginResponseOffline): Promise<void> {
-        if ('tokenId' in response) {
+    async loginWithGoogle(response: any): Promise<void> {
+        console.log('login w google response: ', response);
+        if ('credential' in response) {
             // Handle successful Google login
             // Send the tokenId to your backend to authenticate the user
+            // console.log('login w google response: ', response);
             const tokenId = response.tokenId;
             try {
                 // Send the tokenId to your backend to authenticate the user
                 const response = await fetch('/api/google-login', {
-                    method: 'POST',
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                     },

@@ -77,11 +77,10 @@ class AuthController extends AbstractController
         return new JsonResponse(['email' => $user->getEmail(), 'roles' => $user->getRoles(), 'access_token' => $token]);
     }
 
-    #[Route('/api/google-login', name: 'google_login', methods:['GET'])]
+    #[Route('/oauth', name: 'google_login', methods:['GET'])]
     public function googleLogin(Client $googleClient): Response
     {
         // setAuthConfig is used for setting up google oauth client
-        $googleClient->setAuthConfig('/var/www/html/config/google_credentials.json');
         $googleClient->addScope('email');
 
         $authUrl = $googleClient->createAuthUrl();
@@ -90,7 +89,7 @@ class AuthController extends AbstractController
         return new RedirectResponse($authUrl);
     }
 
-    #[Route('/api/google-callback', name: 'google_callback', methods:['GET'])]
+    #[Route('/google-callback', name: 'google_callback', methods:['GET'])]
     public function googleCallback(Request $request, Client $googleClient, JwtIssuer $jwtIssuer): Response
     {
         // handles google oauth callback
