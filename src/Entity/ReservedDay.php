@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReservedDayRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,6 +31,14 @@ class ReservedDay
     #[ORM\Column(type: "string")]
     #[Assert\Length(max: 255)]
     protected string $note = '';
+
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: "reservedDays")]
+    protected Collection $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     public function getId(): string
     {
@@ -91,6 +101,30 @@ class ReservedDay
     public function setNote(string $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

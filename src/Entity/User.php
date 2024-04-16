@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -52,6 +54,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "string")]
     #[Assert\NotBlank()]
     private ?string $password = null;
+
+    #[ORM\ManyToMany(targetEntity: ReservedDay::class)]
+    protected Collection $reservedDays;
+
+    public function __construct()
+    {
+        $this->reservedDays = new ArrayCollection();
+    }
 
     public function getId(): string
     {
@@ -177,6 +187,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhoneNumber($phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ReservedDay[]
+     */
+    public function getReservedDays(): Collection
+    {
+        return $this->reservedDays;
+    }
+
+    public function setReservedDay(ReservedDay $reservedDay): static
+    {
+        $this->reservedDays = $reservedDay;
 
         return $this;
     }
