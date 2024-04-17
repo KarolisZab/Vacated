@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType } from '../services/types';
-import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
+import { Button, Form, Message, Modal } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
@@ -14,8 +14,8 @@ export default function MyCalendar() {
     const navigate = useNavigate();
     const [selectedDate, setSelectedDate] = useState<{ startDate: string | null; endDate: string | null }>(() => {
         return {
-          startDate: null,
-          endDate: null
+            startDate: null,
+            endDate: null
         };
     });
 
@@ -24,8 +24,8 @@ export default function MyCalendar() {
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1);
         return {
-          startDate: firstDayOfMonth.toISOString().split('T')[0],
-          endDate: lastDayOfMonth.toISOString().split('T')[0]
+            startDate: firstDayOfMonth.toISOString().split('T')[0],
+            endDate: lastDayOfMonth.toISOString().split('T')[0]
         };
     });
 
@@ -33,15 +33,17 @@ export default function MyCalendar() {
     const [confirmedVacations, setConfirmedVacations] = useState<CalendarDays>({});
     const calendarRef = useRef<FullCalendar>();
     const [reservedDays, setReservedDays] = useState<ReservedDayType[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    // const [loading, setLoading] = useState<boolean>(false);
     const [note, setNote] = useState<string>('');
     const [showModal, setShowModal] = useState<boolean>(false);
     const [modalError, setModalError] = useState<string>('');
+    /* eslint-disable-next-line */
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setLoading(true);
+                // setLoading(true);
                 
                 const { startDate, endDate } = calendarDays;
                 
@@ -55,7 +57,7 @@ export default function MyCalendar() {
             } catch (error) {
                 navigate('/login')
             } finally {
-                setLoading(false);
+                // setLoading(false);
             }
         };
     
@@ -108,20 +110,26 @@ export default function MyCalendar() {
                 setNote('');
                 setShowModal(false);
             } else {
-                console.error('Start date and end date must be selected.');
+                setError('Start date and end date must be selected.');
             }
         } catch (error) {
-            // console.log('Modal error: ', error.response);
             setModalError(error.response.data);
         }
     };
 
+    /* eslint-disable-next-line */
     const handleEventClick = (clickInfo: any) => {
         const event = clickInfo.event;
 
-        const startDate = new Date(event.start).toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        const endDate = new Date(event.end).toISOString().replace(/T/, ' ').replace(/\..+/, '');
-        const requestedAt = new Date(event.extendedProps.requestedAt).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        const startDate = new Date(event.start).toISOString()
+            .replace(/T/, ' ')
+            .replace(/\..+/, '');
+        const endDate = new Date(event.end).toISOString()
+            .replace(/T/, ' ')
+            .replace(/\..+/, '');
+        const requestedAt = new Date(event.extendedProps.requestedAt).toISOString()
+            .replace(/T/, ' ')
+            .replace(/\..+/, '');
 
         alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}`);
     };
@@ -143,7 +151,7 @@ export default function MyCalendar() {
                 }
             })
         )
-        .filter(event => event !== null);
+            .filter(event => event !== null);
         return vacations;
     };
 

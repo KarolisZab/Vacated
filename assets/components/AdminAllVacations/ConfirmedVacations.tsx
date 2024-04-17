@@ -10,9 +10,11 @@ interface Props {
 
 }
 
+/* eslint-disable-next-line */
 const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {
     const { id } = useParams<{ id: string }>();
     const [modalOpen, setModalOpen] = useState(false);
+    const [error, setError] = useState<string>('');
     const [vacationData, setVacationData] = useState<Partial<VacationType>>({
         id,
         dateFrom: '',
@@ -28,26 +30,25 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                 .split('T')[0];
         } else {
             return date
-            .toISOString()
-            .replace('T', ' ')
-            .replace(/\..+/, '');
+                .toISOString()
+                .replace('T', ' ')
+                .replace(/\..+/, '');
         }
     };
     
+    /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
         return <Message>There is no confirmed vacations yet.</Message>;
     }
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
-        console.log(vacationData);
-        console.log(id);
         try {
             await vacationService.updateRequestedVacation(id, vacationData);
             closeModal();
             updateVacations();
         } catch (error) {
-            console.error('Error updating vacation:', error);
+            setError('Error' + (error as Error).message);
         }
     };
 
@@ -58,6 +59,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     return (
         <div className="requested-vacation">
             <div style={{ marginRight: '2rem' }}>
+                {error && <Message negative>{error}</Message>}
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>
@@ -73,6 +75,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Table.Header>
 
                     <Table.Body>
+                        {/* eslint-disable-next-line */}
                         {vacations.map((vacation) => (
                             <Table.Row key={vacation.id}>
                                 <Table.Cell>{`${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`}</Table.Cell>
@@ -100,38 +103,38 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
             </div>
             <Modal open={modalOpen} onClose={closeModal}>
                 <Modal.Header>Update Vacation</Modal.Header>
-                    <Modal.Content>
-                        <Form>
-                            <Form.Input
-                                label='Start date'
-                                type='date'
-                                value={vacationData.dateFrom}
-                                onChange={(e) => setVacationData({ ...vacationData, dateFrom: e.target.value })}
-                            />
-                            <Form.Input
-                                label='End date'
-                                type='date'
-                                value={vacationData.dateTo}
-                                onChange={(e) => setVacationData({ ...vacationData, dateTo: e.target.value })}
-                            />
-                            <Form.TextArea
-                                label='Note'
-                                placeholder='Enter your note here'
-                                value={vacationData.note}
-                                onChange={(e) => setVacationData({ ...vacationData, note: e.target.value })}
-                            />
-                        </Form>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button color='black' onClick={closeModal}>Cancel</Button>
-                        <Button
-                            content="Update"
-                            labelPosition='left'
-                            icon='checkmark'
-                            onClick={(e) => handleUpdate(e, vacationData.id)}
-                            positive
+                <Modal.Content>
+                    <Form>
+                        <Form.Input
+                            label='Start date'
+                            type='date'
+                            value={vacationData.dateFrom}
+                            onChange={(e) => setVacationData({ ...vacationData, dateFrom: e.target.value })}
                         />
-                    </Modal.Actions>
+                        <Form.Input
+                            label='End date'
+                            type='date'
+                            value={vacationData.dateTo}
+                            onChange={(e) => setVacationData({ ...vacationData, dateTo: e.target.value })}
+                        />
+                        <Form.TextArea
+                            label='Note'
+                            placeholder='Enter your note here'
+                            value={vacationData.note}
+                            onChange={(e) => setVacationData({ ...vacationData, note: e.target.value })}
+                        />
+                    </Form>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color='black' onClick={closeModal}>Cancel</Button>
+                    <Button
+                        content="Update"
+                        labelPosition='left'
+                        icon='checkmark'
+                        onClick={(e) => handleUpdate(e, vacationData.id)}
+                        positive
+                    />
+                </Modal.Actions>
             </Modal>
         </div>
     );

@@ -10,16 +10,13 @@ class ReservedDayService {
         return await apiService.get<ReservedDayType[]>('/reserved-day', params);
     }
 
-    // async ReservedDay(vacationId: string): Promise<CalendarDays> {
-    //     return await apiService.get<CalendarDays>(`${URL}/${vacationId}`);
-    // }
-
-    async getReservedDaysList(startDate: string,
-            endDate: string,
-            page: number,
-            limit?: number,
-            filter?: string
-        ): Promise<GetReservedDaysResultType> {
+    async getReservedDaysList(
+        startDate: string,
+        endDate: string,
+        page: number,
+        limit?: number,
+        filter?: string
+    ): Promise<GetReservedDaysResultType> {
         const params = { startDate, endDate, page, limit, filter }
         return await apiService.get<GetReservedDaysResultType>('/admin/all-reserveddays', params);
     }

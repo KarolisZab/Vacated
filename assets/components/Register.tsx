@@ -42,9 +42,9 @@ const Register: React.FC = () => {
                     Create a new user account
                 </Header>
                 <Form size='large' onSubmit={handleSubmit} error={!!error}>
-                {error && <Message error style={{ backgroundColor: 'rgb(31, 31, 32)' }} content={error} />}
+                    {error && <Message error style={{ backgroundColor: 'rgb(31, 31, 32)' }} content={error} />}
                     <Segment stacked>
-                    <Form.Input
+                        <Form.Input
                             fluid
                             icon='user'
                             iconPosition='left'

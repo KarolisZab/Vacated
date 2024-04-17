@@ -1,7 +1,5 @@
 import axios from "axios";
 import { API_URL } from "../config";
-import { EmployeeRegistrationData } from "./types";
-import { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 
 export interface User {
     id: string;
@@ -28,8 +26,8 @@ class AuthService {
                     this.notifySubscribers();
                 }
 
-            return response.data;
-        });
+                return response.data;
+            });
     }
 
     loginWithCode(google_code: string): Promise<User> {
@@ -43,8 +41,8 @@ class AuthService {
                     this.notifySubscribers();
                 }
 
-            return response.data;
-        });
+                return response.data;
+            });
     }
 
     logout(): void {
@@ -83,38 +81,6 @@ class AuthService {
 
     private notifySubscribers(): void {
         this.authenticationChangeSubscribers.forEach(subscriber => subscriber());
-    }
-
-    async loginWithGoogle(response: any): Promise<void> {
-        console.log('login w google response: ', response);
-        if ('credential' in response) {
-            // Handle successful Google login
-            // Send the tokenId to your backend to authenticate the user
-            // console.log('login w google response: ', response);
-            const tokenId = response.tokenId;
-            try {
-                // Send the tokenId to your backend to authenticate the user
-                const response = await fetch('/api/google-login', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ tokenId }),
-                });
-
-                if (response.ok) {
-                    console.log('Logged in with Google successfully');
-                } else {
-                    console.error('Failed to log in with Google:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error logging in with Google:', error.message);
-                throw new Error('Failed to log in with Google');
-            }
-        } else {
-            console.error('Google login failed:', response);
-            throw new Error('Failed to log in with Google');
-        }
     }
 }
 

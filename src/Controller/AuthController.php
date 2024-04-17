@@ -63,7 +63,7 @@ class AuthController extends AbstractController
     {
         $credentials = json_decode($request->getContent(), true);
 
-        if ($credentials['google_code']) {
+        if (isset($credentials['google_code'])) {
             return $this->loginWithGoogle($credentials['google_code']);
         }
 
@@ -93,8 +93,6 @@ class AuthController extends AbstractController
 
     private function loginWithGoogle(string $code)
     {
-        // handles google oauth callback
-        // $code = $request->query->get('code');
 
         if (null === $code) {
             return new RedirectResponse('/error-page');

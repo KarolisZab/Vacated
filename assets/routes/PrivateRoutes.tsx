@@ -7,16 +7,16 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const isAuthenticated = authService.isAuthenticated();
+    const isAuthenticated = authService.isAuthenticated();
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+    return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
 
 export const AdminPrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const isAuthenticated = authService.isAuthenticated();
-  const isAdmin = authService.isAdmin();
+    const isAuthenticated = authService.isAuthenticated();
+    const isAdmin = authService.isAdmin();
 
-  return isAuthenticated && isAdmin ? <>{children}</> : <Navigate to="/" />;
+    return isAuthenticated && isAdmin ? <>{children}</> : <Navigate to="/" />;
 };
