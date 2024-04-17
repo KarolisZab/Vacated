@@ -5,10 +5,6 @@ import { useNavigate } from "react-router-dom";
 import './styles.scss';
 
 export default function Google() {
-
-    // page, i kuri redirectinu, kai vyksta redirectas, ir bus tuscias page tik su loaderiu, kol suvaiksto kodai ir tokenai
-    // navigate i '/'
-
     const navigate = useNavigate();
     
     useEffect(() => {
