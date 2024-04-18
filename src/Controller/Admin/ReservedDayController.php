@@ -101,7 +101,7 @@ class ReservedDayController extends AbstractController
         $filter = $request->query->get('filter');
 
         $reservedDays = $this->reservedDayManager->getAllReservedDays($limit, ($page - 1) * $limit, $filter);
-        $reservedDaysCount = $this->reservedDayManager->getReservedDaysInYear($filter);
+        $reservedDaysCount = $this->reservedDayManager->getReservedDaysInYear();
 
         $results = ['totalItems' => $reservedDaysCount, 'items' => $reservedDays];
 

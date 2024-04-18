@@ -203,22 +203,22 @@ class VacationManager
         return $vacationRepository->findBy(['requestedBy' => $user]);
     }
 
-    public function getVacations(int $limit = 10, int $offset = 0, ?string $filter = null): array
+    public function getVacations(int $limit = 10, int $offset = 0, /*?string $filter = null*/): array
     {
 
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
-        return $vacationRepository->getVacations($limit, $offset, $filter);
+        return $vacationRepository->getVacations($limit, $offset, /*$filter*/);
     }
 
-    public function getVacationsCount(?string $filter = null): int
-    {
-        /** @var \App\Repository\UserRepository $userRepository */
-        $userRepository = $this->entityManager->getRepository(User::class);
+    // public function getVacationsCount(?string $filter = null): int
+    // {
+    //     /** @var \App\Repository\UserRepository $userRepository */
+    //     $userRepository = $this->entityManager->getRepository(User::class);
 
-        return $userRepository->countAllVacations($filter);
-    }
+    //     return $userRepository->countAllVacations($filter);
+    // }
 
     /**
      * @return array<string, Vacation[]>
