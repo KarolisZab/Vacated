@@ -1,4 +1,4 @@
-import { Tab } from 'semantic-ui-react';
+import { Message, Tab } from 'semantic-ui-react';
 import './styles.scss';
 import { useEffect, useState } from 'react';
 import { VacationType } from '../../services/types';
@@ -14,6 +14,7 @@ export default function MyVacations() {
     const [confirmedVacations, setConfirmedVacations] = useState<VacationType[]>([]);
     const [rejectedVacations, setRejectedVacations] = useState<VacationType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
         const fetchVacations = async () => {
@@ -45,7 +46,7 @@ export default function MyVacations() {
             setConfirmedVacations(confirmed);
             setRejectedVacations(rejected);
         } catch (error) {
-            console.error('Error fetching vacations:', error);
+            setError('Error' + (error as Error).message);
         }
     };
     
@@ -69,6 +70,7 @@ export default function MyVacations() {
 
     return (
         <div className="tab-container">
+            {error && <Message negative>{error}</Message>}
             <Tab panes={panes} />
         </div>
     );

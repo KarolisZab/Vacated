@@ -5,6 +5,7 @@ interface Props {
     vacations: VacationType[];
 }
 
+/* eslint-disable-next-line */
 const RejectedVacations: React.FC<Props> = ({ vacations }) => {
     
     const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
@@ -15,12 +16,13 @@ const RejectedVacations: React.FC<Props> = ({ vacations }) => {
                 .split('T')[0];
         } else {
             return date
-            .toISOString()
-            .replace('T', ' ')
-            .replace(/\..+/, '');
+                .toISOString()
+                .replace('T', ' ')
+                .replace(/\..+/, '');
         }
     };
     
+    /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
         return <Message>You do not have any rejected vacations.</Message>;
     }
@@ -42,6 +44,7 @@ const RejectedVacations: React.FC<Props> = ({ vacations }) => {
                     </Table.Header>
 
                     <Table.Body>
+                        {/* eslint-disable-next-line */}
                         {vacations.map((vacation) => (
                             <Table.Row key={vacation.id}>
                                 <Table.Cell>{formatDateTime(vacation.requestedAt)}</Table.Cell>

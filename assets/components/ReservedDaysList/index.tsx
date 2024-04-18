@@ -41,9 +41,9 @@ const ReservedDaysList: React.FC = () => {
                 .split('T')[0];
         } else {
             return date
-            .toISOString()
-            .replace('T', ' ')
-            .replace(/\..+/, '');
+                .toISOString()
+                .replace('T', ' ')
+                .replace(/\..+/, '');
         }
     };
 
@@ -59,9 +59,7 @@ const ReservedDaysList: React.FC = () => {
             const endDate = lastDayOfYear.toISOString().split('T')[0];
 
             const results = await reservedDayService.getReservedDaysList(startDate, endDate, page);
-            console.log('Results: ', results);
             setReservedDays(results.items);
-            console.log('Results items: ', results.items);
             setTotalItems(results.totalItems);
         } catch (error) {
             setError('Error' + (error as Error).message);
@@ -107,14 +105,12 @@ const ReservedDaysList: React.FC = () => {
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
-        console.log(reservedDayData);
-        console.log(id);
         try {
             await reservedDayService.updateReservedDays(id, reservedDayData);
             closeModal();
             fetchReservedDays();
         } catch (error) {
-            console.error('Error updating vacation:', error);
+            setError('Error' + (error as Error).message);
         }
     };
 
@@ -159,6 +155,7 @@ const ReservedDaysList: React.FC = () => {
         }
     };
 
+    /* eslint-disable-next-line */
     const handlePaginationChange = (event: React.MouseEvent, data: any) => {
         setPage(data.activePage);
     };
@@ -235,66 +232,66 @@ const ReservedDaysList: React.FC = () => {
                 </div>
                 <Modal open={modalOpen} onClose={closeModal}>
                     <Modal.Header>Update Vacation</Modal.Header>
-                        <Modal.Content>
-                            <Form>
-                                <Form.Input
-                                    label='Start date'
-                                    type='date'
-                                    value={reservedDayData.dateFrom}
-                                    onChange={(e) => setReservedDayData({ ...reservedDayData, dateFrom: e.target.value })}
-                                />
-                                <Form.Input
-                                    label='End date'
-                                    type='date'
-                                    value={reservedDayData.dateTo}
-                                    onChange={(e) => setReservedDayData({ ...reservedDayData, dateTo: e.target.value })}
-                                />
-                                <Form.TextArea
-                                    label='Note'
-                                    placeholder='Enter your note here'
-                                    value={reservedDayData.note}
-                                    onChange={(e) => setReservedDayData({ ...reservedDayData, note: e.target.value })}
-                                />
-                                <Form.Field>
-                                    <Dropdown
-                                        placeholder="Select tags"
-                                        fluid
-                                        multiple
-                                        search
-                                        selection
-                                        options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
-                                        onChange={handleUpdateTagsChange}
-                                        value={reservedDayData.tags.map(tag => tag.name)} // Use selected tags state for update modal
-                                    />
-                                </Form.Field>
-                            </Form>
-                        </Modal.Content>
-                        <Modal.Actions>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
-                            <Button
-                                content="Update"
-                                labelPosition='left'
-                                icon='checkmark'
-                                onClick={(e) => handleUpdate(e, reservedDayData.id)}
-                                positive
+                    <Modal.Content>
+                        <Form>
+                            <Form.Input
+                                label='Start date'
+                                type='date'
+                                value={reservedDayData.dateFrom}
+                                onChange={(e) => setReservedDayData({ ...reservedDayData, dateFrom: e.target.value })}
                             />
-                        </Modal.Actions>
+                            <Form.Input
+                                label='End date'
+                                type='date'
+                                value={reservedDayData.dateTo}
+                                onChange={(e) => setReservedDayData({ ...reservedDayData, dateTo: e.target.value })}
+                            />
+                            <Form.TextArea
+                                label='Note'
+                                placeholder='Enter your note here'
+                                value={reservedDayData.note}
+                                onChange={(e) => setReservedDayData({ ...reservedDayData, note: e.target.value })}
+                            />
+                            <Form.Field>
+                                <Dropdown
+                                    placeholder="Select tags"
+                                    fluid
+                                    multiple
+                                    search
+                                    selection
+                                    options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
+                                    onChange={handleUpdateTagsChange}
+                                    value={reservedDayData.tags.map(tag => tag.name)} // Use selected tags state for update modal
+                                />
+                            </Form.Field>
+                        </Form>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Button
+                            content="Update"
+                            labelPosition='left'
+                            icon='checkmark'
+                            onClick={(e) => handleUpdate(e, reservedDayData.id)}
+                            positive
+                        />
+                    </Modal.Actions>
                 </Modal>
                 <Modal open={deleteModalOpen} onClose={closeModal}>
-                        <Modal.Header>Delete Reservation</Modal.Header>
-                        <Modal.Content>
-                            <p style={{ color: 'black' }}>Are you sure you want to delete this reservation?</p>
-                        </Modal.Content>
-                        <Modal.Actions>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
-                            <Button
-                                content="Delete"
-                                labelPosition='left'
-                                icon='trash'
-                                onClick={confirmDelete}
-                                negative
-                            />
-                        </Modal.Actions>
+                    <Modal.Header>Delete Reservation</Modal.Header>
+                    <Modal.Content>
+                        <p style={{ color: 'black' }}>Are you sure you want to delete this reservation?</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Button
+                            content="Delete"
+                            labelPosition='left'
+                            icon='trash'
+                            onClick={confirmDelete}
+                            negative
+                        />
+                    </Modal.Actions>
                 </Modal>
                 <Modal open={newReservedDayModalOpen} onClose={closeModal}>
                     <Modal.Header>New Reserved Day</Modal.Header>

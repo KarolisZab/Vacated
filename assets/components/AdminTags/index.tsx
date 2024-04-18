@@ -54,7 +54,7 @@ const TagsList: React.FC = () => {
             closeModal();
             fetchTags();
         } catch (error) {
-            console.error('Error updating vacation:', error);
+            setError('Error' + (error as Error).message);
         }
     };
 
@@ -128,7 +128,7 @@ const TagsList: React.FC = () => {
                         </Table.Body>
                     </Table>
                     <Modal open={modalOpen} onClose={closeModal}>
-                    <Modal.Header>Update tag</Modal.Header>
+                        <Modal.Header>Update tag</Modal.Header>
                         <Modal.Content>
                             <Form>
                                 <Form.Input

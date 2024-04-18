@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240418074732 extends AbstractMigration
+final class Version20240418184058 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,7 +24,7 @@ final class Version20240418074732 extends AbstractMigration
         $this->addSql('CREATE TABLE reserved_day_tag (reserved_day_id VARCHAR NOT NULL, tag_id INT NOT NULL, PRIMARY KEY(reserved_day_id, tag_id))');
         $this->addSql('CREATE INDEX IDX_382E76BB4698F50 ON reserved_day_tag (reserved_day_id)');
         $this->addSql('CREATE INDEX IDX_382E76BBAD26311 ON reserved_day_tag (tag_id)');
-        $this->addSql('CREATE TABLE tag (id INT NOT NULL, name VARCHAR(255) NOT NULL, color_code VARCHAR(7) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE tag (id INT NOT NULL, name VARCHAR(255) NOT NULL, color_code VARCHAR(7) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE user_tag (user_id VARCHAR NOT NULL, tag_id INT NOT NULL, PRIMARY KEY(user_id, tag_id))');
         $this->addSql('CREATE INDEX IDX_E89FD608A76ED395 ON user_tag (user_id)');
         $this->addSql('CREATE INDEX IDX_E89FD608BAD26311 ON user_tag (tag_id)');

@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { VacationType } from '../../services/types';
-import { Button, Form, Message, Modal, Pagination, Table } from 'semantic-ui-react';
+import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
 import { useState } from 'react';
 import vacationService from '../../services/vacation-service';
 
@@ -10,11 +10,12 @@ interface Props {
 
 }
 
+/* eslint-disable-next-line */
 const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {
     const { id } = useParams<{ id: string }>();
     const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
     const [rejectModalOpen, setRejectModalOpen] = useState<boolean>(false);
-    // const [rejectionNote, setRejectionNote] = useState<string>('');
+    const [error, setError] = useState<string>('');
     const [vacationData, setVacationData] = useState<Partial<VacationType>>({
         id,
         dateFrom: '',
@@ -31,12 +32,13 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                 .split('T')[0];
         } else {
             return date
-            .toISOString()
-            .replace('T', ' ')
-            .replace(/\..+/, '');
+                .toISOString()
+                .replace('T', ' ')
+                .replace(/\..+/, '');
         }
     };
     
+    /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
         return <Message>You do not have any requested vacations yet.</Message>;
     }
@@ -48,7 +50,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
             setConfirmModalOpen(false);
             updateVacations();
         } catch (error) {
-            console.error('Error confirming vacation:', error);
+            setError('Error' + (error as Error).message);
         }
     };
 
@@ -59,7 +61,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
             setRejectModalOpen(false);
             updateVacations();
         } catch (error) {
-            console.error('Error rejecting vacation:', error);
+            setError('Error' + (error as Error).message);
         }
     };
 
@@ -86,6 +88,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     return (
         <div className="requested-vacation">
             <div style={{ marginRight: '2rem' }}>
+                {error && <Message negative>{error}</Message>}
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>
@@ -99,6 +102,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Table.Header>
 
                     <Table.Body>
+                        {/* eslint-disable-next-line */}
                         {vacations.map((vacation) => (
                             <Table.Row key={vacation.id}>
                                 <Table.Cell>{`${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`}</Table.Cell>

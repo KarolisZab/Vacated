@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import { VacationType } from '../../services/types';
 import { Message, Table } from 'semantic-ui-react';
 
@@ -8,9 +7,8 @@ interface Props {
 
 }
 
+/* eslint-disable-next-line */
 const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {
-    const { id } = useParams<{ id: string }>();
-
     const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
         const date = new Date(dateTimeString);
         if (includeTime) {
@@ -19,12 +17,13 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                 .split('T')[0];
         } else {
             return date
-            .toISOString()
-            .replace('T', ' ')
-            .replace(/\..+/, '');
+                .toISOString()
+                .replace('T', ' ')
+                .replace(/\..+/, '');
         }
     };
     
+    /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
         return <Message>There are no confirmed vacations yet.</Message>;
     }
@@ -46,6 +45,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Table.Header>
 
                     <Table.Body>
+                        {/* eslint-disable-next-line */}
                         {vacations.map((vacation) => (
                             <Table.Row key={vacation.id}>
                                 <Table.Cell>{`${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`}</Table.Cell>

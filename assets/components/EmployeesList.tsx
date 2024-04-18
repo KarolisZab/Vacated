@@ -13,6 +13,7 @@ const EmployeesList: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [filter, setFilter] = useState<string>('');
+    /* eslint-disable-next-line */
     const [limit, setLimit] = useState<number>(10);
 
     useEffect(() => {
@@ -33,6 +34,7 @@ const EmployeesList: React.FC = () => {
         fetchEmployees();
     }, [page, filter]);
 
+    /* eslint-disable-next-line */
     const handlePaginationChange = (event: React.MouseEvent, data: any) => {
         setPage(data.activePage);
     };
