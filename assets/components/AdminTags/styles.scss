@@ -1,0 +1,35 @@
+.tags-list {
+    margin-left: 2rem;
+    // margin-right: 2rem; 
+  
+    .tag-card {
+      background-color: rgba(64, 64, 64, 0.8) !important;
+      color: white;
+  
+      .card-content {
+        background: rgba(64, 64, 64, 0.8);
+      }
+
+      .card-header,
+      .card-meta,
+      .card-description,
+      .email {
+        color: white !important;
+      }
+    }
+
+    .loader-container {
+      position: relative;
+    }
+    
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .tag-button {
+        margin-bottom: 16px;
+    }
+}

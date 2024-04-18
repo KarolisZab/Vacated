@@ -6,7 +6,7 @@ class TagDTO
 {
     public function __construct(
         public readonly ?string $name,
-        public readonly ?string $colorCode
+        public readonly ?string $colorCode = null
     ) {
     }
 }

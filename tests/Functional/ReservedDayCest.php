@@ -168,4 +168,70 @@ class ReservedDayCest
 
         $I->assertEquals(1, count($resDay));
     }
+
+    public function testCreateReservedDaysWithTags(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('apitest@test.com');
+        $I->amBearerAuthenticated($token);
+
+        $dateFrom = (new \DateTimeImmutable())->modify('+7 days');
+        $dateTo = $dateFrom->modify('+1 day');
+
+        $I->sendRequest('post', '/api/admin/reserved-day', [
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
+            'note' => 'Important launch',
+            'tags' => ['Backend']
+        ]);
+
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseContainsJson([
+            'reservedBy' => ['email' => 'apitest@test.com'],
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
+            'note' => 'Important launch',
+            'tags' => ['name' => 'Backend']
+        ]);
+    }
+
+    public function testUpdateReservedDayWithTags(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('apitest@test.com');
+        $I->amBearerAuthenticated($token);
+
+        $user = $this->userManager->getUserByEmail('apitest@test.com');
+
+        /** @var \App\Repository\VacationRepository $repository */
+        $repository = $this->entityManager->getRepository(ReservedDay::class);
+        /** @var Vacation $vacation */
+        $reservedDay = $repository->findOneBy(['reservedBy' => $user->getId()]);
+
+        $dateFrom = (new \DateTimeImmutable())->modify('+8 days');
+        $dateTo = $dateFrom->modify('+1 days');
+
+        $I->sendRequest('patch', '/api/admin/reserved-day/' . $reservedDay->getId(), [
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
+            'note' => 'Keiciasi launch date',
+            'tags' => ['Frontend', 'Backend'],
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'reservedBy' => ['email' => 'apitest@test.com'],
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
+            'note' => 'Keiciasi launch date',
+            'tags' => ['name' => 'Frontend', 'name' => 'Backend']
+        ]);
+
+        $I->sendRequest('patch', '/api/admin/reserved-day/' . $reservedDay->getId(), [
+            'tags' => ['Frontend'],
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->dontSeeResponseContainsJson([
+            'tags' => ['name' => 'Backend']
+        ]);
+    }
 }

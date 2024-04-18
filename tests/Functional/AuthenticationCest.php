@@ -155,8 +155,6 @@ class AuthenticationCest
 
     public function testCreateUserWithValidationFailure(FunctionalTester $I)
     {
-        // $token = $I->grabTokenForUser('jwttest@test.com');
-        // $I->amBearerAuthenticated($token);
         $I->sendRequest('post', '/api/register', [
             'email' => 'ka',
             'password' => 'test',
@@ -178,5 +176,73 @@ class AuthenticationCest
             'phoneNumber' => '123456789'
         ]);
         $I->seeResponseCodeIs(409);
+    }
+
+    public function testCreateUserWithTags(FunctionalTester $I)
+    {
+        $userData = [
+            'email' => 'testuser@example.com',
+            'password' => 'password123',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNumber' => '123456789',
+            'tags' => ['Backend', 'Frontend'],
+        ];
+
+        $I->sendRequest('post', '/api/register', $userData);
+
+        $I->seeResponseCodeIs(201);
+
+        $I->seeResponseContainsJson([
+            'email' => 'testuser@example.com',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNumber' => '123456789',
+            'tags' => [
+                ['name' => 'Backend'],
+                ['name' => 'Frontend'],
+            ]
+        ]);
+    }
+
+    public function testUpdateUserWithTags(FunctionalTester $I)
+    {
+        /** @var User $user */
+        $user = $this->userManager->getUserByEmail('jwttest@test.com');
+
+        $token = $I->grabTokenForUser('jwttest@test.com');
+        $I->amBearerAuthenticated($token);
+
+        $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNumber' => '123456789',
+            'tags' => ['Backend', 'Frontend'],
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'email' => 'jwttest@test.com',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNumber' => '123456789',
+            'tags' => [
+                ['name' => 'Backend'],
+                ['name' => 'Frontend'],
+            ]
+        ]);
+
+        $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
+            'email' => 'jwttest@test.com',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNumber' => '123456789',
+            'tags' => ['Frontend'],
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->dontSeeResponseContainsJson([
+            'tags' => ['name' => 'Backend']
+        ]);
     }
 }

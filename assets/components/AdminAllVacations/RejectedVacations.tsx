@@ -22,7 +22,7 @@ const RejectedVacations: React.FC<Props> = ({ vacations }) => {
     };
     
     if (!vacations || vacations.length === 0) {
-        return <Message>You do not have any rejected vacations.</Message>;
+        return <Message>There are no rejected vacation requests.</Message>;
     }
 
     return (

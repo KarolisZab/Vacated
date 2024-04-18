@@ -20,26 +20,28 @@ class TagManager
     ) {
     }
 
-    public function createTag(TagDTO $tagDTO): Tag
+    public function createOrGetTag(TagDTO $tagDTO, bool $flush = true): Tag
     {
         try {
             $existingTag = $this->entityManager->getRepository(Tag::class)->findOneBy([
                 'name' => $tagDTO->name
             ]);
 
-            if ($existingTag !== null) {
-                return null;
+            if (null !== $existingTag) {
+                return $existingTag;
             }
 
             $tag = new Tag();
             $tag->setName($tagDTO->name)
                 ->setColorCode($tagDTO->colorCode);
 
-            $errors = $this->validator->validate($tag);
+            $errors = $this->validator->validate($tag, null, ['create']);
             ValidationFailureException::throwException($errors);
 
             $this->entityManager->persist($tag);
-            $this->entityManager->flush();
+            if ($flush) {
+                $this->entityManager->flush();
+            }
 
             return $tag;
         } catch (ORMException $e) {
@@ -63,7 +65,7 @@ class TagManager
         $tag->setName($tagDTO->name)
             ->setColorCode($tagDTO->colorCode);
 
-        $errors = $this->validator->validate($tag);
+        $errors = $this->validator->validate($tag, null, ['update']);
         ValidationFailureException::throwException($errors);
 
         $this->entityManager->flush();

@@ -32,7 +32,7 @@ class ReservedDay
     #[Assert\Length(max: 255)]
     protected string $note = '';
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: "reservedDays")]
+    #[ORM\ManyToMany(targetEntity: Tag::class)]
     protected Collection $tags;
 
     public function __construct()
@@ -111,6 +111,13 @@ class ReservedDay
     public function getTags(): Collection
     {
         return $this->tags;
+    }
+
+    public function setTags(ArrayCollection $tags): static
+    {
+        $this->tags = $tags;
+
+        return $this;
     }
 
     public function addTag(Tag $tag): static

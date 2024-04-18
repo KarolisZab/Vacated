@@ -55,12 +55,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank()]
     private ?string $password = null;
 
-    #[ORM\ManyToMany(targetEntity: ReservedDay::class)]
-    protected Collection $reservedDays;
+    #[ORM\ManyToMany(targetEntity: Tag::class)]
+    protected Collection $tags;
 
     public function __construct()
     {
-        $this->reservedDays = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): string
@@ -192,16 +192,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|ReservedDay[]
+     * @return Collection|Tag[]
      */
-    public function getReservedDays(): Collection
+    public function getTags(): Collection
     {
-        return $this->reservedDays;
+        return $this->tags;
     }
 
-    public function setReservedDay(ReservedDay $reservedDay): static
+    public function setTags(ArrayCollection $tags): static
     {
-        $this->reservedDays = $reservedDay;
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

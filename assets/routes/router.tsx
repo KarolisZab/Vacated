@@ -17,6 +17,7 @@ import { AdminPrivateRoute } from "./PrivateRoutes"
 import AdminHome from "../components/AdminHome"
 import ReservedDaysList from "../components/ReservedDaysList"
 import AllVacations from "../components/AdminAllVacations/index"
+import TagsList from "../components/AdminTags/index"
 
 const router = createBrowserRouter([
     {
@@ -112,6 +113,14 @@ const router = createBrowserRouter([
                 element: (
                     <AdminPrivateRoute>
                         <AllVacations />
+                    </AdminPrivateRoute>
+                )
+            },
+            {
+                path: "tags",
+                element: (
+                    <AdminPrivateRoute>
+                        <TagsList />
                     </AdminPrivateRoute>
                 )
             }

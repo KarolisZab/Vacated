@@ -35,7 +35,7 @@ class TagController extends AbstractController
     }
 
     #[Route('/tags/{id}', name: 'get_tag', methods: ['GET'])]
-    public function getOneUser(string $id)
+    public function getOneTag(string $id)
     {
         $tag = $this->tagManager->getTag($id);
 
@@ -56,9 +56,7 @@ class TagController extends AbstractController
                 return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
             }
 
-            $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
-
-            $tag = $this->tagManager->createTag($tagDTO);
+            $tag = $this->tagManager->createOrGetTag($tagDTO);
 
             return new JsonResponse(
                 $this->serializer->serialize($tag, 'json'),
@@ -75,14 +73,6 @@ class TagController extends AbstractController
     public function updateTag(Request $request, string $id, #[MapRequestPayload()] TagDTO $tagDTO)
     {
         try {
-            // $currentUser = $this->security->getUser();
-
-            // if (!$currentUser) {
-            //     return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
-            // }
-
-            // $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
-
             $tag = $this->tagManager->updateTag($id, $tagDTO);
 
             if ($tag === null) {

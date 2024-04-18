@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import employeeService from '../services/employee-service';
-import { Button, Dimmer, Form, FormInput, Loader, Segment } from "semantic-ui-react";
-import { EmployeeType } from '../services/types';
+import { Button, Dimmer, Dropdown, DropdownProps, Form, FormInput, Loader, Segment } from "semantic-ui-react";
+import { EmployeeType, TagType } from '../services/types';
 import handleError from "../services/handler";
 import errorProcessor from "../services/errorProcessor";
 import '../styles/employee-list.scss'
+import tagService from "../services/tag-service";
 
 const UpdateEmployee: React.FC = () => {
     const navigate = useNavigate();
@@ -14,8 +15,10 @@ const UpdateEmployee: React.FC = () => {
         id,
         firstName: '',
         lastName: '',
-        phoneNumber: ''
+        phoneNumber: '',
+        tags: []
     });
+    const [tags, setTags] = useState<TagType[]>([]);
     /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -37,7 +40,32 @@ const UpdateEmployee: React.FC = () => {
         };
 
         fetchEmployee();
+        fetchTags();
     }, [id]);
+
+    const fetchTags = async () => {
+        try {
+            const tagsData = await tagService.getAllTags();
+            setTags(tagsData);
+        } catch (error) {
+            handleError(error);
+            setError('Error fetching tags: ' + (error as Error).message);
+        }
+    };
+
+    const handleTagsChange = (e: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+        if (Array.isArray(value)) {
+            const selectedTags: TagType[] = value.map(tagName => {
+                const tag = tags.find(tag => tag.name === tagName);
+                if (tag) {
+                    return tag;
+                } else {
+                    return { id: '', name: '', colorCode: '' };
+                }
+            });
+            setEmployee({ ...employee, tags: selectedTags });
+        }
+    };
 
     const handleUpdate = async () => {
         try {
@@ -109,6 +137,18 @@ const UpdateEmployee: React.FC = () => {
                             onChange={handleChange}
                             error={formErrors['phoneNumber']}
                         />
+                        <Form.Field>
+                            <label>Tags</label>
+                            <Dropdown
+                                placeholder='Select tags'
+                                fluid
+                                multiple
+                                selection
+                                options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
+                                value={employee.tags.map(tag => tag.name)}
+                                onChange={handleTagsChange}
+                            />
+                        </Form.Field>
                         <Button type='button' onClick={handleUpdate}>Submit</Button>
                         <Button type='button' onClick={handleCancel}>Cancel</Button>
                     </Form>
