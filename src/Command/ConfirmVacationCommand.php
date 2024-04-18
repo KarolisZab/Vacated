@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\DTO\VacationDTO;
-use App\Service\ReservedDayManager;
 use App\Service\UserManager;
 use App\Service\VacationManager;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -17,7 +16,6 @@ class ConfirmVacationCommand extends Command
     public function __construct(
         private VacationManager $manager,
         private UserManager $userManager,
-        private ReservedDayManager $reservedDayManager
     ) {
         parent::__construct();
     }
@@ -31,11 +29,7 @@ class ConfirmVacationCommand extends Command
         // $vacation = $this->manager->requestVacation($user, $vacation);
         $vacation = $this->manager->confirmVacationRequest('1', $vacation);
 
-        if ($vacation !== null) {
-            $output->writeln('Vacation created successfully!');
-        } else {
-            $output->writeln('Error: Failed to create vacation');
-        }
+        $output->writeln('Vacation created successfully!');
 
         return Command::SUCCESS;
     }

@@ -75,7 +75,6 @@ class ReservedDayManager
     {
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-        /** @var \App\Entity\ReservedDay $reservedDay */
         $reservedDay = $reservedDayRepository->find($id);
 
         if ($reservedDay === null) {
@@ -161,7 +160,7 @@ class ReservedDayManager
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
 
-        return $reservedDayRepository->findPaginatedReservedDays($limit, $offset, $filter);
+        return $reservedDayRepository->findPaginatedReservedDays($limit, $offset);
     }
 
     public function getReservedDays(string $dateFrom, string $dateTo): array

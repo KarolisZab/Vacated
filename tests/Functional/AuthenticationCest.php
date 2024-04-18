@@ -186,7 +186,7 @@ class AuthenticationCest
             'firstName' => 'John',
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
-            'tags' => ['Backend', 'Frontend'],
+            'tags' => [['name' => 'Backend'], ['name' => 'Frontend']],
         ];
 
         $I->sendRequest('post', '/api/register', $userData);
@@ -217,7 +217,7 @@ class AuthenticationCest
             'firstName' => 'John',
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
-            'tags' => ['Backend', 'Frontend'],
+            'tags' => [['name' => 'Backend'], ['name' => 'Frontend']],
         ]);
 
         $I->seeResponseCodeIs(200);
@@ -237,7 +237,7 @@ class AuthenticationCest
             'firstName' => 'John',
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
-            'tags' => ['Frontend'],
+            'tags' => [['name' => 'Frontend']],
         ]);
 
         $I->seeResponseCodeIs(200);

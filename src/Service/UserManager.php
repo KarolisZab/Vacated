@@ -194,7 +194,6 @@ class UserManager
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
 
-        /** @var \App\Entity\User $user */
         $user = $userRepository->find($id);
 
         if ($user === null) {

@@ -181,7 +181,7 @@ class ReservedDayCest
             'dateFrom' => $dateFrom->format('Y-m-d'),
             'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Important launch',
-            'tags' => ['Backend']
+            'tags' => [['name' => 'Backend']]
         ]);
 
         $I->seeResponseCodeIs(201);
@@ -213,7 +213,7 @@ class ReservedDayCest
             'dateFrom' => $dateFrom->format('Y-m-d'),
             'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Keiciasi launch date',
-            'tags' => ['Frontend', 'Backend'],
+            'tags' => [['name' => 'Backend'], ['name' => 'Frontend']],
         ]);
 
         $I->seeResponseCodeIs(200);
@@ -226,7 +226,7 @@ class ReservedDayCest
         ]);
 
         $I->sendRequest('patch', '/api/admin/reserved-day/' . $reservedDay->getId(), [
-            'tags' => ['Frontend'],
+            'tags' => [['name' => 'Frontend']],
         ]);
 
         $I->seeResponseCodeIs(200);

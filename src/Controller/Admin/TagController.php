@@ -3,9 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\DTO\TagDTO;
-use App\Service\ReservedDayManager;
 use App\Service\TagManager;
-use App\Service\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,8 +17,6 @@ class TagController extends AbstractController
 {
     public function __construct(
         private TagManager $tagManager,
-        private UserManager $userManager,
-        private ReservedDayManager $reservedDayManager,
         private SerializerInterface $serializer,
         private Security $security
     ) {
