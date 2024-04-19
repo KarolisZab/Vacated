@@ -36,6 +36,14 @@ class VacationManager
                 throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
             }
 
+            /** @var \App\Repository\VacationRepository $vacationRepository */
+            $vacationRepository = $this->entityManager->getRepository(Vacation::class);
+            $overlappingVacations = $vacationRepository->findOverlappingVacations($from, $to, $user);
+
+            if (!empty($overlappingVacations)) {
+                throw new \InvalidArgumentException("Cannot request vacation due to overlapping vacations", 400);
+            }
+
             $vacation = new Vacation();
             $vacation->setRequestedBy($user)
                 ->setDateFrom($from)

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Vacation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -77,6 +78,22 @@ class VacationRepository extends ServiceEntityRepository
             ->select('COUNT(v)')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function findOverlappingVacations(
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+        User $user
+    ): array {
+        return $this->createQueryBuilder('v')
+            ->where('v.dateFrom <= :endDate')
+            ->andWhere('v.dateTo >= :startDate')
+            ->andWhere('v.requestedBy = :user')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**
