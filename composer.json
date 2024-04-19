@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.11",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.0",
+        "google/apiclient": "^2.15",
         "lcobucci/jwt": "^5.2",
         "nelmio/api-doc-bundle": "^4.19",
         "symfony/console": "7.0.*",

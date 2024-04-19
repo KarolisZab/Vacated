@@ -143,7 +143,7 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $I->sendRequest('get', '/api/admin/reserved-day', [
+        $I->sendRequest('get', '/api/reserved-day', [
             'startDate' => '2024-04-18',
             'endDate' => '2024-04-21'
         ]);

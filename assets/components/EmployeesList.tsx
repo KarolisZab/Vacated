@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
 import { Link, useNavigate } from 'react-router-dom';
-import { Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Table } from 'semantic-ui-react';
+import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
 
@@ -43,6 +43,10 @@ const EmployeesList: React.FC = () => {
         setFilter(event.target.value);
     };
 
+    const handleCreateUser = () => {
+        navigate('/admin/create-user');
+    }
+
     return (
         <div className="employees-list">
             <h1>Employees</h1>
@@ -53,6 +57,9 @@ const EmployeesList: React.FC = () => {
                 onChange={handleFilterChange}
                 style={{ marginBottom: '1rem' }}
             />
+            <Button color='teal' style={{ marginLeft: '1rem' }} onClick={handleCreateUser}>
+                        Create new employee
+            </Button>
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
                 {loading && (

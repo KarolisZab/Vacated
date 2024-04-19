@@ -30,4 +30,4 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Service\GoogleOAuth\GoogleOAuthInterface:
-        class: App\Service\GoogleOAuth\GoogleOAuthService
+        class: App\Service\GoogleOAuth\MockedGoogleOAuthService

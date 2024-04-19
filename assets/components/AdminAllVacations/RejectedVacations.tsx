@@ -7,7 +7,6 @@ interface Props {
 
 /* eslint-disable-next-line */
 const RejectedVacations: React.FC<Props> = ({ vacations }) => {
-    
     const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
         const date = new Date(dateTimeString);
         if (includeTime) {

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { API_URL } from "../config";
-import { EmployeeRegistrationData } from "./types";
 
 export interface User {
     id: string;
@@ -36,10 +35,6 @@ class AuthService {
             localStorage.removeItem("user");
             this.notifySubscribers();
         }
-    }
-
-    register(data: EmployeeRegistrationData): Promise<void> {
-        return axios.post(API_URL + "/register", data);
     }
 
     getCurrentUser(): User | null {

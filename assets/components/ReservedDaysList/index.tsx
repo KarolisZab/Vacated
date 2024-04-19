@@ -261,7 +261,7 @@ const ReservedDaysList: React.FC = () => {
                                     selection
                                     options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
                                     onChange={handleUpdateTagsChange}
-                                    value={reservedDayData.tags.map(tag => tag.name)} // Use selected tags state for update modal
+                                    value={reservedDayData.tags.map(tag => tag.name)}
                                 />
                             </Form.Field>
                         </Form>

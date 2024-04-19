@@ -7,7 +7,6 @@ import vacationService from '../../services/vacation-service';
 interface Props {
     vacations: VacationType[];
     updateVacations: () => void;
-
 }
 
 /* eslint-disable-next-line */
