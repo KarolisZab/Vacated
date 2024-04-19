@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\DTO\VacationDTO;
-use App\Entity\ReservedDay;
 use App\Entity\User;
 use App\Entity\Vacation;
 use App\Exception\ValidationFailureException;
@@ -93,13 +92,13 @@ class VacationManager
             throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
         }
 
-        /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
-        $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-        $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
+        // /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+        // $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+        // $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
 
-        if (count($reservedDays) > 0) {
-            throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
-        }
+        // if (count($reservedDays) > 0) {
+        //     throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
+        // }
 
         if ($vacation->isConfirmed() === true) {
             $vacation->setConfirmed(false);
