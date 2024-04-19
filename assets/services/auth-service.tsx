@@ -41,8 +41,8 @@ class AuthService {
                     this.notifySubscribers();
                 }
 
-            return response.data;
-        });
+                return response.data;
+            });
     }
 
     logout(): void {
