@@ -11,18 +11,6 @@ const Login: React.FC = () => {
     const [isLoading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        const loginWithGoogle = async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            //loader
-
-            if (code) {
-                await authService.loginWithCode(code);
-                navigate('/');
-            }
-        }
-        
         const checkAuthentication = async () => {
             if (authService.isAuthenticated()) {
                 navigate('/');
@@ -30,7 +18,6 @@ const Login: React.FC = () => {
         };
         
         checkAuthentication();
-        loginWithGoogle();
     }, [navigate]);
 
     const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {

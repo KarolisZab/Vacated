@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.scss";
 import authService, { User } from "../services/auth-service";
 import { Button, Icon } from "semantic-ui-react";
-import { googleLogout } from "@react-oauth/google";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -36,7 +35,6 @@ export default function Navbar() {
     const handleLogout = () => {
         authService.logout();
         navigate('/login');
-        googleLogout();
     };
 
     return (
