@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Dimmer, Form, Loader, Message, Modal, Table } from 'semantic-ui-react';
 import './styles.scss';
 import { TagType } from '../../services/types';
+import { SketchPicker } from 'react-color';
 
 const TagsList: React.FC = () => {
     const navigate = useNavigate();
@@ -111,7 +112,7 @@ const TagsList: React.FC = () => {
                             {tags.map((tag) => (
                                 <Table.Row key={tag.id}>
                                     <Table.Cell>{tag.name}</Table.Cell>
-                                    <Table.Cell>{tag.colorCode}</Table.Cell>
+                                    <Table.Cell style={{ color: tag.colorCode }}>{tag.colorCode}</Table.Cell>
                                     <Table.Cell>
                                         <Button color="blue" onClick={() => {
                                             setTagData({
@@ -136,11 +137,13 @@ const TagsList: React.FC = () => {
                                     value={tagData.name}
                                     onChange={(e) => setTagData({ ...tagData, name: e.target.value })}
                                 />
-                                <Form.Input
-                                    label='Tag color code'
-                                    value={tagData.colorCode}
-                                    onChange={(e) => setTagData({ ...tagData, colorCode: e.target.value })}
-                                />
+                                <div>
+                                    <label>Tag color</label>
+                                    <SketchPicker
+                                        color={tagData.colorCode}
+                                        onChange={(color) => setTagData({ ...tagData, colorCode: color.hex })}
+                                    />
+                                </div>
                             </Form>
                         </Modal.Content>
                         <Modal.Actions>
@@ -179,11 +182,13 @@ const TagsList: React.FC = () => {
                                     value={newTagData.name}
                                     onChange={(e) => setNewTagData({ ...newTagData, name: e.target.value })}
                                 />
-                                <Form.Input
-                                    label='Tag color'
-                                    value={newTagData.colorCode}
-                                    onChange={(e) => setNewTagData({ ...newTagData, colorCode: e.target.value })}
-                                />
+                                <div>
+                                    <label>Tag color</label>
+                                    <SketchPicker
+                                        color={newTagData.colorCode}
+                                        onChange={(color) => setNewTagData({ ...newTagData, colorCode: color.hex })}
+                                    />
+                                </div>
                             </Form>
                         </Modal.Content>
                         <Modal.Actions>
