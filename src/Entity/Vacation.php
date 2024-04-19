@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Repository\VacationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as CustomAssert;
 
 #[ORM\Entity(repositoryClass: VacationRepository::class)]
 #[ORM\Table(name: 'vacation')]
+#[CustomAssert\VacationConstraint(groups: ['create', 'update'])]
 class Vacation
 {
     #[ORM\Id]

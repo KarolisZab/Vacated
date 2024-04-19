@@ -37,14 +37,6 @@ class VacationManager
                 throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
             }
 
-            /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
-            $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-            $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
-
-            if (count($reservedDays) > 0) {
-                throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
-            }
-
             $vacation = new Vacation();
             $vacation->setRequestedBy($user)
                 ->setDateFrom($from)

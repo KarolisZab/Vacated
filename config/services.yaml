@@ -31,3 +31,10 @@ services:
 
     App\Service\GoogleOAuth\GoogleOAuthInterface:
         class: App\Service\GoogleOAuth\GoogleOAuthService
+
+    App\Validator\VacationValidator:
+        arguments:
+            $reservedDayRepository: '@App\Repository\ReservedDayRepository'
+        tags:
+            - { name: validator.constraint_validator, alias: app.validator.vacation }
+
