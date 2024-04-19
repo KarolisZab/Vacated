@@ -68,7 +68,7 @@ jobs:
         run: yarn add eslint
 
       - name: Run ESLint
-        run: yarn run eslint ./assets
+        run: yarn run eslint . --ext .js,.jsx,.ts,.tsx
 
       - name: Execute Codeception tests
         run: vendor/bin/codecept run
