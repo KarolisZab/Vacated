@@ -64,6 +64,10 @@ jobs:
       - name: Execute Lint
         run: composer lint
 
+      - uses: mrdivyansh/eslint-action@v1.0.7
+        with: 
+          eslint-rc: .eslintrc.js
+
       - name: Install ESLint
         run: yarn add eslint
 
