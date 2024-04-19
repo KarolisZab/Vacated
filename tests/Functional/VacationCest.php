@@ -393,7 +393,7 @@ class VacationCest
         $token = $I->grabTokenForUser('vacationtest@test.com');
 
         $I->amBearerAuthenticated($token);
-        $I->sendRequest('get', '/api/all-vacations');
+        $I->sendRequest('get', '/api/admin/all-vacations');
 
         $I->seeResponseCodeIs(200);
     }
