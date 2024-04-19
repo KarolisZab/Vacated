@@ -36,12 +36,12 @@ class UserManager
                 return null;
             }
 
-            $userDTO->password = $this->generateRandomPassword();
+            $password = $this->generateRandomPassword();
 
             $user = new User();
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
-                $userDTO->password
+                $userDTO->password = $password
             );
             $user->setEmail($userDTO->email)
                 ->setPassword($hashedPassword)

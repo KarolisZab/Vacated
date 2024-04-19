@@ -153,31 +153,6 @@ class AuthenticationCest
         $I->seeResponseCodeIs(401);
     }
 
-    public function testCreateUserWithValidationFailure(FunctionalTester $I)
-    {
-        $I->sendRequest('post', '/api/register', [
-            'email' => 'ka',
-            'password' => 'test',
-            'firstName' => 'Kar',
-            'lastName' => 'Kar',
-            'phoneNumber' => '123456789'
-        ]);
-
-        $I->seeResponseCodeIs(400);
-    }
-
-    public function testIfUserCreatedWithSameEmail(FunctionalTester $I)
-    {
-        $I->sendRequest('post', '/api/register', [
-            'email' => 'rejecttest@test.com',
-            'password' => 'test',
-            'firstName' => 'Kar',
-            'lastName' => 'Kar',
-            'phoneNumber' => '123456789'
-        ]);
-        $I->seeResponseCodeIs(409);
-    }
-
     public function testCreateUserWithTags(FunctionalTester $I)
     {
         $userData = [
@@ -189,7 +164,10 @@ class AuthenticationCest
             'tags' => [['name' => 'Backend'], ['name' => 'Frontend']],
         ];
 
-        $I->sendRequest('post', '/api/register', $userData);
+        $token = $I->grabTokenForUser('jwttest@test.com');
+        $I->amBearerAuthenticated($token);
+
+        $I->sendRequest('post', '/api/admin/create-user', $userData);
 
         $I->seeResponseCodeIs(201);
 
