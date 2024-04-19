@@ -2,6 +2,10 @@
     color: white;
 }
 
+.fc-event-title {
+    color: white;
+}
+
 .fc-day-sun,
 .fc-day-sat { 
     background-color: #303030;
@@ -29,10 +33,6 @@
     width: 50px !important;
     height: 50px !important;
 }
-
-.fc-daygrid-event-dot {
-    display: none;
-}
 //
 
 .fc-day-today {
@@ -58,3 +58,7 @@
 .calendar {
     width: 70%;
 }
+
+.fc-popover-body .fc-daygrid-event-harness .fc-daygrid-dot-event .fc-event-title {
+    color: #000;
+  }

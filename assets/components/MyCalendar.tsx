@@ -9,6 +9,7 @@ import { Button, Form, Message, Modal } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
+import tagService from '../services/tag-service';
 
 export default function MyCalendar() {
     const navigate = useNavigate();
@@ -143,11 +144,13 @@ export default function MyCalendar() {
                     return null;
                 } else {
                     uniqueEventIds.add(eventId);
+                    const color = vacation.confirmed ? '#00b5ad' : 'rgba(0, 181, 173, 0.5)';
                     return {
                         title: `${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`,
                         start: vacation.dateFrom,
                         end: vacation.dateTo,
-                        requestedAt: vacation.requestedAt
+                        requestedAt: vacation.requestedAt,
+                        color: color
                     };
                 }
             })
@@ -165,12 +168,30 @@ export default function MyCalendar() {
                 start: reservedDay.dateFrom,
                 end: endDate.toISOString(),
                 allDay: true,
-                color: '#cb983a',
+                color: '#cb983a'  /*'#b03a2e'*/,
                 display: 'background',
-                classNames: ['reserved-day']
             };
         });
         return reservedEvents;
+    };
+
+    const mapTagsList = () => {
+        const tagEvents = reservedDays.flatMap((reservedDay: ReservedDayType) => {
+            const endDate = new Date(reservedDay.dateTo);
+            endDate.setHours(23, 59, 59, 999);
+
+            return reservedDay.tags.map((tag) => {
+                return {
+                    start: reservedDay.dateFrom,
+                    end: endDate.toISOString(),
+                    title: tag.name,
+                    color: tag.colorCode,
+                    classNames: ['tag-event'],
+                    display: 'list-item'
+                };
+            });
+        });
+        return tagEvents;
     };
 
     // if (loading) {
@@ -227,7 +248,7 @@ export default function MyCalendar() {
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
                 selectable={true}
-                events={[...mapCalendarList(), ...mapReservedDays()]}
+                events={[...mapCalendarList(), ...mapReservedDays(), ...mapTagsList()]}
                 select={handleDateSelect}
                 firstDay={1}
                 datesSet={handleDatesSet}
@@ -238,6 +259,11 @@ export default function MyCalendar() {
                 dayMaxEventRows={true}
                 dayMaxEvents={3}
                 aspectRatio={1.75}
+                headerToolbar={{
+                    start: 'prev,next today',
+                    center: 'title',
+                    end: 'dayGridMonth,timeGridWeek,timeGridDay'
+                }}
             />
         </div>
     )
