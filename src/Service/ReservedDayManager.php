@@ -138,7 +138,7 @@ class ReservedDayManager
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
 
-        return $reservedDayRepository->findPaginatedReservedDays($limit, $offset, $filter);
+        return $reservedDayRepository->findPaginatedReservedDays($limit, $offset, /*$filter*/);
     }
 
     public function getReservedDays(string $dateFrom, string $dateTo): array

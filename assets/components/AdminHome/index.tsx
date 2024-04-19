@@ -1,4 +1,4 @@
-import { Card, Icon, Segment, Statistic } from "semantic-ui-react";
+import { Card, Icon, Message, Segment, Statistic } from "semantic-ui-react";
 import './styles.scss';
 import { useEffect, useState } from "react";
 import vacationService from "../../services/vacation-service";
@@ -10,15 +10,16 @@ export default function Home() {
     const [pendingDays, setPendingDays] = useState<number>(0);
     const [employeeCount, setEmployeeCount] = useState<number>(0);
     const [reservedDays, setReservedDays] = useState<number>(0);
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
                 const [confirmedDays, pendingDays, reservedDays, employeeCount] = await Promise.all([
-                        vacationService.getConfirmedVacationsDaysCountInThisYear(),
-                        vacationService.getPendingVacationsDaysCountInThisYear(),
-                        reservedDayService.getReservedDaysCount(),
-                        employeeService.getEmployeesCount()
+                    vacationService.getConfirmedVacationsDaysCountInThisYear(),
+                    vacationService.getPendingVacationsDaysCountInThisYear(),
+                    reservedDayService.getReservedDaysCount(),
+                    employeeService.getEmployeesCount()
                 ]);
 
                 setConfirmedDays(confirmedDays);
@@ -26,7 +27,7 @@ export default function Home() {
                 setReservedDays(reservedDays);
                 setEmployeeCount(employeeCount);
             } catch (error) {
-                console.error("Error");
+                setError('Error' + (error as Error).message);
             }
         }
 
@@ -37,6 +38,7 @@ export default function Home() {
         <div className="admin-home">
             <div className="admin-container">
                 <div className="admin-card-container">
+                    {error && <Message negative>{error}</Message>}
                     <Card className="card">
                         <Card.Content>
                             <div className="admin-card-header">

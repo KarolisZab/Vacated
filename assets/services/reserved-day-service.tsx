@@ -15,11 +15,11 @@ class ReservedDayService {
     // }
 
     async getReservedDaysList(startDate: string,
-            endDate: string,
-            page: number,
-            limit?: number,
-            filter?: string
-        ): Promise<GetReservedDaysResultType> {
+        endDate: string,
+        page: number,
+        limit?: number,
+        filter?: string
+    ): Promise<GetReservedDaysResultType> {
         const params = { startDate, endDate, page, limit, filter }
         return await apiService.get<GetReservedDaysResultType>('/admin/all-reserveddays', params);
     }
