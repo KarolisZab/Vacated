@@ -22,7 +22,7 @@ class GoogleOAuthService implements GoogleOAuthInterface
     ) {
     }
 
-    public function loginWithGoogle(?string $code): JsonResponse
+    public function loginWithGoogle(?string $code): RedirectResponse | JsonResponse
     {
         if (null === $code) {
             return new RedirectResponse('/error-page');
