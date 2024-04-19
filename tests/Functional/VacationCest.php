@@ -60,7 +60,7 @@ class VacationCest
         $vacation = $repository->findOneBy(['requestedBy' => $user->getId()]);
 
         $dateFrom = (new \DateTimeImmutable())->modify('+1 day');
-        $dateTo = (new \DateTimeImmutable())->modify('+6 days');
+        $dateTo = (new \DateTimeImmutable())->modify('+5 days');
 
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
             'dateFrom' => $dateFrom->format('Y-m-d'),
