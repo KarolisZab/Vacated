@@ -64,15 +64,11 @@ jobs:
       - name: Execute Lint
         run: composer lint
 
-      - uses: mrdivyansh/eslint-action@v1.0.7
-        with: 
-          eslint-rc: .eslintrc.js
-
       - name: Install ESLint
-        run: yarn add eslint
+        run: yarn add eslint@^8.57.0
 
       - name: Run ESLint
-        run: yarn run eslint . --config .eslintrc.js
+        run: yarn run eslint ./assets
 
       - name: Execute Codeception tests
         run: vendor/bin/codecept run
