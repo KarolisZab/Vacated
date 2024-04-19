@@ -10,8 +10,7 @@ class ReservedDayService {
         return await apiService.get<ReservedDayType[]>('/reserved-day', params);
     }
 
-    async getReservedDaysList(
-        startDate: string,
+    async getReservedDaysList(startDate: string,
         endDate: string,
         page: number,
         limit?: number,

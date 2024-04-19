@@ -11,7 +11,7 @@ interface Props {
 }
 
 /* eslint-disable-next-line */
-const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {    
+const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {
     const { id } = useParams<{ id: string }>();
     const [modalOpen, setModalOpen] = useState(false);
     const [error, setError] = useState<string>('');

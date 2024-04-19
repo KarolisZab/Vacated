@@ -23,7 +23,6 @@ class ApiService {
             });
     }
 
-
     /* eslint-disable-next-line */
     async post<T>(url: string, data: any): Promise<T> {
         return await axios.post<T>(url, data, this.getConfig())
@@ -34,7 +33,6 @@ class ApiService {
             });
     }
     
-
     /* eslint-disable-next-line */
     async patch<T>(url: string, data: any): Promise<T> {
         return await axios.patch<T>(url, data, this.getConfig())
