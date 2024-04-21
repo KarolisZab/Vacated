@@ -5,10 +5,11 @@ export type EmployeeType = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
+    admin: boolean;
     tags: TagType[];
 };
 
-export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles"> {
+export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles" | "admin"> {
 }
 
 export type EmployeesGetResultType = {

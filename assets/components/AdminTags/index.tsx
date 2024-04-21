@@ -15,6 +15,7 @@ const TagsList: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [deleteId, setDeleteId] = useState<string>('');
+    const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const [tagData, setTagData] = useState<Partial<TagType>>({
         id,
         name: '',
@@ -43,6 +44,16 @@ const TagsList: React.FC = () => {
         fetchTags();
     }, []);
 
+    useEffect(() => {
+        if (!newTagModalOpen) {
+            setNewTagData({
+                name: '',
+                colorCode: '',
+            });
+            setFormErrors({});
+        }
+    }, [newTagModalOpen]);
+
     const handleDelete = (id: string) => {
         setDeleteId(id);
         setDeleteModalOpen(true);
@@ -61,23 +72,35 @@ const TagsList: React.FC = () => {
 
     const handleNewTagSubmit = async () => {
         try {
+            if (newTagData.name.trim() === '') {
+                setFormErrors({ name: 'Tag name should not be empty' });
+                return;
+            }
+
+            if (newTagData.colorCode.trim() === '') {
+                setFormErrors({ colorCode: 'Color code should not be empty' });
+                return;
+            }
+
+            setFormErrors({});
+
             await tagService.createTag(newTagData);
             closeModal();
             fetchTags();
         } catch (error) {
             setError('Error' + (error as Error).message);
-            navigate("/");
+            navigate(-1);
         }
     };
 
     const confirmDelete = async () => {
         try {
             await tagService.deleteTag(deleteId);
-            setTags(prevTags => prevTags.filter(tag => tag.id !== id));
+            setTags(prevTags => prevTags.filter(tag => tag.id !== deleteId));
             closeModal();
         } catch (error) {
             setError('Error' + (error as Error).message);
-            navigate("/");
+            navigate(-1);
         }
     };
 
@@ -136,14 +159,15 @@ const TagsList: React.FC = () => {
                                     label='Tag name'
                                     value={tagData.name}
                                     onChange={(e) => setTagData({ ...tagData, name: e.target.value })}
+                                    error={formErrors['name']}
                                 />
-                                <div>
+                                <Form.Input label='Tag color' error={formErrors['colorCode']}>
                                     <label>Tag color</label>
                                     <SketchPicker
                                         color={tagData.colorCode}
                                         onChange={(color) => setTagData({ ...tagData, colorCode: color.hex })}
                                     />
-                                </div>
+                                </Form.Input>
                             </Form>
                         </Modal.Content>
                         <Modal.Actions>
@@ -181,14 +205,14 @@ const TagsList: React.FC = () => {
                                     label='Tag name'
                                     value={newTagData.name}
                                     onChange={(e) => setNewTagData({ ...newTagData, name: e.target.value })}
+                                    error={formErrors['name']}
                                 />
-                                <div>
-                                    <label>Tag color</label>
+                                <Form.Input label='Tag color' error={formErrors['colorCode']}>
                                     <SketchPicker
                                         color={newTagData.colorCode}
                                         onChange={(color) => setNewTagData({ ...newTagData, colorCode: color.hex })}
                                     />
-                                </div>
+                                </Form.Input>
                             </Form>
                         </Modal.Content>
                         <Modal.Actions>

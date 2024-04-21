@@ -83,7 +83,14 @@ const EmployeesList: React.FC = () => {
                             {employees.map((employee) => (
                                 <Table.Row key={employee.id}>
                                     <Table.Cell>{employee.firstName} {employee.lastName}</Table.Cell>
-                                    <Table.Cell>{employee.email}</Table.Cell>
+                                    <Table.Cell>
+                                        {employee.email}
+                                        {employee.admin && (
+                                            <Label color='red' horizontal style={{ marginLeft: '0.5rem' }}>
+                                                Admin
+                                            </Label>
+                                        )}
+                                    </Table.Cell>
                                     <Table.Cell>{employee.phoneNumber}</Table.Cell>
                                     <Table.Cell>
                                         {employee.tags.map((tag) => (

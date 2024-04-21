@@ -69,6 +69,22 @@ const UpdateEmployee: React.FC = () => {
 
     const handleUpdate = async () => {
         try {
+            const fieldErrors: { [key: string]: string } = {};
+            if (employee.firstName.trim() === '') {
+                fieldErrors['firstName'] = 'Field should not be empty';
+            }
+            if (employee.lastName.trim() === '') {
+                fieldErrors['lastName'] = 'Field should not be empty';
+            }
+            if (employee.phoneNumber.trim() === '') {
+                fieldErrors['phoneNumber'] = 'Field should not be empty';
+            }
+
+            if (Object.keys(fieldErrors).length > 0) {
+                setFormErrors(fieldErrors);
+                return;
+            }
+
             setFormErrors({});
             await employeeService.updateEmployee(id, employee);
             navigate(-1);

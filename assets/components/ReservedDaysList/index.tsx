@@ -5,6 +5,7 @@ import { Button, Dimmer, Dropdown, DropdownProps, Form, Label, ListItem, Loader,
 import './styles.scss';
 import { ReservedDayType, TagType } from '../../services/types';
 import tagService from '../../services/tag-service';
+import errorProcessor from '../../services/errorProcessor';
 
 const ReservedDaysList: React.FC = () => {
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ const ReservedDaysList: React.FC = () => {
     });
     const [page, setPage] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
+    const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
     const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
         const date = new Date(dateTimeString);
@@ -83,6 +85,19 @@ const ReservedDaysList: React.FC = () => {
         fetchTags();
     }, [page]);
 
+    useEffect(() => {
+        // Reset newReservedDayData when the modal is closed
+        if (!newReservedDayModalOpen) {
+            setNewReservedDayData({
+                dateFrom: '',
+                dateTo: '',
+                note: '',
+                tags: []
+            });
+            setFormErrors({});
+        }
+    }, [newReservedDayModalOpen]);
+
     const handleTagsChange = (e: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
         if (Array.isArray(value)) {
             const selectedTags: TagType[] = value.map(tagName => {
@@ -106,11 +121,28 @@ const ReservedDaysList: React.FC = () => {
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
         try {
+            if (reservedDayData.dateFrom.trim() === '') {
+                setFormErrors({ dateFrom: 'Start date should not be empty' });
+                return;
+            }
+
+            if (reservedDayData.dateTo.trim() === '') {
+                setFormErrors({ dateTo: 'End date should not be empty' });
+                return;
+            }
+
+            if (reservedDayData.note.trim() === '') {
+                setFormErrors({ note: 'Note should not be empty' });
+                return;
+            }
+
+            setFormErrors({});
+
             await reservedDayService.updateReservedDays(id, reservedDayData);
             closeModal();
             fetchReservedDays();
         } catch (error) {
-            setError('Error' + (error as Error).message);
+            errorProcessor(error, setError, setFormErrors);
         }
     };
 
@@ -146,11 +178,28 @@ const ReservedDaysList: React.FC = () => {
 
     const handleNewReservedDaySubmit = async () => {
         try {
+            if (newReservedDayData.dateFrom.trim() === '') {
+                setFormErrors({ dateFrom: 'Start date should not be empty' });
+                return;
+            }
+
+            if (newReservedDayData.dateTo.trim() === '') {
+                setFormErrors({ dateTo: 'End date should not be empty' });
+                return;
+            }
+
+            if (newReservedDayData.note.trim() === '') {
+                setFormErrors({ note: 'Note should not be empty' });
+                return;
+            }
+
+            setFormErrors({});
+
             await reservedDayService.reserveDays(newReservedDayData);
             closeModal();
             fetchReservedDays();
         } catch (error) {
-            setError('Error' + (error as Error).message);
+            errorProcessor(error, setError, setFormErrors);
             navigate("/");
         }
     };
@@ -239,18 +288,21 @@ const ReservedDaysList: React.FC = () => {
                                 type='date'
                                 value={reservedDayData.dateFrom}
                                 onChange={(e) => setReservedDayData({ ...reservedDayData, dateFrom: e.target.value })}
+                                error={formErrors['dateFrom']}
                             />
                             <Form.Input
                                 label='End date'
                                 type='date'
                                 value={reservedDayData.dateTo}
                                 onChange={(e) => setReservedDayData({ ...reservedDayData, dateTo: e.target.value })}
+                                error={formErrors['dateTo']}
                             />
                             <Form.TextArea
                                 label='Note'
                                 placeholder='Enter your note here'
                                 value={reservedDayData.note}
                                 onChange={(e) => setReservedDayData({ ...reservedDayData, note: e.target.value })}
+                                error={formErrors['note']}
                             />
                             <Form.Field>
                                 <Dropdown
@@ -300,20 +352,29 @@ const ReservedDaysList: React.FC = () => {
                             <Form.Input
                                 label='Start date'
                                 type='date'
+                                name='dateFrom'
                                 value={newReservedDayData.dateFrom}
                                 onChange={(e) => setNewReservedDayData({ ...newReservedDayData, dateFrom: e.target.value })}
+                                // onChange={(e) => handleChangeNewReservedDay(e)}
+                                error={formErrors['dateFrom']}
                             />
                             <Form.Input
                                 label='End date'
                                 type='date'
+                                name='dateTo'
                                 value={newReservedDayData.dateTo}
                                 onChange={(e) => setNewReservedDayData({ ...newReservedDayData, dateTo: e.target.value })}
+                                // onChange={(e) => handleChangeNewReservedDay(e)}
+                                error={formErrors['dateTo']}
                             />
                             <Form.TextArea
                                 label='Note'
+                                name='note'
                                 placeholder='Enter your note here'
                                 value={newReservedDayData.note}
                                 onChange={(e) => setNewReservedDayData({ ...newReservedDayData, note: e.target.value })}
+                                // onChange={(e) => handleChangeNewReservedDay(e)}
+                                error={formErrors['note']}
                             />
                             <Form.Field>
                                 <Dropdown
