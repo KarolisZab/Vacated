@@ -96,6 +96,16 @@ class VacationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getAllCurrentUserVacations(User $user): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.requestedBy = :user')
+            ->setParameter('user', $user)
+            ->orderBy('v.dateFrom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Vacation[] Returns an array of Vacation objects
 //     */

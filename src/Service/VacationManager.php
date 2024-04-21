@@ -199,7 +199,7 @@ class VacationManager
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
-        return $vacationRepository->findBy(['requestedBy' => $user]);
+        return $vacationRepository->getAllCurrentUserVacations($user);
     }
 
     public function getVacations(int $limit = 10, int $offset = 0, /*?string $filter = null*/): array

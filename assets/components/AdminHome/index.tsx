@@ -1,4 +1,4 @@
-import { Card, Icon, Message, Segment, Statistic } from "semantic-ui-react";
+import { Card, Dimmer, Icon, Loader, Message, Segment, Statistic } from "semantic-ui-react";
 import './styles.scss';
 import { useEffect, useState } from "react";
 import vacationService from "../../services/vacation-service";
@@ -11,6 +11,7 @@ export default function Home() {
     const [employeeCount, setEmployeeCount] = useState<number>(0);
     const [reservedDays, setReservedDays] = useState<number>(0);
     const [error, setError] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchStatistics = async () => {
@@ -28,6 +29,8 @@ export default function Home() {
                 setEmployeeCount(employeeCount);
             } catch (error) {
                 setError('Error' + (error as Error).message);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -40,6 +43,11 @@ export default function Home() {
                 <div className="admin-card-container">
                     {error && <Message negative>{error}</Message>}
                     <Card className="card">
+                        {loading && (
+                            <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
+                                <Loader>Loading</Loader>
+                            </Dimmer>
+                        )}
                         <Card.Content>
                             <div className="admin-card-header">
                                 <Card.Header>Statistics</Card.Header>
