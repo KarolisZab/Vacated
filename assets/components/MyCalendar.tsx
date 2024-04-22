@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType } from '../services/types';
-import { Button, Form, Message, Modal } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +33,7 @@ export default function MyCalendar() {
     const [confirmedVacations, setConfirmedVacations] = useState<CalendarDays>({});
     const calendarRef = useRef<FullCalendar>();
     const [reservedDays, setReservedDays] = useState<ReservedDayType[]>([]);
-    // const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [note, setNote] = useState<string>('');
     const [showModal, setShowModal] = useState<boolean>(false);
     const [modalError, setModalError] = useState<string>('');
@@ -42,9 +42,7 @@ export default function MyCalendar() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                // setLoading(true);
-                
+            try {                
                 const { startDate, endDate } = calendarDays;
                 
                 const [vacations, reserved] = await Promise.all([
@@ -56,10 +54,9 @@ export default function MyCalendar() {
                 setReservedDays(reserved);
             } catch (error) {
                 navigate('/login')
-            } 
-            // finally {
-            //     // setLoading(false);
-            // }
+            } finally {
+                setLoading(false);
+            }
         };
     
         fetchData();
@@ -91,6 +88,7 @@ export default function MyCalendar() {
         setShowModal(false);
         setSelectedDate({ startDate: null, endDate: null });
         setModalError('');
+        setNote('');
     };    
 
     const handleConfirmVacationRequest = async () => {
@@ -193,13 +191,15 @@ export default function MyCalendar() {
         return tagEvents;
     };
 
-    // if (loading) {
-    //     return (
-    //         <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
-    //             <Loader>Loading</Loader>
-    //         </Dimmer>
-    //     );
-    // }
+    if (loading) {
+        return (
+            <div className='loader-container'>
+                <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -234,7 +234,6 @@ export default function MyCalendar() {
                         />
                     </Modal.Actions>
                 </Modal>
-
                 <div className="request-button">
                     <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
                         Request vacation

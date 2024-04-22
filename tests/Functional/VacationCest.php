@@ -428,6 +428,10 @@ class VacationCest
         $dateFrom = (new \DateTimeImmutable())->modify('+1 day');
         $dateTo = (new \DateTimeImmutable())->modify('+4 days');
 
+        $interval = $dateTo->diff($dateFrom);
+        $daysDifference = $interval->days + 1;
+        $expectedAvailableDays = ($user->getAvailableDays()) - $daysDifference;
+
         $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
             'firstName' => 'John',
             'lastName' => 'Doe',
@@ -453,12 +457,12 @@ class VacationCest
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseContainsJson([
-            'requestedBy' => ['email' => 'vacationtest@test.com'],
+            'requestedBy' => ['email' => 'vacationtest@test.com', 'availableDays' => $expectedAvailableDays],
             'note' => 'Uzrasiukas testui',
             'confirmed' => false,
             'dateFrom' => $dateFrom->setTime(0, 0, 0)->format('c'),
             'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
-            'reviewedBy' => null
+            'reviewedBy' => null,
         ]);
     }
 }

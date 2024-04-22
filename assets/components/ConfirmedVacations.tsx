@@ -59,7 +59,6 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     return (
         <div className="requested-vacation">
             <div style={{ marginRight: '2rem' }}>
-                {error && <Message negative>{error}</Message>}
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>
@@ -101,6 +100,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
             </div>
             <Modal open={modalOpen} onClose={closeModal}>
                 <Modal.Header>Update Vacation</Modal.Header>
+                {error && <Message negative>{error}</Message>}
                 <Modal.Content>
                     <Form>
                         <Form.Input

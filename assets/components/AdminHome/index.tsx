@@ -40,8 +40,8 @@ export default function Home() {
     return (
         <div className="admin-home">
             <div className="admin-container">
+                {error && <Message negative>{error}</Message>}
                 <div className="admin-card-container">
-                    {error && <Message negative>{error}</Message>}
                     <Card className="card">
                         {loading && (
                             <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>

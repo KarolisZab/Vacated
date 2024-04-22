@@ -48,6 +48,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "boolean")]
     protected bool $isAdmin = false;
 
+    #[ORM\Column(type: "integer")]
+    protected int $availableDays = 20;
+
     /**
      * @var string The hashed password
      */
@@ -218,6 +221,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getAvailableDays(): int
+    {
+        return $this->availableDays;
+    }
+
+    public function setAvailableDays(int $availbleDays): static
+    {
+        $this->availableDays = $availbleDays;
 
         return $this;
     }

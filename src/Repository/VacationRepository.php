@@ -89,6 +89,7 @@ class VacationRepository extends ServiceEntityRepository
             ->where('v.dateFrom <= :endDate')
             ->andWhere('v.dateTo >= :startDate')
             ->andWhere('v.requestedBy = :user')
+            ->andWhere('v.isRejected = FALSE')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->setParameter('user', $user)

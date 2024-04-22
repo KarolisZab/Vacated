@@ -51,8 +51,8 @@
 }
 
 .request-button {
-    // margin-left: auto;
-    margin: 0; 
+    margin-left: auto;
+    // margin: 0;
 }
 
 .calendar {
@@ -61,4 +61,19 @@
 
 .fc-popover-body .fc-daygrid-event-harness .fc-daygrid-dot-event .fc-event-title {
     color: #000;
-  }
+}
+
+.loader-container {
+    position: relative;
+    // display: flex;
+    // justify-content: center; /* Center horizontally */
+    // align-items: center; /* Center vertically */
+}
+
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+  

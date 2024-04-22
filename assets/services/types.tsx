@@ -7,9 +7,10 @@ export type EmployeeType = {
     phoneNumber: string;
     admin: boolean;
     tags: TagType[];
+    availableDays: number;
 };
 
-export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles" | "admin"> {
+export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles" | "admin" | "availableDays"> {
 }
 
 export type EmployeesGetResultType = {

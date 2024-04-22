@@ -75,6 +75,7 @@ const EmployeesList: React.FC = () => {
                                 <Table.HeaderCell>Email</Table.HeaderCell>
                                 <Table.HeaderCell>Phone No.</Table.HeaderCell>
                                 <Table.HeaderCell>Tags</Table.HeaderCell>
+                                <Table.HeaderCell>Available days</Table.HeaderCell>
                                 <Table.HeaderCell>Actions</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
@@ -101,6 +102,7 @@ const EmployeesList: React.FC = () => {
                                             </ListItem>
                                         ))}
                                     </Table.Cell>
+                                    <Table.Cell>{employee.availableDays}/20</Table.Cell>
                                     <Table.Cell>
                                         <Link to={`/admin/employees/${employee.id}`}>View details</Link>
                                     </Table.Cell>
