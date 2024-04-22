@@ -9,7 +9,6 @@ import { Button, Form, Message, Modal } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
-import tagService from '../services/tag-service';
 
 export default function MyCalendar() {
     const navigate = useNavigate();
