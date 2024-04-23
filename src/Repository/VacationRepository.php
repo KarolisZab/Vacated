@@ -80,7 +80,7 @@ class VacationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findOverlappingVacations(
+    public function findOverlappingUserVacations(
         \DateTimeImmutable $startDate,
         \DateTimeImmutable $endDate,
         User $user

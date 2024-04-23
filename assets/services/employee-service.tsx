@@ -15,7 +15,7 @@ class EmployeeService {
     }
 
     async getEmployeesAvailableVacationDays(): Promise<number> {
-        return await apiService.get<number>(`/user-available-days`);
+        return await apiService.get<number>(`/user/available-days`);
     }
 
     async updateEmployee(employeeId: string, employeeData: Partial<EmployeeType>): Promise<EmployeeType> {

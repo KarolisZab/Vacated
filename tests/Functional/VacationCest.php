@@ -425,12 +425,8 @@ class VacationCest
         $token = $I->grabTokenForUser('vacationtest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $dateFrom = (new \DateTimeImmutable())->modify('+1 day');
-        $dateTo = (new \DateTimeImmutable())->modify('+4 days');
-
-        $interval = $dateTo->diff($dateFrom);
-        $daysDifference = $interval->days + 1;
-        $expectedAvailableDays = ($user->getAvailableDays()) - $daysDifference;
+        $dateFrom = (new \DateTimeImmutable('2050-01-07')); // friday
+        $dateTo = (new \DateTimeImmutable('2050-01-11')); // tuesday
 
         $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
             'firstName' => 'John',
@@ -440,8 +436,8 @@ class VacationCest
         ]);
 
         // reserve days
-        $dateFromReserve = (new \DateTimeImmutable())->modify('+3 days');
-        $dateToReserve = $dateFromReserve->modify('+2 day');
+        $dateFromReserve = (new \DateTimeImmutable('2050-01-10')); // monday
+        $dateToReserve = $dateFromReserve;
         $I->sendRequest('post', '/api/admin/reserved-day', [
             'dateFrom' => $dateFromReserve->format('Y-m-d'),
             'dateTo' => $dateToReserve->format('Y-m-d'),
@@ -457,7 +453,7 @@ class VacationCest
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseContainsJson([
-            'requestedBy' => ['email' => 'vacationtest@test.com', 'availableDays' => $expectedAvailableDays],
+            'requestedBy' => ['email' => 'vacationtest@test.com', 'availableDays' => $user->getAvailableDays() - 3],
             'note' => 'Uzrasiukas testui',
             'confirmed' => false,
             'dateFrom' => $dateFrom->setTime(0, 0, 0)->format('c'),

@@ -95,13 +95,9 @@ class Vacation
         return $this->requestedAt;
     }
 
-    public function setRequestedAt(\DateTimeImmutable | \DateTime $requestedAt): static
+    public function setRequestedAt(\DateTimeImmutable $requestedAt): static
     {
-        if ($requestedAt instanceof \DateTime) {
-            $this->requestedAt = \DateTimeImmutable::createFromMutable($requestedAt);
-        } else {
-            $this->requestedAt = $requestedAt;
-        }
+        $this->requestedAt = $requestedAt;
 
         return $this;
     }
@@ -111,13 +107,9 @@ class Vacation
         return $this->reviewedAt;
     }
 
-    public function setReviewedAt(\DateTimeImmutable | \DateTime $reviewedAt): static
+    public function setReviewedAt(\DateTimeImmutable $reviewedAt): static
     {
-        if ($reviewedAt instanceof \DateTime) {
-            $this->reviewedAt = \DateTimeImmutable::createFromMutable($reviewedAt);
-        } else {
-            $this->reviewedAt = $reviewedAt;
-        }
+        $this->reviewedAt = $reviewedAt;
 
         return $this;
     }
@@ -151,15 +143,11 @@ class Vacation
         return $this->dateFrom;
     }
 
-    public function setDateFrom(\DateTimeImmutable | \DateTime $dateFrom): static
+    public function setDateFrom(\DateTimeImmutable $dateFrom): static
     {
         $dateFrom = $dateFrom->setTime(0, 0, 0);
 
-        if ($dateFrom instanceof \DateTimeImmutable) {
-            $this->dateFrom = $dateFrom;
-        } else {
-            $this->dateFrom = \DateTimeImmutable::createFromMutable($dateFrom);
-        }
+        $this->dateFrom = $dateFrom;
 
         return $this;
     }
@@ -169,15 +157,11 @@ class Vacation
         return $this->dateTo;
     }
 
-    public function setDateTo(\DateTimeImmutable | \DateTime $dateTo): static
+    public function setDateTo(\DateTimeImmutable $dateTo): static
     {
         $dateTo = $dateTo->setTime(23, 59, 59);
 
-        if ($dateTo instanceof \DateTimeImmutable) {
-            $this->dateTo = $dateTo;
-        } else {
-            $this->dateTo = \DateTimeImmutable::createFromMutable($dateTo);
-        }
+        $this->dateTo = $dateTo;
 
         return $this;
     }

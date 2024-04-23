@@ -46,12 +46,6 @@ class TagController extends AbstractController
     public function createTag(Request $request, #[MapRequestPayload()] TagDTO $tagDTO)
     {
         try {
-            $currentUser = $this->security->getUser();
-
-            if (!$currentUser) {
-                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
-            }
-
             $tag = $this->tagManager->createOrGetTag($tagDTO);
 
             return new JsonResponse(

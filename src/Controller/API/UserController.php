@@ -22,7 +22,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('/api/user-available-days', name: 'get_users_available_days', methods: ['GET'])]
+    #[Route('/api/user/available-days', name: 'get_users_available_days', methods: ['GET'])]
     public function getCurrentUsersAvailableDays(Request $request)
     {
         try {

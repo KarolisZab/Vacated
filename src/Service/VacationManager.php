@@ -40,7 +40,7 @@ class VacationManager
                 throw new \InvalidArgumentException("You have no available vacation days left.", 400);
             }
 
-            $requestedDays = $this->calculateVacationDays($from, $to);
+            $requestedDays = $this->calculateVacationDaysWithoutWeekends($from, $to);
             if ($requestedDays > $user->getAvailableDays()) {
                 throw new \InvalidArgumentException("Requested days exceed available days limit.", 400);
             }
@@ -48,9 +48,9 @@ class VacationManager
 
             /** @var \App\Repository\VacationRepository $vacationRepository */
             $vacationRepository = $this->entityManager->getRepository(Vacation::class);
-            $overlappingVacations = $vacationRepository->findOverlappingVacations($from, $to, $user);
+            $overlappingVacations = $vacationRepository->findOverlappingUserVacations($from, $to, $user);
 
-            if (!empty($overlappingVacations)) {
+            if (count($overlappingVacations) > 0) {
                 throw new \InvalidArgumentException("Cannot request vacation due to overlapping vacations", 400);
             }
 
@@ -110,14 +110,15 @@ class VacationManager
             throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
         }
 
-        $previousDays = $this->calculateVacationDays($vacation->getDateFrom(), $vacation->getDateTo());
-        $updatedDays = $this->calculateVacationDays($from, $to);
+        $previousDays = $this->calculateVacationDaysWithoutWeekends($vacation->getDateFrom(), $vacation->getDateTo());
+        $updatedDays = $this->calculateVacationDaysWithoutWeekends($from, $to);
 
-        if (($user->getAvailableDays() + $previousDays) < $updatedDays) {
+        $user->setAvailableDays($user->getAvailableDays() + $previousDays);
+
+        if ($user->getAvailableDays() < $updatedDays) {
             throw new \InvalidArgumentException("Updated vacation days exceed the available days limit.", 400);
         }
 
-        $user->setAvailableDays($user->getAvailableDays() + $previousDays);
         $user->setAvailableDays($user->getAvailableDays() - $updatedDays);
 
         if ($vacation->isConfirmed() === true) {
@@ -153,7 +154,7 @@ class VacationManager
 
         $user = $vacation->getRequestedBy();
 
-        $requestedDays = $this->calculateVacationDays($vacation->getDateFrom(), $vacation->getDateTo());
+        $requestedDays = $this->calculateVacationDaysWithoutWeekends($vacation->getDateFrom(), $vacation->getDateTo());
         $user->setAvailableDays($user->getAvailableDays() + $requestedDays);
 
         $vacation->setReviewedAt(new \DateTimeImmutable())
@@ -311,10 +312,10 @@ class VacationManager
         return $vacationRepository->count(['isConfirmed' => false, 'isRejected' => false]);
     }
 
-    private function calculateVacationDays(\DateTimeImmutable $from, \DateTimeImmutable $to): int
+    private function calculateVacationDaysWithoutWeekends(\DateTimeImmutable $from, \DateTimeImmutable $to): int
     {
         $days = 0;
-        $currentDay = clone $from;
+        $currentDay = $from;
 
         while ($currentDay <= $to) {
             $dayOfWeek = (int)date('w', $currentDay->getTimestamp());

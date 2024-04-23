@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '../styles/my-calendar.scss';
-import { VacationType, CalendarDays, ReservedDayType } from '../services/types';
+import { VacationType, CalendarDays, ReservedDayType, EmployeeType } from '../services/types';
 import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
@@ -40,7 +40,7 @@ export default function MyCalendar() {
     const [modalError, setModalError] = useState<string>('');
     /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
-    const [availableDays, setAvailableDays] = useState<number>(0); 
+    const [availableDays, setAvailableDays] = useState<number>(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,8 +67,8 @@ export default function MyCalendar() {
 
     const fetchAvailableDays = async () => {
         try {
-            const count = await employeeService.getEmployeesAvailableVacationDays();
-            setAvailableDays(count);
+            const result = await employeeService.getEmployeesAvailableVacationDays();
+            setAvailableDays(result);
         } catch (error) {
             console.error('Error fetching available days:', error);
         }
@@ -135,14 +135,13 @@ export default function MyCalendar() {
         const event = clickInfo.event;
 
         const startDate = new Date(event.start).toISOString()
-            .replace(/T/, ' ')
-            .replace(/\..+/, '');
+            .split('T')[0]
         const endDate = new Date(event.end).toISOString()
-            .replace(/T/, ' ')
-            .replace(/\..+/, '');
+            .split('T')[0]
         const requestedAt = new Date(event.extendedProps.requestedAt).toISOString()
             .replace(/T/, ' ')
-            .replace(/\..+/, '');
+            .replace(/\.\d+Z$/, '');
+            // pakeist i be sekundziu, kol kas neveikia sitas aproach
 
         alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}`);
     };
@@ -155,7 +154,6 @@ export default function MyCalendar() {
                     return null;
                 } else {
                     uniqueEventIds.add(eventId);
-                    // const color = vacation.confirmed ? '#00b5ad' : 'rgba(0, 181, 173, 0.5)';
                     const styles = vacation.confirmed ? 'Calendar__VacationDay--confirmed' : 'Calendar__VacationDay--unconfirmed';
                     return {
                         title: `${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`,

@@ -218,13 +218,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeTag(Tag $tag): static
-    {
-        $this->tags->removeElement($tag);
-
-        return $this;
-    }
-
     public function getAvailableDays(): int
     {
         return $this->availableDays;
@@ -233,6 +226,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvailableDays(int $availbleDays): static
     {
         $this->availableDays = $availbleDays;
+
+        if ($this->availableDays < 0) {
+            $this->availableDays = 0;
+        }
 
         return $this;
     }
