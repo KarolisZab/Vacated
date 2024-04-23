@@ -256,4 +256,17 @@ class UserManager
 
         return $userRepository->countAllUsers($filter);
     }
+
+    public function getAvailableDaysForUser(string $email): ?int
+    {
+        $user = $this->getUserByEmail($email);
+
+        if ($user === null) {
+            return null;
+        }
+
+        $availableDays = $user->getAvailableDays();
+
+        return $availableDays;
+    }
 }

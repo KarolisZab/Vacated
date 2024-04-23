@@ -9,6 +9,7 @@ import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react'
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
+import employeeService from '../services/employee-service';
 
 export default function MyCalendar() {
     const navigate = useNavigate();
@@ -39,6 +40,7 @@ export default function MyCalendar() {
     const [modalError, setModalError] = useState<string>('');
     /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
+    const [availableDays, setAvailableDays] = useState<number>(0); 
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,7 +62,17 @@ export default function MyCalendar() {
         };
     
         fetchData();
+        fetchAvailableDays();
     }, [calendarDays]);
+
+    const fetchAvailableDays = async () => {
+        try {
+            const count = await employeeService.getEmployeesAvailableVacationDays();
+            setAvailableDays(count);
+        } catch (error) {
+            console.error('Error fetching available days:', error);
+        }
+    };
 
     // cia gal async await reik
     const handleDatesSet = () => {
@@ -100,6 +112,8 @@ export default function MyCalendar() {
                     dateTo: selectedDate.endDate,
                     note: note
                 });
+
+                await fetchAvailableDays();
 
                 const { startDate, endDate } = calendarDays;
                 const updatedVacations = await vacationService.getConfirmedAndSelfRequestedVacations(startDate, endDate);
@@ -141,13 +155,14 @@ export default function MyCalendar() {
                     return null;
                 } else {
                     uniqueEventIds.add(eventId);
-                    const color = vacation.confirmed ? '#00b5ad' : 'rgba(0, 181, 173, 0.5)';
+                    // const color = vacation.confirmed ? '#00b5ad' : 'rgba(0, 181, 173, 0.5)';
+                    const styles = vacation.confirmed ? 'Calendar__VacationDay--confirmed' : 'Calendar__VacationDay--unconfirmed';
                     return {
                         title: `${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`,
                         start: vacation.dateFrom,
                         end: vacation.dateTo,
                         requestedAt: vacation.requestedAt,
-                        color: color
+                        classNames: [styles]
                     };
                 }
             })
@@ -166,7 +181,7 @@ export default function MyCalendar() {
                 end: endDate.toISOString(),
                 allDay: true,
                 color: '#cb983a'  /*'#b03a2e'*/,
-                display: 'background',
+                display: 'background'
             };
         });
         return reservedEvents;
@@ -234,6 +249,9 @@ export default function MyCalendar() {
                         />
                     </Modal.Actions>
                 </Modal>
+                <div>
+                    <p>Available vacation days: {availableDays}/20</p>
+                </div>
                 <div className="request-button">
                     <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
                         Request vacation

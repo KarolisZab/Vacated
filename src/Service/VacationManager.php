@@ -228,14 +228,6 @@ class VacationManager
         return $vacationRepository->getVacations($limit, $offset, /*$filter*/);
     }
 
-    // public function getVacationsCount(?string $filter = null): int
-    // {
-    //     /** @var \App\Repository\UserRepository $userRepository */
-    //     $userRepository = $this->entityManager->getRepository(User::class);
-
-    //     return $userRepository->countAllVacations($filter);
-    // }
-
     /**
      * @return array<string, Vacation[]>
      */
@@ -321,7 +313,19 @@ class VacationManager
 
     private function calculateVacationDays(\DateTimeImmutable $from, \DateTimeImmutable $to): int
     {
-        $interval = $to->diff($from);
-        return $interval->days + 1;
+        $days = 0;
+        $currentDay = clone $from;
+
+        while ($currentDay <= $to) {
+            $dayOfWeek = (int)date('w', $currentDay->getTimestamp());
+
+            if ($dayOfWeek !== 0 && $dayOfWeek !== 6) {
+                $days++;
+            }
+
+            $currentDay = $currentDay->modify('+1 day');
+        }
+
+        return $days;
     }
 }

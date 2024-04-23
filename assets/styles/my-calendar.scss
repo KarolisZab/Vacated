@@ -68,6 +68,7 @@
     // display: flex;
     // justify-content: center; /* Center horizontally */
     // align-items: center; /* Center vertically */
+    // reikia height: 100% arba width 100%
 }
 
 .loader {
@@ -75,5 +76,17 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.Calendar__VacationDay--confirmed {
+    background-color: #00b5ad !important;
+    border: 1px solid #00b5ad !important;
+    display: block;
+}
+  
+.Calendar__VacationDay--unconfirmed {
+    background-color: rgba(0, 181, 173, 0.5);
+    border: 1px solid #00b5ad;
+    border-style: dashed;
 }
   
