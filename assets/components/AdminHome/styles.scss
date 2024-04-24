@@ -133,3 +133,16 @@
         width: 100%;
     }
 }
+
+.admin-chart-container {
+    width: 996px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto; 
+
+    .google-visualization-axis-label {
+        fill: #ffffff; 
+    }
+}

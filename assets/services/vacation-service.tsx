@@ -1,5 +1,5 @@
 import apiService from "./api-service";
-import { CalendarDays, VacationType } from '../services/types';
+import { CalendarDays, VacationType, MonthlyVacationStatistics } from '../services/types';
 
 const URL = '/vacations/';
 
@@ -45,6 +45,10 @@ class VacationService {
 
     async getPendingVacationsDaysCountInThisYear(): Promise<number> {
         return await apiService.get<number>('/admin/pending-vacations');
+    }
+
+    async getMonthlyVacationStatistics(): Promise<MonthlyVacationStatistics> {
+        return await apiService.get<MonthlyVacationStatistics>('/admin/monthly-vacation-statistics');
     }
 }
 

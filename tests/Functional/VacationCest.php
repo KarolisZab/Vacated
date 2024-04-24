@@ -461,4 +461,14 @@ class VacationCest
             'reviewedBy' => null,
         ]);
     }
+
+    public function testGetMonthlyStatisticsInAYear(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/admin/monthly-vacation-statistics');
+
+        $I->seeResponseCodeIs(201);
+    }
 }

@@ -14,7 +14,7 @@ class VacationValidator extends ConstraintValidator
     /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
     private $reservedDayRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, $reservedDayRepository)
     {
         $this->reservedDayRepository = $entityManager->getRepository(ReservedDay::class);
     }

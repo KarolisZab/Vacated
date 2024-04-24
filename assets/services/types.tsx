@@ -55,3 +55,7 @@ export type TagType = {
     name: string;
     colorCode: string;
 }
+
+export type MonthlyVacationStatistics = {
+    [month: string]: string;
+  };
