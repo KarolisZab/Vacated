@@ -97,7 +97,7 @@ class ReservedDayController extends AbstractController
     public function getAllReservedDays(Request $request)
     {
         $page = $request->query->get('page', 1);
-        $limit = $request->query->get('limit', 10);
+        $limit = $request->query->get('limit', 9999);
         $filter = $request->query->get('filter');
 
         $reservedDays = $this->reservedDayManager->getAllReservedDays($limit, ($page - 1) * $limit, $filter);

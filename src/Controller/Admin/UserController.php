@@ -27,7 +27,7 @@ class UserController extends AbstractController
     public function getUsers(Request $request)
     {
         $page = $request->query->get('page', 1);
-        $limit = $request->query->get('limit', 10);
+        $limit = $request->query->get('limit', 9999);
         $filter = $request->query->get('filter');
 
         $users = $this->userManager->getUsers($limit, ($page - 1) * $limit, $filter);

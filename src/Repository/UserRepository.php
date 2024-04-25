@@ -32,10 +32,7 @@ class UserRepository extends ServiceEntityRepository
 
     public function getUsers(int $limit = 10, int $offset = 0, ?string $filter = null): array
     {
-        $qb = $this->createQueryBuilder('u')
-            ->setFirstResult($offset)
-            ->setMaxResults($limit);
-
+        $qb = $this->createQueryBuilder('u');
         if (null !== $filter) {
             $qb
                 ->where('u.firstName LIKE :filter OR 
@@ -44,6 +41,9 @@ class UserRepository extends ServiceEntityRepository
                     u.phoneNumber LIKE :filter')
                 ->setParameter('filter', '%' . $filter . '%');
         }
+        $qb
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
 
         return $qb->getQuery()->getResult();
     }

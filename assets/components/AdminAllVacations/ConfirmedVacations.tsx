@@ -3,6 +3,7 @@ import { VacationType } from '../../services/types';
 import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
 import { useState } from 'react';
 import vacationService from '../../services/vacation-service';
+import { formatDateTime } from '../utils/dateUtils';
 
 interface Props {
     vacations: VacationType[];
@@ -21,24 +22,10 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
         dateTo: '',
         note: ''
     });
-
-    const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
-        const date = new Date(dateTimeString);
-        if (includeTime) {
-            return date
-                .toISOString()
-                .split('T')[0];
-        } else {
-            return date
-                .toISOString()
-                .replace('T', ' ')
-                .replace(/\..+/, '');
-        }
-    };
     
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>There is no confirmed vacations yet.</Message>;
+        return <Message>There are no confirmed vacations yet.</Message>;
     }
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
