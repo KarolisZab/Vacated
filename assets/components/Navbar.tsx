@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.scss";
 import authService, { User } from "../services/auth-service";
-import { Icon } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 
 export default function Navbar() {
+    const navigate = useNavigate();
     const [isNavbarExpanded, setIsNavbarExpanded] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
@@ -21,6 +22,7 @@ export default function Navbar() {
         return () => {
             authService.unsubscribe(handleAuthenticationChange);
         };
+
     }, []);
 
     useEffect(() => {
@@ -33,13 +35,56 @@ export default function Navbar() {
 
     const handleLogout = () => {
         authService.logout();
+        navigate('/login');
     };
 
     return (
         <nav className="navigation">
-            <Link to="/" className="brand-name">
-                Vacated
-            </Link>
+            <div className="links-container">
+                <Link to="/" className="brand-name">
+                    Vacated
+                </Link>
+                <div
+                    className={
+                        isNavbarExpanded ? "navigation-menu expanded" : "navigation-menu"
+                    }
+                >
+                    <ul>
+                        {isAuthenticated && (
+                            <>
+                                <li>
+                                    <Link to="/">Home</Link>
+                                </li>
+                                <li>
+                                    <Link to="/vacations">My Vacations</Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                </div>
+            </div>
+            <div className="right-container">
+                {isAuthenticated && (
+                    <>
+                        {isAdmin && (
+                            <ul>
+                                <li>
+                                    <Link to="/admin">
+                                        <Button basic color="teal">Admin dashboard</Button>
+                                    </Link>
+                                </li>
+                            </ul>
+                        )}
+                        <ul>
+                            <li>
+                                <Button icon basic onClick={handleLogout} inverted>
+                                    <Icon name='sign-out' size="large"/> {/* Use the 'log out' icon */}
+                                </Button>
+                            </li>
+                        </ul>
+                    </>
+                )}
+            </div>
             <button
                 className="hamburger"
                 onClick={() => {
@@ -48,29 +93,6 @@ export default function Navbar() {
             >
                 <Icon name='bars' size="large" className="icon"/>
             </button>
-            <div
-                className={
-                    isNavbarExpanded ? "navigation-menu expanded" : "navigation-menu"
-                }
-            >
-                <ul>
-                    {isAuthenticated && (
-                        <>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            {isAdmin && (
-                                <li>
-                                    <Link to="/employees">Employees</Link>
-                                </li>
-                            )}
-                            <li>
-                                <Link to="/login" onClick={handleLogout}>Logout</Link>
-                            </li>
-                        </>
-                    )}
-                </ul>
-            </div>
         </nav>
     );
 }

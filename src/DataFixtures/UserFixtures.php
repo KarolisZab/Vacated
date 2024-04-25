@@ -20,21 +20,24 @@ class UserFixtures extends Fixture
         $password = $this->passwordHasher->hashPassword($admin1, 'test');
         $admin1->setEmail("jwttest@test.com")
             ->setPassword($password)
-            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
+            ->setIsAdmin(true);
         $manager->persist($admin1);
 
         $admin2 = new User();
         $password = $this->passwordHasher->hashPassword($admin2, 'test');
         $admin2->setEmail("expiration@test")
             ->setPassword($password)
-            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
+            ->setIsAdmin(true);
         $manager->persist($admin2);
 
         $admin3 = new User();
         $password = $this->passwordHasher->hashPassword($admin3, 'test');
         $admin3->setEmail("apitest@test.com")
             ->setPassword($password)
-            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
+            ->setIsAdmin(true);
         $manager->persist($admin3);
         $this->addReference('admin_user2', $admin3);
 
@@ -42,7 +45,8 @@ class UserFixtures extends Fixture
         $password = $this->passwordHasher->hashPassword($admin4, 'test');
         $admin4->setEmail("vacationtest@test.com")
             ->setPassword($password)
-            ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
+            ->setIsAdmin(true);
         $manager->persist($admin4);
         $this->addReference('admin_user', $admin4);
 

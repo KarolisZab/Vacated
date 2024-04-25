@@ -1,0 +1,22 @@
+.reserved-days-list {
+    h1 {
+        margin-top: 10px;
+        margin-left: 2rem;
+    }
+    
+    .loader-container {
+        position: relative;
+    }
+    
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .reserve-button {
+        margin-left: 2rem;
+        margin-bottom: 16px;
+    }
+}

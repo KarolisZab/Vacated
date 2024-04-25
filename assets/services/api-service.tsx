@@ -1,19 +1,21 @@
-/* eslint-disable */
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import authHeader from './auth-header';
 import { API_URL } from '../config';
 import handleError from './handler';
 
 class ApiService {
-    private getConfig(): AxiosRequestConfig<any> {
+    /* eslint-disable-next-line */
+    private getConfig(params: Object | null = null): AxiosRequestConfig<any> {
         return {
             baseURL: API_URL,
-            headers: authHeader()
+            headers: authHeader(),
+            params
         }
     }
 
-    async get<T>(url: string): Promise<T> {
-        return await axios.get<T>(url, this.getConfig())
+    /* eslint-disable-next-line */
+    async get<T>(url: string, params: Object | null = null): Promise<T> {
+        return await axios.get<T>(url, this.getConfig(params))
             .then((response) => response.data)
             .catch((error: AxiosError) => {
                 handleError(error);
@@ -21,8 +23,8 @@ class ApiService {
             });
     }
 
+    /* eslint-disable-next-line */
     async post<T>(url: string, data: any): Promise<T> {
-
         return await axios.post<T>(url, data, this.getConfig())
             .then((response) => response.data)
             .catch((error: AxiosError) => {
@@ -31,6 +33,7 @@ class ApiService {
             });
     }
     
+    /* eslint-disable-next-line */
     async patch<T>(url: string, data: any): Promise<T> {
         return await axios.patch<T>(url, data, this.getConfig())
             .then((response) => response.data)
@@ -42,10 +45,10 @@ class ApiService {
     
     async delete(url: string): Promise<void> {
         await axios.delete(url, this.getConfig())
-        .catch((error: AxiosError) => {
-            handleError(error);
-            throw error;
-        });
+            .catch((error: AxiosError) => {
+                handleError(error);
+                throw error;
+            });
     }
 }
 

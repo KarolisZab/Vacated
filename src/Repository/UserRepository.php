@@ -13,6 +13,50 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function countAllUsers(?string $filter = null): int
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(u)');
+
+        if (null !== $filter) {
+            $qb
+                ->where('u.firstName LIKE :filter OR 
+                    u.lastName LIKE :filter OR 
+                    u.email LIKE :filter OR 
+                    u.phoneNumber LIKE :filter')
+                ->setParameter('filter', '%' . $filter . '%');
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getUsers(int $limit = 10, int $offset = 0, ?string $filter = null): array
+    {
+        $qb = $this->createQueryBuilder('u');
+        if (null !== $filter) {
+            $qb
+                ->where('u.firstName LIKE :filter OR 
+                    u.lastName LIKE :filter OR 
+                    u.email LIKE :filter OR 
+                    u.phoneNumber LIKE :filter')
+                ->setParameter('filter', '%' . $filter . '%');
+        }
+        $qb
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getEmployeesCount(?string $filter = null): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u)')
+            ->where('u.isAdmin = FALSE')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

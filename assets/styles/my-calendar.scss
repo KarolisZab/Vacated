@@ -1,0 +1,60 @@
+.fc-toolbar-title {
+    color: white;
+}
+
+.fc-day-sun,
+.fc-day-sat { 
+    background-color: #303030;
+}
+
+.fc-day-sat .fc-daygrid-day-events {
+    display: none !important;
+}
+
+.fc-day-sun .fc-daygrid-day-events {
+    display: none !important;
+}
+
+.fc-col-header-cell {
+    background-color: rgb(48, 48, 48);
+    color: white !important;
+}
+
+.fc-daygrid-day-number {
+    color: white;
+}
+
+// 
+.fc-daygrid-day {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.fc-daygrid-event-dot {
+    display: none;
+}
+//
+
+.fc-day-today {
+    background-color: #5f5f5f33 !important;
+}
+
+.calendar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.selected-dates {
+    width: 30%;
+}
+
+.request-button {
+    // margin-left: auto;
+    margin: 0; 
+}
+
+.calendar {
+    width: 70%;
+}

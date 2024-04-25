@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { useRouteError } from "react-router-dom";
 import Navbar from './components/Navbar';
+import AdminNavbar from './components/AdminNavbar';
 import './styles/error-page.scss'
 
 type ErrorResponse = {

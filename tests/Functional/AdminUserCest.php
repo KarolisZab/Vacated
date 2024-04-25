@@ -28,9 +28,10 @@ class CreateAdminCest
         $I->assertEquals(0, count($usersBefore));
 
         $this->userManager->createAdmin('karolis@karolis', 'testas');
-        $users = $repository->findBy(['email' => 'karolis@karolis']);
+        $user = $repository->findOneBy(['email' => 'karolis@karolis']);
 
-        $I->assertEquals(1, count($users));
+        $I->assertNotNull($user);
+        $I->assertTrue($user->isAdmin());
     }
 
     public function testCreateAdminUserIfUserWithEmailAlreadyExists(FunctionalTester $I)

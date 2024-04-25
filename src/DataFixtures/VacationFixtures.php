@@ -23,6 +23,13 @@ class VacationFixtures extends Fixture implements DependentFixtureInterface
 
         $vacation = new Vacation();
         $vacation->setRequestedBy($user)
+            ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-04-29'))
+            ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-05'));
+
+        $manager->persist($vacation);
+
+        $vacation = new Vacation();
+        $vacation->setRequestedBy($user)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-13'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-15'));
 

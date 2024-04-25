@@ -28,6 +28,16 @@ class ReservedDayRepository extends ServiceEntityRepository
             ->andWhere('r.dateTo >= :from')
             ->setParameter('from', $from)
             ->setParameter('to', $to)
+            ->orderBy('r.dateFrom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPaginatedReservedDays(int $limit, int $offset): array
+    {
+        return $this->createQueryBuilder('r')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
     }

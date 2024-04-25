@@ -2,7 +2,6 @@
 
 namespace App\Tests\Functional;
 
-use App\DTO\VacationDTO;
 use App\Entity\Vacation;
 use App\Service\UserManager;
 use App\Service\VacationManager;
@@ -26,10 +25,14 @@ class VacationCest
     {
         $token = $I->grabTokenForUser('vacationtest@test.com');
 
+        $dateFrom = (new \DateTimeImmutable())->modify('+1 day');
+        $dateTo = (new \DateTimeImmutable())->modify('+4 days');
+
+
         $I->amBearerAuthenticated($token);
         $I->sendRequest('post', '/api/request-vacation', [
-            'dateFrom' => '2024-04-12',
-            'dateTo' => '2024-04-15',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Uzrasiukas testui'
         ]);
 
@@ -38,8 +41,8 @@ class VacationCest
             'requestedBy' => ['email' => 'vacationtest@test.com'],
             'note' => 'Uzrasiukas testui',
             'confirmed' => false,
-            'dateFrom' => (new \DateTimeImmutable('2024-04-12 00:00:00'))->format('c'),
-            'dateTo' => (new \DateTimeImmutable('2024-04-15 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format('c'),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'reviewedBy' => null
         ]);
     }
@@ -56,29 +59,34 @@ class VacationCest
         /** @var Vacation $vacation */
         $vacation = $repository->findOneBy(['requestedBy' => $user->getId()]);
 
+        $dateFrom = (new \DateTimeImmutable())->modify('+1 day');
+        $dateTo = (new \DateTimeImmutable())->modify('+5 days');
+
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
-            'dateFrom' => '2024-04-12',
-            'dateTo' => '2024-04-17',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Keiciasi planai'
         ]);
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'dateFrom' => (new \DateTimeImmutable('2024-04-12 00:00:00'))->format(\DateTimeImmutable::ATOM),
-            'dateTo' => (new \DateTimeImmutable('2024-04-17 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'note' => 'Keiciasi planai'
         ]);
+
+        $newDateTo = $dateFrom->modify('+2 days');
 
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
             'dateFrom' => null,
-            'dateTo' => '2024-04-15',
+            'dateTo' => $newDateTo->format('Y-m-d'),
             'note' => 'Keiciasi planai'
         ]);
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'dateFrom' => (new \DateTimeImmutable('2024-04-12 00:00:00'))->format(\DateTimeImmutable::ATOM),
-            'dateTo' => (new \DateTimeImmutable('2024-04-15 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
+            'dateTo' => $newDateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'confirmed' => false
         ]);
     }
@@ -104,24 +112,27 @@ class VacationCest
             'reviewedBy' => ['email' => 'vacationtest@test.com']
         ]);
 
+        $dateFrom = (new \DateTimeImmutable())->modify('+9 days');
+        $dateTo = $dateFrom->modify('+6 days');
+
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
-            'dateFrom' => '2024-04-21',
-            'dateTo' => '2024-04-27',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Keiciasi planai'
         ]);
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'dateFrom' => (new \DateTimeImmutable('2024-04-21 00:00:00'))->format(\DateTimeImmutable::ATOM),
-            'dateTo' => (new \DateTimeImmutable('2024-04-27 23:59:59'))->format(\DateTimeImmutable::ATOM),
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'note' => 'Keiciasi planai',
             'confirmed' => false
         ]);
 
         $I->sendRequest('patch', '/api/update-vacation/22222', [
-            'dateFrom' => '2024-04-14',
-            'dateTo' => '2024-04-15',
-            'note' => 'Keiciasi planai'
+            'dateFrom' => null,
+            'dateTo' => null,
+            'note' => ''
         ]);
 
         $I->seeResponseCodeIs(404);
@@ -160,15 +171,21 @@ class VacationCest
         /** @var Vacation $vacation */
         $vacation = $repository->findOneBy(['requestedBy' => $user->getId()]);
 
+        $dateFrom = (new \DateTimeImmutable())->modify('+7 days');
+        $dateTo = $dateFrom->modify('+1 day');
+
         $I->sendRequest('post', '/api/admin/reserved-day', [
-            'dateFrom' => '2024-04-19',
-            'dateTo' => '2024-04-20',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Important launch'
         ]);
 
+        $dateFrom = $dateFrom->modify('-1 day');
+        $dateTo = $dateFrom->modify('+7 days');
+
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [
-            'dateFrom' => '2024-04-18',
-            'dateTo' => '2024-04-25',
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Yra rezervuotu dienu'
         ]);
 
@@ -194,6 +211,7 @@ class VacationCest
         ]);
 
         $I->seeResponseCodeIs(400);
+        $I->seeResponseContains('You are not authorized to update this vacation request.');
     }
 
     public function testRejectVacationRequest(FunctionalTester $I)
@@ -274,7 +292,7 @@ class VacationCest
         $I->seeResponseCodeIs(404);
     }
 
-    public function testIfUserCanConfirmVacationRequest(FunctionalTester $I)
+    public function testIfUserCantConfirmVacationRequest(FunctionalTester $I)
     {
         $token = $I->grabTokenForUser('userconfirmtest@test.com');
         $I->amBearerAuthenticated($token);
@@ -356,15 +374,8 @@ class VacationCest
         $token = $I->grabTokenForUser('vacationtest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $user = $this->userManager->getUserByEmail('vacationtest@test.com');
-
-        $vacationDTO1 = new VacationDTO('2024-04-05', '2024-04-07');
-        $vacationDTO2 = new VacationDTO('2024-04-30', '2024-05-01');
-        $this->vacationManager->requestVacation($user, $vacationDTO1);
-        $this->vacationManager->requestVacation($user, $vacationDTO2);
-
         $I->sendRequest('get', '/api/vacations', [
-            'startDate' => '2024-04-05',
+            'startDate' => '2024-04-01',
             'endDate' => '2024-04-30'
         ]);
 
@@ -375,5 +386,35 @@ class VacationCest
             '2024-04-29' => [],
             '2024-04-30' => ['requestedBy' => ['email' => 'vacationtest@test.com']]
         ]);
+    }
+
+    public function testGetAllVacations(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/admin/all-vacations');
+
+        $I->seeResponseCodeIs(200);
+    }
+
+    public function testGetAllCurrentUserVacations(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/user-vacations');
+
+        $I->seeResponseCodeIs(200);
+    }
+
+    public function testGetAllConfirmedDaysInAYearCount(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/admin/all-confirmed-days');
+
+        $I->seeResponseCodeIs(200);
     }
 }

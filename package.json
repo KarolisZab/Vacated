@@ -28,9 +28,15 @@
         "dev-server": "encore dev-server",
         "dev": "encore dev",
         "watch": "encore dev --watch",
-        "build": "encore production --progress"
+        "build": "encore production --progress",
+        "lint": "yarn run eslint ./assets"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.11",
+        "@fullcalendar/daygrid": "^6.1.11",
+        "@fullcalendar/interaction": "^6.1.11",
+        "@fullcalendar/react": "^6.1.11",
+        "@fullcalendar/timegrid": "^6.1.11",
         "axios": "^1.6.8",
         "bootstrap": "^5.3.3",
         "react-bootstrap": "^2.10.2",

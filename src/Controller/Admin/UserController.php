@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\DTO\UserDTO;
 use App\Service\UserManager;
+use App\Trait\LoggerTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,18 +15,27 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/admin')]
 class UserController extends AbstractController
 {
+    use LoggerTrait;
+
     public function __construct(
         private SerializerInterface $serializer,
         private UserManager $userManager
     ) {
     }
 
-    #[Route('/users', name: 'get_all_users', methods: ['GET'])]
-    public function getAllUsers(Request $request)
+    #[Route('/users', name: 'get_users', methods: ['GET'])]
+    public function getUsers(Request $request)
     {
-        $allUsers = $this->userManager->getAllUsers();
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 9999);
+        $filter = $request->query->get('filter');
 
-        return new JsonResponse($this->serializer->serialize($allUsers, 'json'), JsonResponse::HTTP_OK, [], true);
+        $users = $this->userManager->getUsers($limit, ($page - 1) * $limit, $filter);
+        $usersCount = $this->userManager->getUsersCount($filter);
+
+        $results = ['totalItems' => $usersCount, 'items' => $users];
+
+        return new JsonResponse($this->serializer->serialize($results, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
     #[Route('/users/{id}', name: 'get_user', methods: ['GET'])]
@@ -69,6 +79,19 @@ class UserController extends AbstractController
             return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
         } catch (\Exception $exception) {
             return new JsonResponse($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('/employee-count', name: 'get_users_count_with_role_user_only', methods: ['GET'])]
+    public function getUsersCountWithRoleUserOnly(Request $request)
+    {
+        try {
+            $count = $this->userManager->getEmployeeCount();
+
+            return new JsonResponse($count, JsonResponse::HTTP_OK);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            return new JsonResponse($e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
         }
     }
 }

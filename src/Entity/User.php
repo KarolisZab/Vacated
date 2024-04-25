@@ -43,6 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(groups: ['update'])]
     protected string $phoneNumber = '';
 
+    #[ORM\Column(type: "boolean")]
+    protected bool $isAdmin = false;
+
     /**
      * @var string The hashed password
      */
@@ -104,6 +107,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
         return false;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): static
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
     }
 
     /**
