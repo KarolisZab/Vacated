@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import multiMonthPlugin from '@fullcalendar/multimonth';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType, EmployeeType } from '../services/types';
 import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
@@ -259,7 +260,7 @@ export default function MyCalendar() {
 
             <FullCalendar
                 ref={calendarRef}
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
                 initialView="dayGridMonth"
                 selectable={true}
                 events={[...mapCalendarList(), ...mapReservedDays(), ...mapTagsList()]}
@@ -276,7 +277,7 @@ export default function MyCalendar() {
                 headerToolbar={{
                     start: 'prev,next today',
                     center: 'title',
-                    end: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    end: 'dayGridMonth,multiMonthYear'
                 }}
             />
         </div>

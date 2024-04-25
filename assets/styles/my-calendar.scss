@@ -28,12 +28,10 @@
     color: white;
 }
 
-// 
 .fc-daygrid-day {
     width: 50px !important;
     height: 50px !important;
 }
-//
 
 .fc-day-today {
     background-color: #5f5f5f33 !important;
@@ -52,7 +50,6 @@
 
 .request-button {
     margin-left: auto;
-    // margin: 0;
 }
 
 .calendar {
@@ -89,4 +86,11 @@
     border: 1px solid #00b5ad;
     border-style: dashed;
 }
-  
+
+.fc .fc-multimonth-daygrid {
+    background-color: rgb(31, 31, 32);
+}
+ 
+.fc .fc-multimonth-header {
+    color: white;
+}
