@@ -1,14 +1,10 @@
 import { VacationType } from '../../services/types';
-import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
-import { useState } from 'react';
-import vacationService from '../../services/vacation-service';
+import { Message, Table } from 'semantic-ui-react';
 import { formatDateTime } from '../utils/dateUtils';
-import { useParams } from 'react-router';
 
 interface Props {
     vacations: VacationType[];
     updateVacations: () => void;
-
 }
 
 /* eslint-disable-next-line */
