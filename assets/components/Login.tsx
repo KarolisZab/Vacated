@@ -10,19 +10,7 @@ const Login: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [isLoading, setLoading] = useState<boolean>(false);
 
-    useEffect(() => {
-        const loginWithGoogle = async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            //loader
-
-            if (code) {
-                await authService.loginWithCode(code);
-                navigate('/');
-            }
-        }
-        
+    useEffect(() => {        
         const checkAuthentication = async () => {
             if (authService.isAuthenticated()) {
                 navigate('/');
@@ -30,7 +18,6 @@ const Login: React.FC = () => {
         };
         
         checkAuthentication();
-        loginWithGoogle();
     }, [navigate]);
 
     const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,8 +39,6 @@ const Login: React.FC = () => {
         } finally {
             setLoading(false);
         }
-
-        // TODO: per visa page loaderis OR tik ant formos loaderis OR buttona padisablint ir buttono loaderi padaryt
     };
 
     return (
