@@ -71,17 +71,19 @@ class StatisticsManager
         return $statisticsBucket;
     }
 
-    public function getVacationPercentage(): float
+    public function getVacationPercentage(): array
     {
         $employeeCount = $this->userManager->getUsersCount();
         $totalAvailableDays = $employeeCount * 20;
 
         $totalUsedDays = $this->getTotalUsedVacationDays();
 
-        $percentage = ($totalUsedDays / $totalAvailableDays) * 100;
-        $roundedPercentage = round($percentage, 1);
+        $remainingAvailableDays = $totalAvailableDays - $totalUsedDays;
 
-        return $roundedPercentage;
+        return [
+            "Used vacation days" => $totalUsedDays,
+            "Remaining vacation days" => $remainingAvailableDays,
+        ];
     }
 
     private function getTotalUsedVacationDays(): int

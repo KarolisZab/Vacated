@@ -58,4 +58,9 @@ export type TagType = {
 
 export type MonthlyVacationStatistics = {
     [month: string]: string;
-  };
+};
+
+export type PieChartType = {
+    task: string;
+    value: number;
+}

@@ -14,29 +14,41 @@ export default function Home() {
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
     const [chartData, setChartData] = useState<any[][]>([]);
+    const [pieChartData, setPieChartData] = useState<any[][]>([]);
+
 
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
-                const [confirmedDays, pendingDays, reservedDays, employeeCount, monthlyVacationStatistics] = await Promise.all([
+                const [confirmedDays, pendingDays, reservedDays, employeeCount, monthlyVacationStatistics, vacationProgress] = await Promise.all([
                     vacationService.getConfirmedVacationsDaysCountInThisYear(),
                     vacationService.getPendingVacationsDaysCountInThisYear(),
                     reservedDayService.getReservedDaysCount(),
                     employeeService.getEmployeesCount(),
-                    vacationService.getMonthlyVacationStatistics()
+                    vacationService.getMonthlyVacationStatistics(),
+                    vacationService.getVacationProgress()
                 ]);
 
                 setConfirmedDays(confirmedDays);
                 setPendingDays(pendingDays);
                 setReservedDays(reservedDays);
                 setEmployeeCount(employeeCount);
-                console.log(monthlyVacationStatistics);
 
                 const chartData = [["Month", "Days"]];
                 for (const [month, daysCount] of Object.entries(monthlyVacationStatistics)) {
                     chartData.push([month, daysCount]);
                 }
                 setChartData(chartData);
+                console.log(monthlyVacationStatistics)
+
+                const pieChartData = [
+                    ["Task", "Value"],
+                    ...Object.entries(vacationProgress).map(([task, value]) => [task, value])
+                ];
+                  
+                setPieChartData(pieChartData);
+                console.log(vacationProgress);
+                console.log(pieChartData);
             } catch (error) {
                 setError('Error' + (error as Error).message);
             } finally {
@@ -122,6 +134,21 @@ export default function Home() {
                             colors: ['#FB7A21'],
                         }}
                     />
+                    <div>
+                        <Chart
+                            chartType="PieChart"
+                            width="100%"
+                            height="400px"
+                            data={pieChartData}
+                            options={{
+                                title: "Vacation Usage Statistics",
+                                titleTextStyle: { color: '#FFF' },
+                                legend: { position: "right", textStyle:{color: '#FFF'} },
+                                backgroundColor: 'rgb(31, 31, 32)',
+                                colors: ['#FF0000', '#00b5ad'],
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

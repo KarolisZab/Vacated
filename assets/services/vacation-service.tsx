@@ -1,5 +1,5 @@
 import apiService from "./api-service";
-import { CalendarDays, VacationType, MonthlyVacationStatistics } from '../services/types';
+import { CalendarDays, VacationType, MonthlyVacationStatistics, PieChartType } from '../services/types';
 
 const URL = '/vacations/';
 
@@ -49,6 +49,10 @@ class VacationService {
 
     async getMonthlyVacationStatistics(): Promise<MonthlyVacationStatistics> {
         return await apiService.get<MonthlyVacationStatistics>('/admin/monthly-vacation-statistics');
+    }
+
+    async getVacationProgress(): Promise<PieChartType> {
+        return await apiService.get<PieChartType>(`/admin/vacation-percentage`);
     }
 }
 
