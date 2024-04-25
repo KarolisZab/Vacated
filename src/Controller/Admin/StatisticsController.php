@@ -33,4 +33,16 @@ class StatisticsController extends AbstractController
             return new JsonResponse($e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
         }
     }
+
+    #[Route('/api/admin/vacation-percentage', name: 'vacation_percentage', methods: ['GET'])]
+    public function getVacationPercentage(Request $request)
+    {
+        try {
+            $percentage = $this->statisticsManager->getVacationPercentage();
+
+            return new JsonResponse($percentage, JsonResponse::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
+        }
+    }
 }

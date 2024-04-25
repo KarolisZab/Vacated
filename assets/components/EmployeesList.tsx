@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Table } from 'semantic-ui-react';
+import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
 
@@ -15,6 +15,7 @@ const EmployeesList: React.FC = () => {
     const [filter, setFilter] = useState<string>('');
     /* eslint-disable-next-line */
     const [limit, setLimit] = useState<number>(10);
+    const [vacationPercentage, setVacationPercentage] = useState<number>(0);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -34,6 +35,20 @@ const EmployeesList: React.FC = () => {
         fetchEmployees();
     }, [page, filter]);
 
+    useEffect(() => {
+        const fetchVacationPercentage = async () => {
+            try {
+                const percentage = await employeeService.getVacationProgress();
+                setVacationPercentage(percentage);
+                console.log(percentage);
+            } catch (error) {
+                setError('Error' + (error as Error).message);
+            }
+        };
+
+        fetchVacationPercentage();
+    }, [employees]);
+
     /* eslint-disable-next-line */
     const handlePaginationChange = (event: React.MouseEvent, data: any) => {
         setPage(data.activePage);
@@ -46,6 +61,16 @@ const EmployeesList: React.FC = () => {
     const handleCreateUser = () => {
         navigate('/admin/create-user');
     }
+
+    const getColor = (percentage: number): SemanticCOLORS => {
+        if (percentage <= 35) {
+            return 'green';
+        } else if (percentage <= 70) {
+            return 'yellow';
+        } else {
+            return 'red';
+        }
+    };
 
     return (
         <div className="employees-list">
@@ -110,14 +135,16 @@ const EmployeesList: React.FC = () => {
                             ))}
                         </Table.Body>
                     </Table>
-                    {totalItems > 0 && (
+                    <Progress percent={vacationPercentage} progress color={getColor(vacationPercentage)}/>
+
+                    {/* {totalItems > 0 && (
                         <Pagination
                             totalPages={Math.ceil(totalItems / 10)}
                             activePage={page}
                             onPageChange={handlePaginationChange}
                             size="mini"
                         />
-                    )}
+                    )} */}
                 </div>
             </div>
         </div>

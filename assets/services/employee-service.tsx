@@ -30,6 +30,10 @@ class EmployeeService {
         return await apiService.get<number>(`/admin/employee-count`);
     }
 
+    async getVacationProgress(): Promise<number> {
+        return await apiService.get<number>(`/admin/vacation-percentage`);
+    }
+
     async createUser(data: EmployeeRegistrationData): Promise<void> {
         return await apiService.post("/admin/create-user", data);
     }

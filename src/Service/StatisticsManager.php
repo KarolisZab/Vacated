@@ -14,6 +14,7 @@ class StatisticsManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
+        private UserManager $userManager
     ) {
     }
 
@@ -68,5 +69,30 @@ class StatisticsManager
         }
 
         return $statisticsBucket;
+    }
+
+    public function getVacationPercentage(): float
+    {
+        $employeeCount = $this->userManager->getUsersCount();
+        $totalAvailableDays = $employeeCount * 20;
+
+        $totalUsedDays = $this->getTotalUsedVacationDays();
+
+        $percentage = ($totalUsedDays / $totalAvailableDays) * 100;
+        $roundedPercentage = round($percentage, 1);
+
+        return $roundedPercentage;
+    }
+
+    private function getTotalUsedVacationDays(): int
+    {
+        $users = $this->userManager->getAllUsers();
+
+        $totalUsedDays = 0;
+        foreach ($users as $user) {
+            $totalUsedDays += (20 - $user->getAvailableDays());
+        }
+
+        return $totalUsedDays;
     }
 }
