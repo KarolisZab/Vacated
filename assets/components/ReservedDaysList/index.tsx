@@ -160,6 +160,23 @@ const ReservedDaysList: React.FC = () => {
         }
     };
 
+    const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
+        if (e.key === 'Enter' && value) {
+            try {
+                const newTag = await tagService.createTag({ name: value as string, colorCode: 'grey' });
+                setTags([...tags, newTag]);
+
+                if (modalOpen) {
+                    setReservedDayData({ ...reservedDayData, tags: [...reservedDayData.tags, newTag] });
+                } else if (newReservedDayModalOpen) {
+                    setNewReservedDayData({ ...newReservedDayData, tags: [...newReservedDayData.tags, newTag] });
+                }
+            } catch (error) {
+                setError('Error: ' + (error as Error).message);
+            }
+        }
+    };
+
     const handleDelete = (id: string) => {
         setDeleteId(id);
         setDeleteModalOpen(true);
@@ -314,6 +331,8 @@ const ReservedDaysList: React.FC = () => {
                                     options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
                                     onChange={handleUpdateTagsChange}
                                     value={reservedDayData.tags.map(tag => tag.name)}
+                                    allowAdditions
+                                    onAddItem={handleTagCreate}
                                 />
                             </Form.Field>
                         </Form>
@@ -387,7 +406,7 @@ const ReservedDaysList: React.FC = () => {
                                     onChange={handleTagsChange}
                                     value={newReservedDayData.tags.map(tag => tag.name)}
                                     allowAdditions
-                                    onAddItem={handleUpdateTagsChange}
+                                    onAddItem={handleTagCreate}
                                 />
                             </Form.Field>
                         </Form>

@@ -113,6 +113,20 @@ const UpdateEmployee: React.FC = () => {
         navigate(-1);
     };
 
+    const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
+        if (e.key === 'Enter' && value) {
+            try {
+                const newTag = await tagService.createTag({ name: value as string, colorCode: 'grey' });
+                
+                setTags([...tags, newTag]);
+
+                setEmployee({ ...employee, tags: [...employee.tags, newTag] });
+            } catch (error) {
+                setError('Error fetching tags: ' + (error as Error).message);
+            }
+        }
+    };
+
     return (
         <div style={{ margin: '3rem auto', maxWidth: '500px' }}>
             <h1>Update Employee</h1>
@@ -159,10 +173,13 @@ const UpdateEmployee: React.FC = () => {
                                 placeholder='Select tags'
                                 fluid
                                 multiple
+                                search
                                 selection
                                 options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
                                 value={employee.tags.map(tag => tag.name)}
                                 onChange={handleTagsChange}
+                                allowAdditions
+                                onAddItem={handleTagCreate}
                             />
                         </Form.Field>
                         <Button type='button' onClick={handleUpdate}>Submit</Button>

@@ -20,6 +20,10 @@ const Register: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const [tags, setTags] = useState<TagType[]>([]);
+    const [newTagData, setNewTagData] = useState<Partial<TagType>>({
+        name: '',
+        colorCode: ''
+    });
 
     useEffect(() => {
         fetchTags();
@@ -62,6 +66,23 @@ const Register: React.FC = () => {
                 }
             });
             setRegistrationData({ ...registrationData, tags: selectedTags });
+        }
+    };
+
+    const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
+        if (e.key === 'Enter' && value) {
+            try {
+                const newTag = await tagService.createTag({ name: value as string, colorCode: 'grey' });
+                
+                setTags([...tags, newTag]);
+
+                setRegistrationData({
+                    ...registrationData,
+                    tags: [...registrationData.tags, newTag]
+                });
+            } catch (error) {
+                setError('Error: ' + (error as Error).message);
+            }
         }
     };
 
@@ -125,7 +146,7 @@ const Register: React.FC = () => {
                                 onChange={handleTagsChange}
                                 value={registrationData.tags.map(tag => tag.name)}
                                 allowAdditions
-                                // onAddItem={}
+                                onAddItem={handleTagCreate}
                             />
                         </Form.Field>
                         <Button color='teal' fluid size='large' type='submit'>

@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
+import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
 
@@ -15,7 +15,6 @@ const EmployeesList: React.FC = () => {
     const [filter, setFilter] = useState<string>('');
     /* eslint-disable-next-line */
     const [limit, setLimit] = useState<number>(10);
-    const [vacationPercentage, setVacationPercentage] = useState<number>(0);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -35,20 +34,6 @@ const EmployeesList: React.FC = () => {
         fetchEmployees();
     }, [page, filter]);
 
-    useEffect(() => {
-        const fetchVacationPercentage = async () => {
-            try {
-                const percentage = await employeeService.getVacationProgress();
-                setVacationPercentage(percentage);
-                console.log(percentage);
-            } catch (error) {
-                setError('Error' + (error as Error).message);
-            }
-        };
-
-        fetchVacationPercentage();
-    }, [employees]);
-
     /* eslint-disable-next-line */
     const handlePaginationChange = (event: React.MouseEvent, data: any) => {
         setPage(data.activePage);
@@ -62,13 +47,13 @@ const EmployeesList: React.FC = () => {
         navigate('/admin/create-user');
     }
 
-    const getColor = (percentage: number): SemanticCOLORS => {
-        if (percentage <= 35) {
-            return 'green';
-        } else if (percentage <= 70) {
+    const getColor = (days: number): SemanticCOLORS => {
+        if (days <= 7) {
+            return 'red';
+        } else if (days <= 13) {
             return 'yellow';
         } else {
-            return 'red';
+            return 'green';
         }
     };
 
@@ -127,7 +112,9 @@ const EmployeesList: React.FC = () => {
                                             </ListItem>
                                         ))}
                                     </Table.Cell>
-                                    <Table.Cell>{employee.availableDays}/20</Table.Cell>
+                                    <Table.Cell>
+                                        <Progress value={employee.availableDays} total='20' progress='ratio' size='small' color={getColor(employee.availableDays)} />
+                                    </Table.Cell>
                                     <Table.Cell>
                                         <Link to={`/admin/employees/${employee.id}`}>View details</Link>
                                     </Table.Cell>
@@ -135,16 +122,14 @@ const EmployeesList: React.FC = () => {
                             ))}
                         </Table.Body>
                     </Table>
-                    <Progress percent={vacationPercentage} progress color={getColor(vacationPercentage)}/>
-
-                    {/* {totalItems > 0 && (
+                    {totalItems > 0 && (
                         <Pagination
                             totalPages={Math.ceil(totalItems / 10)}
                             activePage={page}
                             onPageChange={handlePaginationChange}
                             size="mini"
                         />
-                    )} */}
+                    )}
                 </div>
             </div>
         </div>
