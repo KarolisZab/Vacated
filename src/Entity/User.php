@@ -14,6 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const MAX_AVAILABLE_DAYS = 20;
+
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column(type: "string")]
@@ -49,7 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected bool $isAdmin = false;
 
     #[ORM\Column(type: "integer")]
-    protected int $availableDays = 20;
+    protected int $availableDays = self::MAX_AVAILABLE_DAYS;
 
     /**
      * @var string The hashed password
@@ -230,6 +232,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->availableDays < 0) {
             $this->availableDays = 0;
         }
+
+        if ($this->availableDays > self::MAX_AVAILABLE_DAYS) {
+            $this->availableDays = self::MAX_AVAILABLE_DAYS;
+        }
+
 
         return $this;
     }

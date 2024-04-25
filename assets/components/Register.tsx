@@ -124,10 +124,12 @@ const Register: React.FC = () => {
                                 options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
                                 onChange={handleTagsChange}
                                 value={registrationData.tags.map(tag => tag.name)}
+                                allowAdditions
+                                // onAddItem={}
                             />
                         </Form.Field>
                         <Button color='teal' fluid size='large' type='submit'>
-                            Register
+                            Create
                         </Button>
                     </Segment>
                 </Form>
