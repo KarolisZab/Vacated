@@ -83,7 +83,7 @@ const EmployeesList: React.FC = () => {
                 style={{ marginBottom: '1rem' }}
             />
             <Button color='teal' style={{ marginLeft: '1rem' }} onClick={handleCreateUser}>
-                        Create new employee
+                        Create a new employee
             </Button>
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
