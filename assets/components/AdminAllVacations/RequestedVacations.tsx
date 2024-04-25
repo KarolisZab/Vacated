@@ -8,8 +8,8 @@ import { formatDateTime } from '../utils/dateUtils';
 interface Props {
     vacations: VacationType[];
     updateVacations: () => void;
-
 }
+
 /* eslint-disable-next-line */
 const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {
     const { id } = useParams<{ id: string }>();

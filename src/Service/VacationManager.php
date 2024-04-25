@@ -203,7 +203,7 @@ class VacationManager
         return $vacationRepository->findBy(['requestedBy' => $user]);
     }
 
-    public function getVacations(int $limit = 10, int $offset = 0, ?string $filter = null): array
+    public function getVacations(int $limit = 10, int $offset = 0, /*?string $filter = null*/): array
     {
 
         /** @var \App\Repository\VacationRepository $vacationRepository */

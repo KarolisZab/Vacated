@@ -17,6 +17,7 @@ import { AdminPrivateRoute } from "./PrivateRoutes"
 import AdminHome from "../components/AdminHome"
 import ReservedDaysList from "../components/ReservedDaysList"
 import AllVacations from "../components/AdminAllVacations/index"
+import Google from "../components/GoogleAuth/index"
 
 const router = createBrowserRouter([
     {
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
                 element: <Register />
             },
             {
-                path: "500",
+                path: "error-page",
                 element: (
                     <PrivateRoute>
                         <ServerErrorPage />
@@ -54,6 +55,12 @@ const router = createBrowserRouter([
                     <PrivateRoute>
                         <MyVacations />
                     </PrivateRoute>
+                )
+            },
+            {
+                path: "google-auth",
+                element: (
+                    <Google />
                 )
             }
         ]
@@ -114,7 +121,11 @@ const router = createBrowserRouter([
                         <AllVacations />
                     </AdminPrivateRoute>
                 )
-            }
+            },
+            {
+                path: "create-user",
+                element: <Register />
+            },
         ]
     }
 ]);

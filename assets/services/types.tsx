@@ -8,8 +8,6 @@ export type EmployeeType = {
 };
 
 export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles"> {
-    password: string;
-    confirmPassword: string;
 }
 
 export type EmployeesGetResultType = {

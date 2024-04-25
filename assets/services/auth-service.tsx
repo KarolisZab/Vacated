@@ -1,6 +1,5 @@
 import axios from "axios";
 import { API_URL } from "../config";
-import { EmployeeRegistrationData } from "./types";
 
 export interface User {
     id: string;
@@ -31,15 +30,26 @@ class AuthService {
             });
     }
 
+    loginWithCode(google_code: string): Promise<User> {
+        return axios
+            .post(API_URL + "/login", {
+                google_code
+            })
+            .then(response => {
+                if (response.data.access_token) {
+                    localStorage.setItem("user", JSON.stringify(response.data));
+                    this.notifySubscribers();
+                }
+
+                return response.data;
+            });
+    }
+
     logout(): void {
         if(localStorage.getItem("user")) {
             localStorage.removeItem("user");
             this.notifySubscribers();
         }
-    }
-
-    register(data: EmployeeRegistrationData): Promise<void> {
-        return axios.post(API_URL + "/register", data);
     }
 
     getCurrentUser(): User | null {

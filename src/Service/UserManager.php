@@ -33,6 +33,8 @@ class UserManager
                 return null;
             }
 
+            $userDTO->password = $this->generateRandomPassword();
+
             $user = new User();
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
@@ -48,6 +50,8 @@ class UserManager
             $errors = $this->validator->validate($user, null, ['create']);
             ValidationFailureException::throwException($errors);
 
+            // siust maileri
+
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
@@ -59,6 +63,19 @@ class UserManager
             $this->logger->critical("Exception occured while creating user {$userDTO->email} : " . $e->getMessage());
             throw $e;
         }
+    }
+
+    private function generateRandomPassword(): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $password = '';
+
+        for ($i = 0; $i < 16; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $password .= $characters[$index];
+        }
+
+        return $password;
     }
 
     public function createAdmin(string $email, string $password): ?User

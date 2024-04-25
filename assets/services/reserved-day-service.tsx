@@ -10,10 +10,6 @@ class ReservedDayService {
         return await apiService.get<ReservedDayType[]>('/reserved-day', params);
     }
 
-    // async ReservedDay(vacationId: string): Promise<CalendarDays> {
-    //     return await apiService.get<CalendarDays>(`${URL}/${vacationId}`);
-    // }
-
     async getReservedDaysList(startDate: string,
         endDate: string,
         page: number,

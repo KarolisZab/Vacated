@@ -152,31 +152,4 @@ class AuthenticationCest
         $I->sendRequest('get', '/api/admin/users');
         $I->seeResponseCodeIs(401);
     }
-
-    public function testCreateUserWithValidationFailure(FunctionalTester $I)
-    {
-        // $token = $I->grabTokenForUser('jwttest@test.com');
-        // $I->amBearerAuthenticated($token);
-        $I->sendRequest('post', '/api/register', [
-            'email' => 'ka',
-            'password' => 'test',
-            'firstName' => 'Kar',
-            'lastName' => 'Kar',
-            'phoneNumber' => '123456789'
-        ]);
-
-        $I->seeResponseCodeIs(400);
-    }
-
-    public function testIfUserCreatedWithSameEmail(FunctionalTester $I)
-    {
-        $I->sendRequest('post', '/api/register', [
-            'email' => 'rejecttest@test.com',
-            'password' => 'test',
-            'firstName' => 'Kar',
-            'lastName' => 'Kar',
-            'phoneNumber' => '123456789'
-        ]);
-        $I->seeResponseCodeIs(409);
-    }
 }

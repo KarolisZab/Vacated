@@ -16,6 +16,7 @@ const UpdateEmployee: React.FC = () => {
         lastName: '',
         phoneNumber: ''
     });
+    
     /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);

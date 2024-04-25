@@ -29,13 +29,5 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    Google\Client:
-        arguments:
-            $config:
-                credentials:
-                    client_id: '%env(GOOGLE_CLIENT_ID)%'
-                    client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
-                    redirect_uris: ['%env(GOOGLE_REDIRECT_URI)%']
-
     App\Service\GoogleOAuth\GoogleOAuthInterface:
-        class: App\Service\GoogleOAuth\GoogleOAuthService
+        class: App\Service\GoogleOAuth\MockedGoogleOAuthService

@@ -63,22 +63,24 @@ const EmployeeDetails: React.FC = () => {
             )}
             <Header as='h1' style={{ color: 'white'}}>Employee Details</Header>
             {error && <Message negative>{error}</Message>}
-            <Card fluid style={{ backgroundColor: '#252525'}}>
-                <Card.Content>
-                    <Card.Header style={{ color: 'white'}}>{employee.firstName} {employee.lastName}</Card.Header>
-                    <Card.Meta style={{ color: 'white'}}>ID: {employee.id}</Card.Meta>
-                    <Divider />
-                    <Card.Description>
-                        <p><strong>Email:</strong> {employee.email}</p>
-                        <p><strong>Phone Number:</strong> {employee.phoneNumber}</p>
-                    </Card.Description>
-                    <Divider />
-                    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                        <Button color='blue' onClick={() => handleUpdate(employee.id)}>Update</Button>
-                        <Button color='red' onClick={() => handleDelete()}>Delete</Button>
-                    </div>
-                </Card.Content>
-            </Card>
+            <div>
+                <Card fluid style={{ backgroundColor: '#252525'}}>
+                    <Card.Content>
+                        <Card.Header style={{ color: 'white'}}>{employee.firstName} {employee.lastName}</Card.Header>
+                        <Card.Meta style={{ color: 'white'}}>ID: {employee.id}</Card.Meta>
+                        <Divider />
+                        <Card.Description>
+                            <p><strong>Email:</strong> {employee.email}</p>
+                            <p><strong>Phone Number:</strong> {employee.phoneNumber}</p>
+                        </Card.Description>
+                        <Divider />
+                        <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                            <Button color='blue' onClick={() => handleUpdate(employee.id)}>Update</Button>
+                            <Button color='red' onClick={() => handleDelete()}>Delete</Button>
+                        </div>
+                    </Card.Content>
+                </Card>
+            </div>
 
             <Modal
                 open={deleteModalOpen}

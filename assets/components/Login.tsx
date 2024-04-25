@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Icon, Message, Segment } from 'semantic-ui-react';
 import authService from '../services/auth-service';
 
 const Login: React.FC = () => {
@@ -8,8 +8,9 @@ const Login: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const [isLoading, setLoading] = useState<boolean>(false);
 
-    useEffect(() => {
+    useEffect(() => {        
         const checkAuthentication = async () => {
             if (authService.isAuthenticated()) {
                 navigate('/');
@@ -30,10 +31,13 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            setLoading(true);
             await authService.login(email, password);
             navigate('/');
         } catch (error) {
             setError('Invalid email or password');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -66,11 +70,15 @@ const Login: React.FC = () => {
                             required
                         />
 
-                        <Button color='teal' fluid size='large' type='submit'>
+                        <Button color='teal' fluid size='large' type='submit' loading={isLoading}>
                             Login
                         </Button>
                     </Segment>
                 </Form>
+                <Button color='google plus' fluid onClick={() => (window.location.href='/oauth')}>
+                    <Icon name='google' />
+                    Log-in with Google
+                </Button>
             </Grid.Column>
         </Grid>
     );
