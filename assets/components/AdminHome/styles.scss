@@ -119,9 +119,9 @@
 //     margin: 0;
 // }
 
-.admin-card-header {
-    flex: 1;
-}
+// .admin-card-header {
+//     flex: 1;
+// }
 
 .admin-card-content {
     flex: 3;
@@ -140,9 +140,21 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto; 
+    margin: 0 auto;
+    position: relative;
 
     .google-visualization-axis-label {
         fill: #ffffff; 
     }
+
+    .loader-container {
+        position: absolute;
+      }
+      
+      .loader {
+        // position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
 }

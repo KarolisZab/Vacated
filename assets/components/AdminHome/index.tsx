@@ -98,11 +98,15 @@ export default function Home() {
                                     </Segment>
                                 </Card.Description>
                             </div>
-                            <div className="admin-card-header" />
                         </Card.Content>
                     </Card>
                 </div>
                 <div className="admin-chart-container">
+                    {loading && (
+                        <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
+                            <Loader>Loading</Loader>
+                        </Dimmer>
+                    )}
                     <Chart
                         chartType="ColumnChart"
                         width="100%"
