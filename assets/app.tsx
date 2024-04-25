@@ -6,7 +6,6 @@ import {
 import './styles/app.scss'
 import 'semantic-ui-css/semantic.min.css'
 import router from './routes/router'
-import { GoogleOAuthProvider } from "@react-oauth/google"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
