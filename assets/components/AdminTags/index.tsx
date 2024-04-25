@@ -162,7 +162,6 @@ const TagsList: React.FC = () => {
                                     error={formErrors['name']}
                                 />
                                 <Form.Input label='Tag color' error={formErrors['colorCode']}>
-                                    <label>Tag color</label>
                                     <SketchPicker
                                         color={tagData.colorCode}
                                         onChange={(color) => setTagData({ ...tagData, colorCode: color.hex })}
