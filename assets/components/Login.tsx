@@ -10,7 +10,7 @@ const Login: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [isLoading, setLoading] = useState<boolean>(false);
 
-    useEffect(() => {
+    useEffect(() => {        
         const checkAuthentication = async () => {
             if (authService.isAuthenticated()) {
                 navigate('/');
@@ -39,8 +39,6 @@ const Login: React.FC = () => {
         } finally {
             setLoading(false);
         }
-
-        // TODO: per visa page loaderis OR tik ant formos loaderis OR buttona padisablint ir buttono loaderi padaryt
     };
 
     return (

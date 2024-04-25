@@ -1,5 +1,9 @@
 import { VacationType } from '../../services/types';
-import { Message, Table } from 'semantic-ui-react';
+import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
+import { useState } from 'react';
+import vacationService from '../../services/vacation-service';
+import { formatDateTime } from '../utils/dateUtils';
+import { useParams } from 'react-router';
 
 interface Props {
     vacations: VacationType[];
@@ -9,19 +13,6 @@ interface Props {
 
 /* eslint-disable-next-line */
 const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {
-    const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
-        const date = new Date(dateTimeString);
-        if (includeTime) {
-            return date
-                .toISOString()
-                .split('T')[0];
-        } else {
-            return date
-                .toISOString()
-                .replace('T', ' ')
-                .replace(/\..+/, '');
-        }
-    };
     
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
