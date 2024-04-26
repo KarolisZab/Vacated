@@ -173,7 +173,7 @@ export default function MyCalendar() {
                         reviewedBy: vacation.reviewedBy ? `${vacation.reviewedBy.firstName} ${vacation.reviewedBy.lastName}` : '',
                         reviewedAt: vacation.reviewedAt,
                         confirmed: vacation.confirmed,
-                        classNames: [styles]
+                        classNames: [styles, 'Calendar__VacationDay']
                     };
                 }
             })
@@ -203,16 +203,31 @@ export default function MyCalendar() {
             const endDate = new Date(reservedDay.dateTo);
             endDate.setHours(23, 59, 59, 999);
 
-            return reservedDay.tags.map((tag) => {
-                return {
-                    start: reservedDay.dateFrom,
-                    end: endDate.toISOString(),
-                    title: tag.name,
-                    color: tag.colorCode,
-                    classNames: ['tag-event'],
-                    display: 'list-item'
-                };
-            });
+            // return reservedDay.tags.map((tag) => {
+            //     return {
+            //         start: reservedDay.dateFrom,
+            //         end: endDate.toISOString(),
+            //         title: tag.name,
+            //         color: tag.colorCode,
+            //         classNames: ['tag-event'],
+            //         display: 'list-item'
+            //     };
+            // });
+            const eventTitle = reservedDay.tags.reduce((label, tag) => {
+                if (label === '') {
+                    return tag.name;
+                }
+
+                return `${label}, ${tag.name}`;
+            }, '');
+            return {
+                start: reservedDay.dateFrom,
+                end: endDate.toISOString(),
+                title: eventTitle,
+                color: reservedDay.tags[0].colorCode,
+                classNames: ['tag-event'],
+                display: 'list-item'
+            };
         });
         return tagEvents;
     };

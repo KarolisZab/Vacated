@@ -70,7 +70,7 @@ export default function MyVacations() {
                 <RejectedVacations vacations={rejectedVacations} updateVacations={updateVacations}/>
             </Tab.Pane> 
         ) },
-        { menuItem: 'Upcoming', render: () => (
+        { menuItem: 'Upcoming / Ongoing', render: () => (
             <Tab.Pane loading={loading}>
                 <UpcomingVacations vacations={upcomingVacations} updateVacations={updateVacations}/>
             </Tab.Pane> 

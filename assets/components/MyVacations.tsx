@@ -21,10 +21,6 @@ export default function MyVacations() {
     useEffect(() => {
         const fetchVacations = async () => {
             try {
-                // const allVacations = await vacationService.getAllCurrentUserVacations();
-                // const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
-                // const confirmed = allVacations.filter(vacation => vacation.confirmed);
-                // const rejected = allVacations.filter(vacation => vacation.rejected);
                 const requested = await vacationService.getAllCurrentUserVacations('requested');
                 const confirmed = await vacationService.getAllCurrentUserVacations('confirmed');
                 const rejected = await vacationService.getAllCurrentUserVacations('rejected');
@@ -45,10 +41,6 @@ export default function MyVacations() {
 
     const updateVacations = async () => {
         try {
-            // const allVacations = await vacationService.getAllCurrentUserVacations();
-            // const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
-            // const confirmed = allVacations.filter(vacation => vacation.confirmed);
-            // const rejected = allVacations.filter(vacation => vacation.rejected);
             const requested = await vacationService.getAllCurrentUserVacations('requested');
             const confirmed = await vacationService.getAllCurrentUserVacations('confirmed');
             const rejected = await vacationService.getAllCurrentUserVacations('rejected');
@@ -78,7 +70,7 @@ export default function MyVacations() {
                 <RejectedVacations vacations={rejectedVacations} updateVacations={updateVacations}/>
             </Tab.Pane> 
         ) },
-        { menuItem: 'Upcoming', render: () => (
+        { menuItem: 'Upcoming / Ongoing', render: () => (
             <Tab.Pane loading={loading}>
                 <UpcomingVacations vacations={upcomingVacations} updateVacations={updateVacations}/>
             </Tab.Pane> 

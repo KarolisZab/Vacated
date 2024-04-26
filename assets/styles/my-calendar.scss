@@ -83,16 +83,18 @@
     transform: translate(-50%, -50%);
 }
 
-.Calendar__VacationDay--confirmed {
-    background-color: #00b5ad !important;
-    border: 1px solid #00b5ad !important;
-    display: block;
-}
-  
-.Calendar__VacationDay--unconfirmed {
-    background-color: rgba(0, 181, 173, 0.5);
+.Calendar__VacationDay {
     border: 1px solid #00b5ad;
-    border-style: dashed;
+    cursor: pointer;
+
+    &--confirmed {
+        background-color: #00b5ad;
+    }
+
+    &--unconfirmed {
+        border-style: dashed;
+        background-color: rgba(0, 181, 173, 0.5);
+    }
 }
 
 .fc .fc-multimonth-daygrid {
@@ -101,4 +103,8 @@
  
 .fc .fc-multimonth-header {
     color: white;
+}
+
+div.fc-daygrid-event-harness:not(.fc-daygrid-event-harness-abs) {
+    margin-top: -25px !important;
 }
