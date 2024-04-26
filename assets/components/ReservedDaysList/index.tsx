@@ -163,7 +163,7 @@ const ReservedDaysList: React.FC = () => {
     const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
         if (e.key === 'Enter' && value) {
             try {
-                const newTag = await tagService.createTag({ name: value as string, colorCode: 'grey' });
+                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
                 setTags([...tags, newTag]);
 
                 if (modalOpen) {
@@ -297,7 +297,7 @@ const ReservedDaysList: React.FC = () => {
                     />
                 </div>
                 <Modal open={modalOpen} onClose={closeModal}>
-                    <Modal.Header>Update Vacation</Modal.Header>
+                    <Modal.Header>Update reserved days</Modal.Header>
                     <Modal.Content>
                         <Form>
                             <Form.Input
@@ -374,7 +374,6 @@ const ReservedDaysList: React.FC = () => {
                                 name='dateFrom'
                                 value={newReservedDayData.dateFrom}
                                 onChange={(e) => setNewReservedDayData({ ...newReservedDayData, dateFrom: e.target.value })}
-                                // onChange={(e) => handleChangeNewReservedDay(e)}
                                 error={formErrors['dateFrom']}
                             />
                             <Form.Input
@@ -383,7 +382,6 @@ const ReservedDaysList: React.FC = () => {
                                 name='dateTo'
                                 value={newReservedDayData.dateTo}
                                 onChange={(e) => setNewReservedDayData({ ...newReservedDayData, dateTo: e.target.value })}
-                                // onChange={(e) => handleChangeNewReservedDay(e)}
                                 error={formErrors['dateTo']}
                             />
                             <Form.TextArea
@@ -392,7 +390,6 @@ const ReservedDaysList: React.FC = () => {
                                 placeholder='Enter your note here'
                                 value={newReservedDayData.note}
                                 onChange={(e) => setNewReservedDayData({ ...newReservedDayData, note: e.target.value })}
-                                // onChange={(e) => handleChangeNewReservedDay(e)}
                                 error={formErrors['note']}
                             />
                             <Form.Field>
