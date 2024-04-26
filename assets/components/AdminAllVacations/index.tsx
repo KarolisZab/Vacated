@@ -19,10 +19,13 @@ export default function MyVacations() {
     useEffect(() => {
         const fetchVacations = async () => {
             try {
-                const allVacations = await vacationService.getAllVacations();
-                const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
-                const confirmed = allVacations.filter(vacation => vacation.confirmed);
-                const rejected = allVacations.filter(vacation => vacation.rejected);
+                // const allVacations = await vacationService.getAllVacations();
+                // const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
+                // const confirmed = allVacations.filter(vacation => vacation.confirmed);
+                // const rejected = allVacations.filter(vacation => vacation.rejected);
+                const requested = await vacationService.getAllVacations('requested');
+                const confirmed = await vacationService.getAllVacations('confirmed');
+                const rejected = await vacationService.getAllVacations('rejected');
                 setRequestedVacations(requested);
                 setConfirmedVacations(confirmed);
                 setRejectedVacations(rejected);
@@ -38,10 +41,13 @@ export default function MyVacations() {
 
     const updateVacations = async () => {
         try {
-            const allVacations = await vacationService.getAllVacations();
-            const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
-            const confirmed = allVacations.filter(vacation => vacation.confirmed);
-            const rejected = allVacations.filter(vacation => vacation.rejected);
+            // const allVacations = await vacationService.getAllVacations(sortField, sortOrder);
+            // const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
+            // const confirmed = allVacations.filter(vacation => vacation.confirmed);
+            // const rejected = allVacations.filter(vacation => vacation.rejected);
+            const requested = await vacationService.getAllVacations('requested');
+            const confirmed = await vacationService.getAllVacations('confirmed');
+            const rejected = await vacationService.getAllVacations('rejected');
             setRequestedVacations(requested);
             setConfirmedVacations(confirmed);
             setRejectedVacations(rejected);
@@ -63,7 +69,7 @@ export default function MyVacations() {
         ) },
         { menuItem: 'Rejected', render: () => (
             <Tab.Pane loading={loading}>
-                <RejectedVacations vacations={rejectedVacations}/>
+                <RejectedVacations vacations={rejectedVacations} updateVacations={updateVacations}/>
             </Tab.Pane> 
         ) },
     ];

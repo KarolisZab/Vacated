@@ -5,6 +5,7 @@ import vacationService from "../../services/vacation-service";
 import employeeService from "../../services/employee-service";
 import reservedDayService from "../../services/reserved-day-service";
 import { Chart } from "react-google-charts";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
     const [confirmedDays, setConfirmedDays] = useState<number>(0);
@@ -15,6 +16,7 @@ export default function Home() {
     const [loading, setLoading] = useState<boolean>(true);
     const [chartData, setChartData] = useState<any[][]>([]);
     const [pieChartData, setPieChartData] = useState<any[][]>([]);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -51,6 +53,7 @@ export default function Home() {
                 console.log(pieChartData);
             } catch (error) {
                 setError('Error' + (error as Error).message);
+                navigate('/');
             } finally {
                 setLoading(false);
             }

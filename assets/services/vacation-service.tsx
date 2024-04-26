@@ -35,8 +35,9 @@ class VacationService {
         return await apiService.patch<VacationType>(`/admin/confirm-vacation/${vacationId}`, vacationData);
     }
 
-    async getAllVacations(): Promise<VacationType[]> {
-        return await apiService.get<VacationType[]>('/admin/all-vacations');
+    async getAllVacations(vacationType: string): Promise<VacationType[]> {
+        const params = { vacationType };
+        return await apiService.get<VacationType[]>('/admin/all-vacations', params);
     }
 
     async getConfirmedVacationsDaysCountInThisYear(): Promise<number> {

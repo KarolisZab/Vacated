@@ -3,6 +3,7 @@ import { Message, Table } from 'semantic-ui-react';
 
 interface Props {
     vacations: VacationType[];
+    updateVacations?: () => void;
 }
 
 /* eslint-disable-next-line */

@@ -95,10 +95,11 @@ class VacationController extends AbstractController
     {
         // $page = $request->query->get('page', 1);
         // $limit = $request->query->get('limit', 10);
+        $filter = $request->query->get('vacationType');
 
         // $vacations = $this->vacationManager->getVacations($limit, ($page - 1) * $limit);
         // $vacationCount = $this->vacationManager->getVacationsCount();
-        $allVacations = $this->vacationManager->getAllVacations();
+        $allVacations = $this->vacationManager->getAllVacations($filter);
 
 
         // $results = ['totalItems' => $vacationCount, 'items' => $vacations];

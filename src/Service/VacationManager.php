@@ -204,12 +204,12 @@ class VacationManager
         return $vacationRepository->find($id);
     }
 
-    public function getAllVacations(): array
+    public function getAllVacations(string $vacationType): array
     {
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
-        return $vacationRepository->findAll();
+        return $vacationRepository->getFilteredVacations($vacationType);
     }
 
     public function getAllCurrentUserVacations(User $user): array

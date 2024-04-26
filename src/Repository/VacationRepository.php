@@ -107,6 +107,33 @@ class VacationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getFilteredVacations(string $vacationType): array
+    {
+        $qb = $this->createQueryBuilder('v');
+
+        if ($vacationType === 'requested') {
+            $qb->where('v.isConfirmed = FALSE')
+               ->andWhere('v.isRejected = FALSE')
+               ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === 'confirmed') {
+            $qb->where('v.isConfirmed = TRUE')
+               ->orderBy('v.requestedAt', 'ASC');
+        }
+
+        if ($vacationType === 'rejected') {
+            $qb->where('v.isRejected = TRUE')
+               ->orderBy('v.reviewedAt', 'ASC');
+        }
+
+        if ($vacationType === '' || $vacationType === null) {
+            return [];
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Vacation[] Returns an array of Vacation objects
 //     */
