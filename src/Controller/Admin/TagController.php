@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\DTO\TagDTO;
 use App\Service\TagManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -17,8 +16,7 @@ class TagController extends AbstractController
 {
     public function __construct(
         private TagManager $tagManager,
-        private SerializerInterface $serializer,
-        private Security $security
+        private SerializerInterface $serializer
     ) {
     }
 
