@@ -46,12 +46,6 @@ class TagController extends AbstractController
     public function createTag(Request $request, #[MapRequestPayload()] TagDTO $tagDTO)
     {
         try {
-            $currentUser = $this->security->getUser();
-
-            if (!$currentUser) {
-                return new JsonResponse('Unauthorized', JsonResponse::HTTP_UNAUTHORIZED);
-            }
-
             $tag = $this->tagManager->createOrGetTag($tagDTO);
 
             return new JsonResponse(
@@ -93,7 +87,7 @@ class TagController extends AbstractController
             $tag = $this->tagManager->deleteTag($id);
 
             if ($tag === false) {
-                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+                return new JsonResponse('Tag not found', JsonResponse::HTTP_NOT_FOUND);
             }
 
             return new JsonResponse($this->serializer->serialize($tag, 'json'), JsonResponse::HTTP_OK, [], true);

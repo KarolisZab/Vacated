@@ -19,12 +19,6 @@ class Tag
     protected string $name;
 
     #[ORM\Column(type: 'string', length: 7, nullable: true)]
-    // #[Assert\Regex(
-    //     pattern: '/^#[a-fA-F0-9]{6}$/',
-    //     message: 'Color code must be a valid hexadecimal color code, e.g., #FFFFFF.',
-    //     groups: ['update']
-    //     // jeigu ne nullas, validuoja regex, jeigu nullas - ne. Reikes custom validationo
-    // )]
     protected ?string $colorCode = null;
 
     public function getId(): int
