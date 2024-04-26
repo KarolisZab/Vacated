@@ -6,7 +6,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType, EmployeeType } from '../services/types';
-import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Loader, Message, Modal, ModalActions, Popup } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
@@ -42,6 +42,7 @@ export default function MyCalendar() {
     /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
     const [availableDays, setAvailableDays] = useState<number>(0);
+    const [popupContent, setPopupContent] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -147,12 +148,12 @@ export default function MyCalendar() {
             .replace(/:\d+\.\d+Z/, '');
 
         if (event.extendedProps.confirmed === true) {
-            alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\nReviewed by: ${event.extendedProps.reviewedBy}\nReviewed at: ${reviewedAt}`);
+            setPopupContent(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\nReviewed by: ${event.extendedProps.reviewedBy}\nReviewed at: ${reviewedAt}`);
         } else {
-            alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\n`);
+            setPopupContent(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\n`);
         }
     };
-    
+
     const mapCalendarList = () => {
         const vacations = Object.keys(confirmedVacations).flatMap(date =>
             confirmedVacations[date].map((vacation: VacationType)  => {
@@ -255,6 +256,14 @@ export default function MyCalendar() {
                             onClick={handleConfirmVacationRequest}
                             positive
                         />
+                    </Modal.Actions>
+                </Modal>
+                <Modal open={!!popupContent} onClose={() => setPopupContent('')}>
+                    <Modal.Content>
+                        <p style={{ color: 'black' }}>{popupContent.split('\n').map((line, index) => <span key={index}>{line}<br/></span>)}</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button onClick={() => setPopupContent('')}>Close</Button>
                     </Modal.Actions>
                 </Modal>
                 <div>
