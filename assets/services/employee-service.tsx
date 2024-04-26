@@ -18,6 +18,10 @@ class EmployeeService {
         return await apiService.get<number>(`/user/available-days`);
     }
 
+    async getCurrentUser(): Promise<EmployeeType> {
+        return await apiService.get('/user/me');
+    }
+
     async updateEmployee(employeeId: string, employeeData: Partial<EmployeeType>): Promise<EmployeeType> {
         return await apiService.patch<EmployeeType>(`${URL}/${employeeId}`, employeeData);
     }

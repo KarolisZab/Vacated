@@ -42,6 +42,14 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+
+    .greeting-message {
+        font-size: 28px;
+    }
+    
+    .available-days-message {
+        font-size: 16px;
+    }
 }
 
 .selected-dates {

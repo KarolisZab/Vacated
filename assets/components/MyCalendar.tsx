@@ -43,19 +43,22 @@ export default function MyCalendar() {
     const [error, setError] = useState<string>('');
     const [availableDays, setAvailableDays] = useState<number>(0);
     const [popupContent, setPopupContent] = useState<string>('');
+    const [currentUser, setCurrentUser] = useState<EmployeeType | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {                
                 const { startDate, endDate } = calendarDays;
                 
-                const [vacations, reserved] = await Promise.all([
+                const [vacations, reserved, currentUser] = await Promise.all([
                     vacationService.getConfirmedAndSelfRequestedVacations(startDate, endDate),
-                    reservedDayService.getReservedDays(startDate, endDate)
+                    reservedDayService.getReservedDays(startDate, endDate),
+                    employeeService.getCurrentUser()
                 ]);
                 
                 setConfirmedVacations(vacations);
                 setReservedDays(reserved);
+                setCurrentUser(currentUser);
             } catch (error) {
                 navigate('/login')
             } finally {
@@ -76,7 +79,6 @@ export default function MyCalendar() {
         }
     };
 
-    // cia gal async await reik
     const handleDatesSet = () => {
         const calendarApi = calendarRef.current?.getApi();
         if (calendarApi) {
@@ -267,12 +269,19 @@ export default function MyCalendar() {
                     </Modal.Actions>
                 </Modal>
                 <div>
-                    <p>Available vacation days: {availableDays}/20</p>
-                </div>
-                <div className="request-button">
-                    <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
-                        Request vacation
-                    </Button>
+                    {currentUser && (
+                        <div>
+                            <p className='greeting-message'>
+                                Hi, {currentUser.firstName} {currentUser.lastName}!
+                            </p>
+                            <p className='available-days-message'>
+                                You have {currentUser.availableDays} out of 20 available vacation days.
+                            </p>
+                            <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
+                                Request vacation
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
 

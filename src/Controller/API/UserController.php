@@ -39,4 +39,23 @@ class UserController extends AbstractController
             return new JsonResponse($e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
         }
     }
+
+    #[Route('/api/user/me', name: 'get_current_user_info', methods: ['GET'])]
+    public function getCurrentUserInfo(Request $request)
+    {
+        try {
+            $currentUser = $this->security->getUser();
+
+            $user = $this->userManager->getUserByEmail($currentUser->getUserIdentifier());
+
+            if (!$user) {
+                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            return new JsonResponse($e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
+        }
+    }
 }
