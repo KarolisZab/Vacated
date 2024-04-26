@@ -141,10 +141,16 @@ export default function MyCalendar() {
             .split('T')[0]
         const requestedAt = new Date(event.extendedProps.requestedAt).toISOString()
             .replace(/T/, ' ')
-            .replace(/\.\d+Z$/, '');
-            // pakeist i be sekundziu, kol kas neveikia sitas aproach
+            .replace(/:\d+\.\d+Z/, '');
+        const reviewedAt = new Date(event.extendedProps.reviewedAt).toISOString()
+            .replace(/T/, ' ')
+            .replace(/:\d+\.\d+Z/, '');
 
-        alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}`);
+        if (event.extendedProps.confirmed === true) {
+            alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\nReviewed by: ${event.extendedProps.reviewedBy}\nReviewed at: ${reviewedAt}`);
+        } else {
+            alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\n`);
+        }
     };
     
     const mapCalendarList = () => {
@@ -161,6 +167,9 @@ export default function MyCalendar() {
                         start: vacation.dateFrom,
                         end: vacation.dateTo,
                         requestedAt: vacation.requestedAt,
+                        reviewedBy: vacation.reviewedBy ? `${vacation.reviewedBy.firstName} ${vacation.reviewedBy.lastName}` : '',
+                        reviewedAt: vacation.reviewedAt,
+                        confirmed: vacation.confirmed,
                         classNames: [styles]
                     };
                 }

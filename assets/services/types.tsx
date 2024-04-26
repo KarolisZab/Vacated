@@ -28,7 +28,7 @@ export type VacationType = {
     confirmed: boolean;
     rejected: boolean;
     reviewedAt: string;
-    reviewedBy: EmployeeType;
+    reviewedBy: EmployeeType | null;
     rejectionNote: string;
 }
 
