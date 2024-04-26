@@ -148,11 +148,24 @@ export default function MyCalendar() {
         const reviewedAt = new Date(event.extendedProps.reviewedAt).toISOString()
             .replace(/T/, ' ')
             .replace(/:\d+\.\d+Z/, '');
-
+        
         if (event.extendedProps.confirmed === true) {
-            setPopupContent(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\nReviewed by: ${event.extendedProps.reviewedBy}\nReviewed at: ${reviewedAt}`);
+            setPopupContent(`
+                <p style="color: black;"><strong>${event.title}</strong></p>
+                <p style="color: black;">Requested at <strong>${requestedAt}</strong></p>
+                <p style="color: black;">Starts at <strong>${startDate}</strong></p>
+                <p style="color: black;">Ends at <strong>${endDate}</strong></p>
+                <br>
+                <p style="color: black;">Confirmed by <strong>${event.extendedProps.reviewedBy}</strong> at <strong>${reviewedAt}</strong></p>
+            `);
+
         } else {
-            setPopupContent(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}\n`);
+            setPopupContent(`
+                <p style="color: black;"><strong>${event.title.replace('Requested: ', '')}</strong></p>
+                <p style="color: black;">Requested at <strong>${requestedAt}</strong></p>
+                <p style="color: black;">Starts at <strong>${startDate}</strong></p>
+                <p style="color: black;">Ends at <strong>${endDate}</strong></p>
+            `);
         }
     };
 
@@ -165,8 +178,12 @@ export default function MyCalendar() {
                 } else {
                     uniqueEventIds.add(eventId);
                     const styles = vacation.confirmed ? 'Calendar__VacationDay--confirmed' : 'Calendar__VacationDay--unconfirmed';
+                    let title = `${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`;
+                    if (!vacation.confirmed) {
+                        title = `Requested: ${title}`;
+                    }
                     return {
-                        title: `${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`,
+                        title: title,
                         start: vacation.dateFrom,
                         end: vacation.dateTo,
                         requestedAt: vacation.requestedAt,
@@ -289,9 +306,9 @@ export default function MyCalendar() {
                         />
                     </Modal.Actions>
                 </Modal>
-                <Modal open={!!popupContent} onClose={() => setPopupContent('')}>
+                <Modal size='mini' open={!!popupContent} onClose={() => setPopupContent('')}>
                     <Modal.Content>
-                        <p style={{ color: 'black' }}>{popupContent.split('\n').map((line, index) => <span key={index}>{line}<br/></span>)}</p>
+                        <div style={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: popupContent }}/>
                     </Modal.Content>
                     <Modal.Actions>
                         <Button onClick={() => setPopupContent('')}>Close</Button>
