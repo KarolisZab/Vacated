@@ -1,26 +1,14 @@
 import { VacationType } from '../services/types';
 import { Message, Table } from 'semantic-ui-react';
+import { formatDateTime } from './utils/dateUtils';
 
 interface Props {
     vacations: VacationType[];
+    updateVacations?: () => void;
 }
 
 /* eslint-disable-next-line */
 const RejectedVacations: React.FC<Props> = ({ vacations }) => {
-    const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
-        const date = new Date(dateTimeString);
-        if (includeTime) {
-            return date
-                .toISOString()
-                .split('T')[0];
-        } else {
-            return date
-                .toISOString()
-                .replace('T', ' ')
-                .replace(/\..+/, '');
-        }
-    };
-    
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
         return <Message>You do not have any rejected vacations.</Message>;

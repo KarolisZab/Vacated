@@ -4,6 +4,7 @@ import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
 import { useState } from 'react';
 import vacationService from '../../services/vacation-service';
 import errorProcessor from '../../services/errorProcessor';
+import { formatDateTime } from '../utils/dateUtils';
 
 interface Props {
     vacations: VacationType[];
@@ -25,20 +26,6 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
         note: '',
         rejectionNote: ''
     });
-
-    const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
-        const date = new Date(dateTimeString);
-        if (includeTime) {
-            return date
-                .toISOString()
-                .split('T')[0];
-        } else {
-            return date
-                .toISOString()
-                .replace('T', ' ')
-                .replace(/\..+/, '');
-        }
-    };
     
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {

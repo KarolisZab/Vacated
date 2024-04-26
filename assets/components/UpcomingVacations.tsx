@@ -1,6 +1,6 @@
-import { VacationType } from '../../services/types';
+import { VacationType } from '../services/types';
 import { Message, Table } from 'semantic-ui-react';
-import { formatDateTime } from '../utils/dateUtils';
+import { formatDateTime } from './utils/dateUtils';
 
 interface Props {
     vacations: VacationType[];

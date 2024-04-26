@@ -7,6 +7,7 @@ import RequestedVacations from './RequestedVacations';
 import ConfirmedVacations from './ConfirmedVacations';
 import RejectedVacations from './RejectedVacations';
 import { useNavigate } from 'react-router-dom';
+import UpcomingVacations from './UpcomingVacations';
 
 export default function MyVacations() {
     const navigate = useNavigate();
@@ -15,17 +16,23 @@ export default function MyVacations() {
     const [rejectedVacations, setRejectedVacations] = useState<VacationType[]>([]);
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
+    const [upcomingVacations, setUpcomingVacations] = useState<VacationType[]>([]);
 
     useEffect(() => {
         const fetchVacations = async () => {
             try {
-                const allVacations = await vacationService.getAllCurrentUserVacations();
-                const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
-                const confirmed = allVacations.filter(vacation => vacation.confirmed);
-                const rejected = allVacations.filter(vacation => vacation.rejected);
+                // const allVacations = await vacationService.getAllCurrentUserVacations();
+                // const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
+                // const confirmed = allVacations.filter(vacation => vacation.confirmed);
+                // const rejected = allVacations.filter(vacation => vacation.rejected);
+                const requested = await vacationService.getAllCurrentUserVacations('requested');
+                const confirmed = await vacationService.getAllCurrentUserVacations('confirmed');
+                const rejected = await vacationService.getAllCurrentUserVacations('rejected');
+                const upcoming = await vacationService.getAllCurrentUserVacations('upcoming');
                 setRequestedVacations(requested);
                 setConfirmedVacations(confirmed);
                 setRejectedVacations(rejected);
+                setUpcomingVacations(upcoming);
             } catch (error) {
                 navigate('/login');
             } finally {
@@ -38,12 +45,18 @@ export default function MyVacations() {
 
     const updateVacations = async () => {
         try {
-            const allVacations = await vacationService.getAllCurrentUserVacations();
-            const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
-            const confirmed = allVacations.filter(vacation => vacation.confirmed);
+            // const allVacations = await vacationService.getAllCurrentUserVacations();
+            // const requested = allVacations.filter(vacation => !vacation.confirmed && !vacation.rejected);
+            // const confirmed = allVacations.filter(vacation => vacation.confirmed);
             // const rejected = allVacations.filter(vacation => vacation.rejected);
+            const requested = await vacationService.getAllCurrentUserVacations('requested');
+            const confirmed = await vacationService.getAllCurrentUserVacations('confirmed');
+            const rejected = await vacationService.getAllCurrentUserVacations('rejected');
+            const upcoming = await vacationService.getAllCurrentUserVacations('upcoming');
             setRequestedVacations(requested);
             setConfirmedVacations(confirmed);
+            setRejectedVacations(rejected)
+            setUpcomingVacations(upcoming);
         } catch (error) {
             setError('Error' + (error as Error).message);
         }
@@ -62,7 +75,12 @@ export default function MyVacations() {
         ) },
         { menuItem: 'Rejected', render: () => (
             <Tab.Pane loading={loading}>
-                <RejectedVacations vacations={rejectedVacations}/>
+                <RejectedVacations vacations={rejectedVacations} updateVacations={updateVacations}/>
+            </Tab.Pane> 
+        ) },
+        { menuItem: 'Upcoming', render: () => (
+            <Tab.Pane loading={loading}>
+                <UpcomingVacations vacations={upcomingVacations} updateVacations={updateVacations}/>
             </Tab.Pane> 
         ) },
     ];

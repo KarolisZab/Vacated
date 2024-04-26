@@ -97,14 +97,41 @@ class VacationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getAllCurrentUserVacations(User $user): array
+    public function getAllCurrentUserFilteredVacations(User $user, string $vacationType): array
     {
-        return $this->createQueryBuilder('v')
+        $qb = $this->createQueryBuilder('v')
             ->where('v.requestedBy = :user')
-            ->setParameter('user', $user)
-            ->orderBy('v.dateFrom', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('user', $user);
+        $now = new \DateTimeImmutable();
+
+        if ($vacationType === 'requested') {
+            $qb->andWhere('v.isConfirmed = FALSE')
+                ->andWhere('v.isRejected = FALSE')
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === 'confirmed') {
+            $qb->andWhere('v.isConfirmed = TRUE')
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === 'rejected') {
+            $qb->andWhere('v.isRejected = TRUE')
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === 'upcoming') {
+            $qb->andWhere('v.dateTo > :now')
+                ->andWhere('v.isConfirmed = TRUE')
+                ->setParameter('now', $now)
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === '' || $vacationType === null) {
+            return [];
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function getFilteredVacations(string $vacationType): array
@@ -115,12 +142,12 @@ class VacationRepository extends ServiceEntityRepository
         if ($vacationType === 'requested') {
             $qb->where('v.isConfirmed = FALSE')
                ->andWhere('v.isRejected = FALSE')
-               ->orderBy('v.dateFrom', 'ASC');
+               ->orderBy('v.requestedAt', 'ASC');
         }
 
         if ($vacationType === 'confirmed') {
             $qb->where('v.isConfirmed = TRUE')
-               ->orderBy('v.requestedAt', 'ASC');
+               ->orderBy('v.reviewedAt', 'ASC');
         }
 
         if ($vacationType === 'rejected') {

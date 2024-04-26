@@ -14,8 +14,9 @@ class VacationService {
         return await apiService.get<CalendarDays>(`${URL}/${vacationId}`);
     }
 
-    async getAllCurrentUserVacations(): Promise<VacationType[]> {
-        return await apiService.get<VacationType[]>('/user-vacations');
+    async getAllCurrentUserVacations(vacationType: string): Promise<VacationType[]> {
+        const params = { vacationType }
+        return await apiService.get<VacationType[]>('/user-vacations', params);
     }
 
     async updateRequestedVacation(vacationId: string, vacationData: Partial<VacationType>): Promise<VacationType> {
