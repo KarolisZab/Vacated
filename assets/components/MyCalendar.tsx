@@ -75,7 +75,7 @@ export default function MyCalendar() {
             const result = await employeeService.getEmployeesAvailableVacationDays();
             setAvailableDays(result);
         } catch (error) {
-            console.error('Error fetching available days:', error);
+            setError('Error: ' + (error as Error).message);
         }
     };
 
@@ -191,7 +191,7 @@ export default function MyCalendar() {
                 start: reservedDay.dateFrom,
                 end: endDate.toISOString(),
                 allDay: true,
-                color: '#cb983a'  /*'#b03a2e'*/,
+                color: '#cb983a',
                 display: 'background'
             };
         });
@@ -234,11 +234,25 @@ export default function MyCalendar() {
                     <Modal.Header>Request vacation</Modal.Header>
                     <Modal.Content>
                         {modalError && <Message negative>{modalError}</Message>}
-                        <p style={{ color: 'black' }}>
-                            Selected start date: {selectedDate.startDate} <br />
-                            Selected end date: {selectedDate.endDate}
-                        </p>
                         <Form>
+                            <Form.Field>
+                                <label>Selected Start Date:</label>
+                                <Form.Input
+                                    name="startDate"
+                                    type='date'
+                                    value={selectedDate.startDate}
+                                    onChange={(e, { value }) => setSelectedDate(prevState => ({ ...prevState, startDate: value }))}
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <label>Selected End Date:</label>
+                                <Form.Input
+                                    name="endDate"
+                                    type='date'
+                                    value={selectedDate.endDate}
+                                    onChange={(e, { value }) => setSelectedDate(prevState => ({ ...prevState, endDate: value }))}
+                                />
+                            </Form.Field>
                             <Form.TextArea 
                                 label='Note'
                                 placeholder='Enter your note here'
