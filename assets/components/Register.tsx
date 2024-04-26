@@ -20,10 +20,6 @@ const Register: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const [tags, setTags] = useState<TagType[]>([]);
-    const [newTagData, setNewTagData] = useState<Partial<TagType>>({
-        name: '',
-        colorCode: ''
-    });
 
     useEffect(() => {
         fetchTags();
