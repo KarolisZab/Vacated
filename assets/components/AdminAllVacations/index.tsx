@@ -6,6 +6,7 @@ import vacationService from '../../services/vacation-service';
 import RequestedVacations from './RequestedVacations';
 import ConfirmedVacations from './ConfirmedVacations';
 import RejectedVacations from './RejectedVacations';
+import UpcomingVacations from './UpcomingVacations';
 import { useNavigate } from 'react-router-dom';
 
 export default function MyVacations() {
@@ -13,6 +14,7 @@ export default function MyVacations() {
     const [requestedVacations, setRequestedVacations] = useState<VacationType[]>([]);
     const [confirmedVacations, setConfirmedVacations] = useState<VacationType[]>([]);
     const [rejectedVacations, setRejectedVacations] = useState<VacationType[]>([]);
+    const [upcomingVacations, setUpcomingVacations] = useState<VacationType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
 
@@ -22,9 +24,11 @@ export default function MyVacations() {
                 const requested = await vacationService.getAllVacations('requested');
                 const confirmed = await vacationService.getAllVacations('confirmed');
                 const rejected = await vacationService.getAllVacations('rejected');
+                const upcoming = await vacationService.getAllVacations('upcoming');
                 setRequestedVacations(requested);
                 setConfirmedVacations(confirmed);
                 setRejectedVacations(rejected);
+                setUpcomingVacations(upcoming);
             } catch (error) {
                 navigate('/');
             } finally {
@@ -40,9 +44,11 @@ export default function MyVacations() {
             const requested = await vacationService.getAllVacations('requested');
             const confirmed = await vacationService.getAllVacations('confirmed');
             const rejected = await vacationService.getAllVacations('rejected');
+            const upcoming = await vacationService.getAllVacations('upcoming');
             setRequestedVacations(requested);
             setConfirmedVacations(confirmed);
             setRejectedVacations(rejected);
+            setUpcomingVacations(upcoming);
         } catch (error) {
             setError('Error' + (error as Error).message);
         }
@@ -62,6 +68,11 @@ export default function MyVacations() {
         { menuItem: 'Rejected', render: () => (
             <Tab.Pane loading={loading}>
                 <RejectedVacations vacations={rejectedVacations} updateVacations={updateVacations}/>
+            </Tab.Pane> 
+        ) },
+        { menuItem: 'Upcoming', render: () => (
+            <Tab.Pane loading={loading}>
+                <UpcomingVacations vacations={upcomingVacations} updateVacations={updateVacations}/>
             </Tab.Pane> 
         ) },
     ];

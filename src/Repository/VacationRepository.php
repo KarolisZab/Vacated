@@ -110,6 +110,7 @@ class VacationRepository extends ServiceEntityRepository
     public function getFilteredVacations(string $vacationType): array
     {
         $qb = $this->createQueryBuilder('v');
+        $now = new \DateTimeImmutable();
 
         if ($vacationType === 'requested') {
             $qb->where('v.isConfirmed = FALSE')
@@ -124,7 +125,14 @@ class VacationRepository extends ServiceEntityRepository
 
         if ($vacationType === 'rejected') {
             $qb->where('v.isRejected = TRUE')
-               ->orderBy('v.reviewedAt', 'ASC');
+                ->orderBy('v.reviewedAt', 'ASC');
+        }
+
+        if ($vacationType === 'upcoming') {
+            $qb->where('v.dateTo > :now')
+                ->andWhere('v.isConfirmed = TRUE')
+                ->setParameter('now', $now)
+                ->orderBy('v.dateFrom', 'ASC');
         }
 
         if ($vacationType === '' || $vacationType === null) {
