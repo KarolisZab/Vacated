@@ -26,7 +26,7 @@ export default function MyVacations() {
                 setConfirmedVacations(confirmed);
                 setRejectedVacations(rejected);
             } catch (error) {
-                navigate('/login');
+                navigate('/');
             } finally {
                 setLoading(false);
             }
