@@ -134,21 +134,21 @@ export default function Home() {
                             colors: ['#FB7A21'],
                         }}
                     />
-                    <div>
-                        <Chart
-                            chartType="PieChart"
-                            width="100%"
-                            height="400px"
-                            data={pieChartData}
-                            options={{
-                                title: "Vacation Usage Statistics",
-                                titleTextStyle: { color: '#FFF' },
-                                legend: { position: "right", textStyle:{color: '#FFF'} },
-                                backgroundColor: 'rgb(31, 31, 32)',
-                                colors: ['#FF0000', '#00b5ad'],
-                            }}
-                        />
-                    </div>
+                </div>
+                <div className="admin-pie-chart-container">
+                    <Chart
+                        chartType="PieChart"
+                        width="100%"
+                        height="400px"
+                        data={pieChartData}
+                        options={{
+                            title: "Vacation Usage Statistics",
+                            titleTextStyle: { color: '#FFF' },
+                            legend: { position: "right", textStyle:{color: '#FFF'} },
+                            backgroundColor: 'rgb(31, 31, 32)',
+                            colors: ['#FF0000', '#00b5ad'],
+                        }}
+                    />
                 </div>
             </div>
         </div>
