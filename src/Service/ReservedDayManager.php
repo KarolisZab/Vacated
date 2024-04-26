@@ -3,9 +3,11 @@
 namespace App\Service;
 
 use App\DTO\ReservedDayDTO;
+use App\DTO\TagDTO;
 use App\Entity\ReservedDay;
 use App\Exception\ValidationFailureException;
 use App\Trait\LoggerTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -17,6 +19,7 @@ class ReservedDayManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
+        private TagManager $tagManager
     ) {
     }
 
@@ -41,6 +44,11 @@ class ReservedDayManager
                 ->setDateFrom($from)
                 ->setDateTo($to)
                 ->setNote($reservedDayDTO->note);
+
+            foreach ($reservedDayDTO->tags as $tagName) {
+                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+                $reservedDay->addTag($tag);
+            }
 
             $errors = $this->validator->validate($reservedDay, null, ['create']);
             ValidationFailureException::throwException($errors);
@@ -92,6 +100,14 @@ class ReservedDayManager
             ->setDateTo($to)
             ->setNote($reservedDayDTO->note);
 
+        $addTags = [];
+        foreach ($reservedDayDTO->tags as $tagName) {
+            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+            $addTags[] = $tag;
+        }
+
+        $reservedDay->setTags(new ArrayCollection($addTags));
+
         $errors = $this->validator->validate($reservedDay, null, ['update']);
         ValidationFailureException::throwException($errors);
 
@@ -138,7 +154,7 @@ class ReservedDayManager
         /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
         $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
 
-        return $reservedDayRepository->findPaginatedReservedDays($limit, $offset, /*$filter*/);
+        return $reservedDayRepository->findPaginatedReservedDays($limit, $offset);
     }
 
     public function getReservedDays(string $dateFrom, string $dateTo): array

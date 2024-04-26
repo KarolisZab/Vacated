@@ -56,9 +56,10 @@ export default function MyCalendar() {
                 setReservedDays(reserved);
             } catch (error) {
                 navigate('/login')
-            } finally {
-                // setLoading(false);
-            }
+            } 
+            // finally {
+            //     // setLoading(false);
+            // }
         };
     
         fetchData();

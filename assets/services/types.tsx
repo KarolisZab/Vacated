@@ -5,6 +5,7 @@ export type EmployeeType = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
+    tags: TagType[];
 };
 
 export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles"> {
@@ -39,9 +40,16 @@ export type ReservedDayType = {
     dateFrom: string;
     dateTo: string;
     note: string;
+    tags: TagType[];
 }
 
 export type GetReservedDaysResultType = {
     totalItems: number;
     items: ReservedDayType[];
+}
+
+export type TagType = {
+    id: string;
+    name: string;
+    colorCode: string;
 }

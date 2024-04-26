@@ -48,7 +48,7 @@ class UserRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function getEmployeesCount(?string $filter = null): int
+    public function getEmployeesCount(): int
     {
         return $this->createQueryBuilder('u')
             ->select('COUNT(u)')

@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Dimmer, Input, Loader, Message, Pagination, Table } from 'semantic-ui-react';
+import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
 
@@ -74,6 +74,7 @@ const EmployeesList: React.FC = () => {
                                 <Table.HeaderCell>Name</Table.HeaderCell>
                                 <Table.HeaderCell>Email</Table.HeaderCell>
                                 <Table.HeaderCell>Phone No.</Table.HeaderCell>
+                                <Table.HeaderCell>Tags</Table.HeaderCell>
                                 <Table.HeaderCell>Actions</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
@@ -84,6 +85,15 @@ const EmployeesList: React.FC = () => {
                                     <Table.Cell>{employee.firstName} {employee.lastName}</Table.Cell>
                                     <Table.Cell>{employee.email}</Table.Cell>
                                     <Table.Cell>{employee.phoneNumber}</Table.Cell>
+                                    <Table.Cell>
+                                        {employee.tags.map((tag) => (
+                                            <ListItem key={tag.id}>
+                                                <Label style={{ backgroundColor: tag.colorCode }} horizontal>
+                                                    {tag.name}
+                                                </Label>
+                                            </ListItem>
+                                        ))}
+                                    </Table.Cell>
                                     <Table.Cell>
                                         <Link to={`/admin/employees/${employee.id}`}>View details</Link>
                                     </Table.Cell>

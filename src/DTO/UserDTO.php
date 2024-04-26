@@ -10,6 +10,7 @@ class UserDTO
         public readonly ?string $lastName,
         public readonly ?string $phoneNumber,
         public ?string $password = null,
+        public readonly ?array $tags = [],
     ) {
     }
 }

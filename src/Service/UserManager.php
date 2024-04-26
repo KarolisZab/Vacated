@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\DTO\TagDTO;
 use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Exception\ValidationFailureException;
 use App\Trait\LoggerTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -19,6 +21,7 @@ class UserManager
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
         private ValidatorInterface $validator,
+        private TagManager $tagManager
     ) {
     }
 
@@ -29,16 +32,16 @@ class UserManager
                 'email' => $userDTO->email
             ]);
 
-            if ($existingUser !== null) {
+            if (null !== $existingUser) {
                 return null;
             }
 
-            $userDTO->password = $this->generateRandomPassword();
+            $password = $this->generateRandomPassword();
 
             $user = new User();
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
-                $userDTO->password
+                $password
             );
             $user->setEmail($userDTO->email)
                 ->setPassword($hashedPassword)
@@ -46,6 +49,11 @@ class UserManager
                 ->setFirstName($userDTO->firstName)
                 ->setLastName($userDTO->lastName)
                 ->setPhoneNumber($userDTO->phoneNumber);
+
+            foreach ($userDTO->tags as $tagName) {
+                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+                $user->addTag($tag);
+            }
 
             $errors = $this->validator->validate($user, null, ['create']);
             ValidationFailureException::throwException($errors);
@@ -215,6 +223,14 @@ class UserManager
 
         $errors = $this->validator->validate($user, null, ['update']);
         ValidationFailureException::throwException($errors);
+
+        $addTags = [];
+        foreach ($userDTO->tags as $tagName) {
+            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+            $addTags[] = $tag;
+        }
+
+        $user->setTags(new ArrayCollection($addTags));
 
         $this->entityManager->flush();
 

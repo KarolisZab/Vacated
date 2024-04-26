@@ -1,8 +1,9 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
-import { EmployeeRegistrationData } from '../services/types';
+import { Button, Dropdown, DropdownProps, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
+import { EmployeeRegistrationData, TagType } from '../services/types';
 import errorProcessor from '../services/errorProcessor';
+import tagService from '../services/tag-service';
 import employeeService from '../services/employee-service';
 
 
@@ -13,10 +14,25 @@ const Register: React.FC = () => {
         email: '',
         firstName: '',
         lastName: '',
-        phoneNumber: ''
+        phoneNumber: '',
+        tags: []
     });
     const [error, setError] = useState<string>('');
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+    const [tags, setTags] = useState<TagType[]>([]);
+
+    useEffect(() => {
+        fetchTags();
+    }, []);
+
+    const fetchTags = async () => {
+        try {
+            const tags = await tagService.getAllTags();
+            setTags(tags);
+        } catch (error) {
+            setError('Error: ' + (error as Error).message);
+        }
+    };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>, field: keyof EmployeeRegistrationData) => {
         setRegistrationData({
@@ -32,6 +48,20 @@ const Register: React.FC = () => {
             navigate(-1);
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
+        }
+    };
+
+    const handleTagsChange = (e: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+        if (Array.isArray(value)) {
+            const selectedTags: TagType[] = value.map(tagName => {
+                const tag = tags.find(tag => tag.name === tagName);
+                if (tag) {
+                    return tag;
+                } else {
+                    return { id: '', name: '', colorCode: '' };
+                }
+            });
+            setRegistrationData({ ...registrationData, tags: selectedTags });
         }
     };
 
@@ -84,6 +114,18 @@ const Register: React.FC = () => {
                             error={formErrors['phoneNumber']}
                             required
                         />
+                        <Form.Field>
+                            <Dropdown
+                                placeholder="Select tags"
+                                fluid
+                                multiple
+                                search
+                                selection
+                                options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
+                                onChange={handleTagsChange}
+                                value={registrationData.tags.map(tag => tag.name)}
+                            />
+                        </Form.Field>
                         <Button color='teal' fluid size='large' type='submit'>
                             Register
                         </Button>

@@ -11,6 +11,7 @@ class ReservedDayDTO
         public readonly ?string $dateTo,
         public ?User $reservedBy,
         public readonly ?string $note = '',
+        public readonly ?array $tags = [],
     ) {
     }
 }
