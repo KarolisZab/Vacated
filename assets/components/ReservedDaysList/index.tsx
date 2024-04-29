@@ -10,6 +10,7 @@ import errorProcessor from '../../services/errorProcessor';
 const ReservedDaysList: React.FC = () => {
     const navigate = useNavigate();
     const [reservedDays, setReservedDays] = useState<ReservedDayType[]>([]);
+    /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const { id } = useParams<{ id: string }>();
@@ -34,6 +35,7 @@ const ReservedDaysList: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+    const [modalError, setModalError] = useState<string>('');
 
     const formatDateTime = (dateTimeString: string, includeTime: boolean = false) => {
         const date = new Date(dateTimeString);
@@ -65,7 +67,7 @@ const ReservedDaysList: React.FC = () => {
             setTotalItems(results.totalItems);
         } catch (error) {
             setError('Error' + (error as Error).message);
-            navigate("/");
+            // navigate("/");
         } finally {
             setLoading(false);
         }
@@ -86,7 +88,6 @@ const ReservedDaysList: React.FC = () => {
     }, [page]);
 
     useEffect(() => {
-        // Reset newReservedDayData when the modal is closed
         if (!newReservedDayModalOpen) {
             setNewReservedDayData({
                 dateFrom: '',
@@ -116,6 +117,7 @@ const ReservedDaysList: React.FC = () => {
         setModalOpen(false);
         setDeleteModalOpen(false);
         setNewReservedDayModalOpen(false);
+        setModalError('');
     };
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
@@ -143,6 +145,7 @@ const ReservedDaysList: React.FC = () => {
             fetchReservedDays();
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
+            setModalError(error.response.data);
         }
     };
 
@@ -189,7 +192,7 @@ const ReservedDaysList: React.FC = () => {
             closeModal();
         } catch (error) {
             setError('Error' + (error as Error).message);
-            navigate("/");
+            navigate(-1);
         }
     };
 
@@ -217,7 +220,8 @@ const ReservedDaysList: React.FC = () => {
             fetchReservedDays();
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
-            navigate("/");
+            setModalError(error.response.data);
+            // navigate("/");
         }
     };
 
@@ -230,7 +234,6 @@ const ReservedDaysList: React.FC = () => {
         <div className="reserved-days-list">
             <h1>Reserved days</h1>
             <Button color='teal' onClick={() => setNewReservedDayModalOpen(true)} className='reserve-button'>Reserve days</Button>
-            {error && <Message negative>{error}</Message>}
             <div className="loader-container">
                 {loading && (
                     <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
@@ -299,6 +302,7 @@ const ReservedDaysList: React.FC = () => {
                 <Modal open={modalOpen} onClose={closeModal}>
                     <Modal.Header>Update reserved days</Modal.Header>
                     <Modal.Content>
+                        {modalError && <Message negative>{modalError}</Message>}
                         <Form>
                             <Form.Input
                                 label='Start date'
@@ -367,6 +371,7 @@ const ReservedDaysList: React.FC = () => {
                 <Modal open={newReservedDayModalOpen} onClose={closeModal}>
                     <Modal.Header>New Reserved Day</Modal.Header>
                     <Modal.Content>
+                        {modalError && <Message negative>{modalError}</Message>}
                         <Form>
                             <Form.Input
                                 label='Start date'
