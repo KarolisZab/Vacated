@@ -321,7 +321,7 @@ export default function MyCalendar() {
                                 Hi, {currentUser.firstName} {currentUser.lastName}!
                             </p>
                             <p className='available-days-message'>
-                                You have {currentUser.availableDays} out of 20 available vacation days.
+                                You have {availableDays} out of 20 available vacation days.
                             </p>
                             <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
                                 Request vacation
