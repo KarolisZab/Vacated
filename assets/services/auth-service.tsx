@@ -71,6 +71,14 @@ class AuthService {
         return !!user && user.roles.includes("ROLE_ADMIN");
     }
 
+    resetPassword(email: string): Promise<string> {
+        return axios
+            .post("http://localhost:8080/password-reset", { email })
+            .then(response => {
+                return response.data.message;
+            });
+    }
+
     subscribe(callback: () => void): void {
         this.authenticationChangeSubscribers.push(callback);
     }

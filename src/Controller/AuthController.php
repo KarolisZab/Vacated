@@ -132,4 +132,17 @@ class AuthController extends AbstractController
             return new JsonResponse('Failed to change password', 500);
         }
     }
+
+    #[Route('/password-reset', name: 'password_reset', methods: ['POST'])]
+    public function resetPassword(Request $request)
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $email = $requestData['email'] ?? '';
+
+        if (!$this->userManager->resetPassword($email)) {
+            return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse(['message' => 'Password reset successfully']);
+    }
 }

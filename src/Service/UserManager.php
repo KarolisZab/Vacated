@@ -285,4 +285,26 @@ class UserManager
             throw $e;
         }
     }
+
+    public function resetPassword(string $email): bool
+    {
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if (!$user) {
+            return false;
+        }
+
+        $hashedPassword = $this->passwordHasher->hashPassword($user, 'test');
+        $user->setPassword($hashedPassword);
+
+        try {
+            $this->entityManager->flush();
+            return true;
+        } catch (\Exception $e) {
+            $this->logger->critical(
+                "Exception occured while requesting password reset for user {$user->getEmail()} : " . $e->getMessage()
+            );
+            throw $e;
+        }
+    }
 }
