@@ -103,4 +103,33 @@ class AuthController extends AbstractController
         // redirects user to the google oauth consent screen
         return new RedirectResponse($this->googleService->createAuthUrl());
     }
+
+    #[Route('/api/change-password', name: 'change_password', methods:['POST'])]
+    public function changePassword(Request $request, UserManager $userManager): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true);
+
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            return new JsonResponse('User not found', 404);
+        }
+
+        if (!isset($requestData['oldPassword']) || !isset($requestData['newPassword'])) {
+            return new JsonResponse('Old password and new password are required', 400);
+        }
+
+        $oldPassword = $requestData['oldPassword'];
+        $newPassword = $requestData['newPassword'];
+
+        if (!$this->passwordHasher->isPasswordValid($user, $oldPassword)) {
+            return new JsonResponse('Invalid old password', 400);
+        }
+
+        if ($userManager->changePassword($user, $newPassword)) {
+            return new JsonResponse('Password changed successfully', 200);
+        } else {
+            return new JsonResponse('Failed to change password', 500);
+        }
+    }
 }

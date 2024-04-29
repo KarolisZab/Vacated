@@ -37,6 +37,10 @@ class EmployeeService {
     async createUser(data: EmployeeRegistrationData): Promise<void> {
         return await apiService.post("/admin/create-user", data);
     }
+
+    async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+        return await apiService.post<void>("/change-password", { oldPassword, newPassword });
+    } 
 }
 
 export default new EmployeeService();

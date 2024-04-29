@@ -269,4 +269,20 @@ class UserManager
 
         return $availableDays;
     }
+
+    public function changePassword(User $user, string $newPassword): bool
+    {
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
+
+        try {
+            $this->entityManager->flush();
+            return true;
+        } catch (\Exception $e) {
+            $this->logger->critical(
+                "Exception occured while changing password for user {$user->getEmail()} : " . $e->getMessage()
+            );
+            throw $e;
+        }
+    }
 }

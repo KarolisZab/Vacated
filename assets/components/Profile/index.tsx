@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import employeeService from '../../services/employee-service';
-import { Button, Dimmer, Dropdown, DropdownProps, Form, FormInput, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
+import { Button, Dimmer, Divider, Dropdown, DropdownProps, Form, FormInput, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
 import { EmployeeType, TagType } from '../../services/types';
 import handleError from "../../services/handler";
 import errorProcessor from "../../services/errorProcessor";
@@ -21,8 +21,12 @@ const Profile: React.FC = () => {
     const [tags, setTags] = useState<TagType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+    /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
-
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [passwordErrors, setPasswordErrors] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         const fetchEmployee = async () => {
@@ -67,6 +71,23 @@ const Profile: React.FC = () => {
 
     const handleUpdate = async () => {
         try {
+            const fieldErrors: { [key: string]: string } = {};
+            if (employee.firstName.trim() === '') {
+                fieldErrors['firstName'] = 'Field should not be empty';
+            }
+            if (employee.lastName.trim() === '') {
+                fieldErrors['lastName'] = 'Field should not be empty';
+            }
+            if (employee.phoneNumber.trim() === '') {
+                fieldErrors['phoneNumber'] = 'Field should not be empty';
+            }
+
+            if (Object.keys(fieldErrors).length > 0) {
+                setFormErrors(fieldErrors);
+                return;
+            }
+            setFormErrors({});
+
             await employeeService.updateEmployee(employee.id, employee);
             navigate(-1);
         } catch (error) {
@@ -95,6 +116,29 @@ const Profile: React.FC = () => {
             } catch (error) {
                 handleError(error);
             }
+        }
+    };
+
+    const handleChangePassword = async () => {
+        setPasswordErrors({});
+        
+        if (newPassword !== confirmNewPassword) {
+            setPasswordErrors(prevErrors => ({
+                ...prevErrors,
+                confirmNewPassword: 'New password and confirm password do not match'
+            }));
+            return;
+        }
+
+        try {
+            await employeeService.changePassword(oldPassword, newPassword);
+            navigate('/');
+        } catch (error) {
+            setPasswordErrors(prevErrors => ({
+                ...prevErrors,
+                confirmNewPassword: 'Failed to change password'
+            }));
+            handleError(error);
         }
     };
 
@@ -180,6 +224,37 @@ const Profile: React.FC = () => {
                         </Form.Field>
                         <Button type='button' onClick={handleUpdate}>Save changes</Button>
                         <Button type='button' onClick={handleCancel}>Return</Button>
+                    </Form>
+                    <Divider />
+                    <Form inverted>
+                        <FormInput
+                            fluid
+                            label='Old Password'
+                            placeholder='Old Password'
+                            type='password'
+                            value={oldPassword}
+                            onChange={(e) => setOldPassword(e.target.value)}
+                            error={passwordErrors['oldPassword']}
+                        />
+                        <FormInput
+                            fluid
+                            label='New Password'
+                            placeholder='New Password'
+                            type='password'
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            error={passwordErrors['newPassword']}
+                        />
+                        <FormInput
+                            fluid
+                            label='Confirm New Password'
+                            placeholder='Confirm New Password'
+                            type='password'
+                            value={confirmNewPassword}
+                            onChange={(e) => setConfirmNewPassword(e.target.value)}
+                            error={passwordErrors['confirmNewPassword']}
+                        />
+                        <Button type='button' onClick={handleChangePassword}>Change password</Button>
                     </Form>
                 </Segment>
             </div>
