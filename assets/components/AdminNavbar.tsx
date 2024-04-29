@@ -75,23 +75,22 @@ export default function Navbar() {
             <div className="right-container">
                 {isAuthenticated && (
                     <>
+                        <ul>
+                            <li>
+                                <Button icon basic onClick={handleLogout} inverted>
+                                    <Icon name='sign-out' size="large"/>
+                                </Button>
+                            </li>
+                        </ul>
                         {isAdmin && (
                             <ul>
                                 <li>
                                     <Link to="/">
-                                        <Button basic color="teal">Exit admin dashboard</Button>
+                                        <Button color="teal">Exit admin dashboard</Button>
                                     </Link>
                                 </li>
                             </ul>
                         )}
-                        <ul>
-                            <li>
-                                {/* <Link to="/login" onClick={handleLogout}>Logout</Link> */}
-                                <Button icon basic onClick={handleLogout} inverted>
-                                    <Icon name='sign-out' size="large"/> {/* Use the 'log out' icon */}
-                                </Button>
-                            </li>
-                        </ul>
                     </>
                 )}
             </div>
