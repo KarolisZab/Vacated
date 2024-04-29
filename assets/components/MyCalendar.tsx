@@ -230,23 +230,28 @@ export default function MyCalendar() {
             //         display: 'list-item'
             //     };
             // });
-            const eventTitle = reservedDay.tags.reduce((label, tag) => {
-                if (label === '') {
-                    return tag.name;
-                }
-
-                return `${label}, ${tag.name}`;
-            }, '');
-            return {
-                start: reservedDay.dateFrom,
-                end: endDate.toISOString(),
-                title: eventTitle,
-                color: reservedDay.tags[0].colorCode,
-                classNames: ['tag-event'],
-                display: 'list-item'
-            };
+            if (reservedDay.tags && reservedDay.tags.length > 0) {
+                const eventTitle = reservedDay.tags.reduce((label, tag) => {
+                    if (label === '') {
+                        return tag.name;
+                    }
+    
+                    return `${label}, ${tag.name}`;
+                }, '');
+                return {
+                    start: reservedDay.dateFrom,
+                    end: endDate.toISOString(),
+                    title: eventTitle,
+                    color: reservedDay.tags[0].colorCode,
+                    classNames: ['tag-event'],
+                    display: 'list-item'
+                };
+            } else {
+                return null;
+            }
         });
-        return tagEvents;
+        // return tagEvents;
+        return tagEvents.filter(event => event !== null);
     };
 
     if (loading) {
@@ -323,7 +328,7 @@ export default function MyCalendar() {
                             <p className='available-days-message'>
                                 You have {availableDays} out of 20 available vacation days.
                             </p>
-                            <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
+                            <Button color='teal' onClick={handleRequestVacation}>
                                 Request vacation
                             </Button>
                         </div>

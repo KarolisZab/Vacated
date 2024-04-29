@@ -18,7 +18,6 @@ const Profile: React.FC = () => {
         phoneNumber: '',
         tags: []
     });
-    const [tags, setTags] = useState<TagType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     /* eslint-disable-next-line */
@@ -42,32 +41,7 @@ const Profile: React.FC = () => {
         };
 
         fetchEmployee();
-        fetchTags();
     }, []);
-
-    const fetchTags = async () => {
-        try {
-            const tagsData = await tagService.getAllTags();
-            setTags(tagsData);
-        } catch (error) {
-            handleError(error);
-            setError('Error fetching tags: ' + (error as Error).message);
-        }
-    };
-
-    const handleTagsChange = (e: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
-        if (Array.isArray(value)) {
-            const selectedTags: TagType[] = value.map(tagName => {
-                const tag = tags.find(tag => tag.name === tagName);
-                if (tag) {
-                    return tag;
-                } else {
-                    return { id: '', name: '', colorCode: '' };
-                }
-            });
-            setEmployee({ ...employee, tags: selectedTags });
-        }
-    };
 
     const handleUpdate = async () => {
         try {
@@ -101,22 +75,6 @@ const Profile: React.FC = () => {
             ...prevEmployee,
             [name]: value
         }));
-    };
-
-    const handleCancel = () => {
-        navigate('/');
-    };
-
-    const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
-        if (e.key === 'Enter' && value) {
-            try {
-                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
-                setTags([...tags, newTag]);
-                setEmployee({ ...employee, tags: [...employee.tags, newTag] });
-            } catch (error) {
-                handleError(error);
-            }
-        }
     };
 
     const handleChangePassword = async () => {
@@ -154,7 +112,7 @@ const Profile: React.FC = () => {
 
     return (
         <div style={{ margin: '3rem auto', maxWidth: '500px' }}>
-            <h1>Update Employee</h1>
+            <h1>Profile</h1>
             <div className="loader-container">
                 <Segment inverted>
                     {loading && (
@@ -174,7 +132,7 @@ const Profile: React.FC = () => {
                         />
                         {employee.availableDays !== undefined && (
                             <>
-                                <p>Available vacation days:</p>
+                                <p>Available vacation days</p>
                                 <Progress value={employee.availableDays} total='20' progress='ratio' size='medium' color={getColor(employee.availableDays)} />
                             </> 
                         )}
@@ -207,23 +165,7 @@ const Profile: React.FC = () => {
                             onChange={handleChange}
                             error={formErrors['phoneNumber']}
                         />
-                        <Form.Field>
-                            <label>Tags</label>
-                            <Dropdown
-                                placeholder='Select tags'
-                                fluid
-                                multiple
-                                search
-                                selection
-                                options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
-                                value={employee.tags.map(tag => tag.name)}
-                                onChange={handleTagsChange}
-                                allowAdditions
-                                onAddItem={handleTagCreate}
-                            />
-                        </Form.Field>
                         <Button type='button' onClick={handleUpdate}>Save changes</Button>
-                        <Button type='button' onClick={handleCancel}>Return</Button>
                     </Form>
                     <Divider />
                     <Form inverted>

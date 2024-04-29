@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import reservedDayService from '../services/reserved-day-service';
-import { Dimmer, Loader, Pagination, Table } from 'semantic-ui-react';
+import { Dimmer, Label, ListItem, Loader, Pagination, Table } from 'semantic-ui-react';
 // import './styles.scss';
 import { ReservedDayType } from '../services/types';
 import { formatDateTime } from './utils/dateUtils';
@@ -50,6 +50,7 @@ const ReservedDays: React.FC = () => {
                             <Table.Row>
                                 <Table.HeaderCell>Start date</Table.HeaderCell>
                                 <Table.HeaderCell>End date</Table.HeaderCell>
+                                <Table.HeaderCell>Tags</Table.HeaderCell>
                                 <Table.HeaderCell>Note</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
@@ -59,6 +60,15 @@ const ReservedDays: React.FC = () => {
                                 <Table.Row key={reservedDay.id}>
                                     <Table.Cell>{formatDateTime(reservedDay.dateFrom, true)}</Table.Cell>
                                     <Table.Cell>{formatDateTime(reservedDay.dateTo, true)}</Table.Cell>
+                                    <Table.Cell>
+                                        {reservedDay.tags.map((tag) => (
+                                            <ListItem key={tag.id}>
+                                                <Label style={{ backgroundColor: tag.colorCode }} horizontal>
+                                                    {tag.name}
+                                                </Label>
+                                            </ListItem>
+                                        ))}
+                                    </Table.Cell>
                                     <Table.Cell>{reservedDay.note}</Table.Cell>
                                 </Table.Row>
                             ))}
