@@ -19,6 +19,7 @@ import ReservedDaysList from "../components/ReservedDaysList"
 import AllVacations from "../components/AdminAllVacations/index"
 import TagsList from "../components/AdminTags/index"
 import Google from "../components/GoogleAuth/index"
+import ReservedDays from "../components/ReservedDays"
 
 const router = createBrowserRouter([
     {
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
                 path: "google-auth",
                 element: (
                     <Google />
+                )
+            },
+            {
+                path: "reserved-days",
+                element: (
+                    <PrivateRoute>
+                        <ReservedDays />
+                    </PrivateRoute>
                 )
             }
         ]

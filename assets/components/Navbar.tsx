@@ -59,6 +59,9 @@ export default function Navbar() {
                                 <li>
                                     <Link to="/vacations">My Vacations</Link>
                                 </li>
+                                <li>
+                                    <Link to="/reserved-days">Reserved days</Link>
+                                </li>
                             </>
                         )}
                     </ul>
