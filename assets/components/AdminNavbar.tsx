@@ -37,6 +37,10 @@ export default function Navbar() {
         navigate('/login');
     };
 
+    const handleProfile =() => {
+        navigate('/profile');
+    }
+
     return (
         <nav className="navigation">
             <div className="links-container">
@@ -55,7 +59,6 @@ export default function Navbar() {
                                     <Link to="/admin">Home</Link>
                                 </li>
                                 <li>
-                                    {/* All user vacations */}
                                     <Link to="/admin/vacations">Vacations</Link>
                                 </li>
                                 <li>
@@ -75,22 +78,25 @@ export default function Navbar() {
             <div className="right-container">
                 {isAuthenticated && (
                     <>
-                        <ul>
+                        <ul className="button-group">
                             <li>
-                                <Button icon basic onClick={handleLogout} inverted>
-                                    <Icon name='sign-out' size="large"/>
+                                <Button icon basic onClick={handleProfile} inverted>
+                                    <Icon name='user' size="tiny"/> {user.firstName} {user.lastName}
                                 </Button>
                             </li>
-                        </ul>
-                        {isAdmin && (
-                            <ul>
+                            <li>
+                                <Button icon basic onClick={handleLogout} inverted className="logout-button">
+                                    <Icon name='sign-out' size="large"/> Log out
+                                </Button>
+                            </li>
+                            {isAdmin && (
                                 <li>
                                     <Link to="/">
-                                        <Button color="teal">Exit admin dashboard</Button>
+                                        <Button color="teal" className="admin-button">Exit admin dashboard</Button>
                                     </Link>
                                 </li>
-                            </ul>
-                        )}
+                            )}
+                        </ul>
                     </>
                 )}
             </div>

@@ -28,6 +28,7 @@ export default function Navbar() {
     useEffect(() => {
         if (user) {
             setIsAdmin(user.roles.includes("ROLE_ADMIN"));
+            console.log(user);
         } else {
             setIsAdmin(false);
         }
@@ -37,6 +38,10 @@ export default function Navbar() {
         authService.logout();
         navigate('/login');
     };
+
+    const handleProfile =() => {
+        navigate('/profile');
+    }
 
     return (
         <nav className="navigation">
@@ -72,8 +77,13 @@ export default function Navbar() {
                     <>
                         <ul className="button-group">
                             <li>
+                                <Button icon basic onClick={handleProfile} inverted>
+                                    <Icon name='user' size="large"/> {user.firstName} {user.lastName}
+                                </Button>
+                            </li>
+                            <li>
                                 <Button icon basic onClick={handleLogout} inverted className="logout-button">
-                                    <Icon name='sign-out' size="large"/>
+                                    <Icon name='sign-out' size="large"/> Log out
                                 </Button>
                             </li>
                             {isAdmin && (

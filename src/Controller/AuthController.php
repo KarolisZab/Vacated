@@ -88,7 +88,13 @@ class AuthController extends AbstractController
             'roles' => $user->getRoles()
         ]);
 
-        return new JsonResponse(['email' => $user->getEmail(), 'roles' => $user->getRoles(), 'access_token' => $token]);
+        return new JsonResponse([
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'access_token' => $token
+        ]);
     }
 
     #[Route('/oauth', name: 'google_login', methods:['GET'])]
