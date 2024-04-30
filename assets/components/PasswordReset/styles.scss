@@ -1,0 +1,28 @@
+.ui.container {
+    h2 {
+        color: aliceblue;
+        margin-top: 8px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    .ui.form .field > label {
+        color: aliceblue;
+    }
+}
+
+.ui.message {
+    background-color: #1f1f20;
+    p {
+        color: rgb(89, 156, 89);
+    }
+}
+
+.success-message {
+    .content {
+        background-color: #1f1f20;
+        color: green;
+    }
+}

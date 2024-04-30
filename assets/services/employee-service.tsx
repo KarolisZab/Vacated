@@ -40,7 +40,11 @@ class EmployeeService {
 
     async changePassword(oldPassword: string, newPassword: string): Promise<void> {
         return await apiService.post<void>("/change-password", { oldPassword, newPassword });
-    } 
+    }
+
+    async resetPassword(token: string, newPassword: string): Promise<void> {
+        return await apiService.post<void>("/reset-password", { token, newPassword });
+    }
 }
 
 export default new EmployeeService();

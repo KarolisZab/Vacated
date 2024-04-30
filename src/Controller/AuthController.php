@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Security\JwtIssuer;
+use App\Security\JwtValidator;
 use App\Service\GoogleOAuth\GoogleOAuthInterface;
 use App\Service\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +34,8 @@ class AuthController extends AbstractController
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
         private JwtIssuer $jwtIssuer,
-        private GoogleOAuthInterface $googleService
+        private GoogleOAuthInterface $googleService,
+        private JwtValidator $jwtValidator
     ) {
     }
 
@@ -133,16 +135,49 @@ class AuthController extends AbstractController
         }
     }
 
-    #[Route('/password-reset', name: 'password_reset', methods: ['POST'])]
-    public function resetPassword(Request $request)
+    #[Route('/api/forgot-password', name: 'forgot_password', methods: ['POST'])]
+    public function forgotPassword(Request $request): Response
     {
         $requestData = json_decode($request->getContent(), true);
-        $email = $requestData['email'] ?? '';
+        $email = $requestData['email'] ?? null;
 
-        if (!$this->userManager->resetPassword($email)) {
-            return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+        if (null !== $this->userManager->getUserByEmail($email)) {
+            $token = $this->jwtIssuer->issueToken(['email' => $email, 'reset_token' => true]);
+            // siunciu emaila su linku subuildintu i /reset-password/token
         }
 
-        return new JsonResponse(['message' => 'Password reset successfully']);
+        return new JsonResponse(null, JsonResponse::HTTP_OK);
+    }
+
+    #[Route('/api/validate-reset-token/{token}', name: 'validate_reset_token', methods: ['GET'])]
+    public function validateResetToken(string $token): Response
+    {
+        try {
+            $this->jwtValidator->validateToken($token, true);
+
+            return new JsonResponse(null, JsonResponse::HTTP_OK);
+        } catch (\Exception) {
+            return new JsonResponse(['error' => 'Invalid token'], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[Route('/api/reset-password', name: 'change_password', methods: ['POST'])]
+    public function resetPassword(Request $request): Response
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $token = $requestData['token'];
+        $newPassword = $requestData['newPassword'];
+
+        $email = $this->jwtValidator->validateToken($token, true);
+
+        $user = $this->userManager->getUserByEmail($email);
+        if (null === $user) {
+            $this->logger->error('Reset token without existing user.', ['token' => $token]);
+            return new JsonResponse(['error' => 'Invalid token'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->userManager->changePassword($user, $newPassword);
+
+        return new JsonResponse(null, JsonResponse::HTTP_OK);
     }
 }

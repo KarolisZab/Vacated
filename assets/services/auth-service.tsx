@@ -71,11 +71,11 @@ class AuthService {
         return !!user && user.roles.includes("ROLE_ADMIN");
     }
 
-    resetPassword(email: string): Promise<string> {
+    forgotPassword(email: string): Promise<string> {
         return axios
-            .post("http://localhost:8080/password-reset", { email })
+            .post("http://localhost:8080/forgot-password", { email })
             .then(response => {
-                return response.data.message;
+                return response.data;
             });
     }
 

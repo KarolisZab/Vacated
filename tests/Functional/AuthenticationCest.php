@@ -3,6 +3,8 @@
 namespace App\Tests\Functional;
 
 use App\DTO\UserDTO;
+use App\Security\JwtIssuer;
+use App\Security\JwtValidator;
 use App\Service\UserManager;
 use App\Utils\MockedClock;
 use Codeception\Util\HttpCode;
@@ -14,11 +16,15 @@ class AuthenticationCest
 {
     private EntityManagerInterface $entityManager;
     private UserManager $userManager;
+    private JwtIssuer $jwtIssuer;
+    private JwtValidator $jwtValidator;
 
     public function _before(FunctionalTester $I)
     {
         $this->entityManager = $I->grabService(EntityManagerInterface::class);
         $this->userManager = $I->grabService(UserManager::class);
+        $this->jwtIssuer = $I->grabService(JwtIssuer::class);
+        $this->jwtValidator = $I->grabService(JwtValidator::class);
     }
 
     public function testSuccessfulUserLogin(FunctionalTester $I)
@@ -222,5 +228,53 @@ class AuthenticationCest
         $I->dontSeeResponseContainsJson([
             'tags' => ['name' => 'Backend']
         ]);
+    }
+
+    public function testValidateResetToken(FunctionalTester $I)
+    {
+        $user = $this->userManager->getUserByEmail('jwttest@test.com');
+        $token = $this->jwtIssuer->issueToken(['email' => 'jwttest@test.com', 'reset_token' => true]);
+
+        $email = $this->jwtValidator->validateToken($token, true);
+
+        $I->assertEquals($user->getEmail(), $email);
+        $token = $token . 'asda';
+
+        $I->expectThrowable(\Exception::class, function () use ($token) {
+            $this->jwtValidator->validateToken($token, true);
+        });
+
+        $token = $this->jwtIssuer->issueToken(['email' => 'jwttest@test.com']);
+
+        $I->expectThrowable(\Exception::class, function () use ($token) {
+            $this->jwtValidator->validateToken($token, true);
+        });
+    }
+
+    public function testResetPassword(FunctionalTester $I)
+    {
+        $token = $this->jwtIssuer->issueToken(['email' => 'jwttest@test.com', 'reset_token' => true]);
+        $email = $this->jwtValidator->validateToken($token, true);
+
+        $user = $this->userManager->getUserByEmail($email);
+
+        $I->assertEquals('jwttest@test.com', $user->getEmail());
+
+        $oldPassword = $user->getPassword();
+        $this->userManager->changePassword($user, 'test');
+        $newPassword = $user->getPassword();
+
+        $I->assertNotEquals($oldPassword, $newPassword);
+
+        $token = $token . 'asasd';
+        $I->expectThrowable(\Exception::class, function () use ($token) {
+            $this->jwtValidator->validateToken($token, true);
+        });
+
+        $token = $this->jwtIssuer->issueToken(['email' => 'jwttest@test.com']);
+
+        $I->expectThrowable(\Exception::class, function () use ($token) {
+            $this->jwtValidator->validateToken($token, true);
+        });
     }
 }
