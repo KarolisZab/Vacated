@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 import errorProcessor from '../../services/errorProcessor';
 import apiService from '../../services/api-service';
@@ -8,7 +8,6 @@ import employeeService from '../../services/employee-service';
 
 const ResetPassword: React.FC = () => {
     const navigate = useNavigate();
-    // const { token } = useParams<{ token: string }>();
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [error, setError] = useState<string>('');
@@ -18,9 +17,6 @@ const ResetPassword: React.FC = () => {
     const handleChangeNewPassword = (e: ChangeEvent<HTMLInputElement>) => {
         setNewPassword(e.target.value);
     };
-
-    // patikrint ar urle yra tokenas for further actions. jeigu nera invalid token, jeigu yra, siunti backa i validate endpoint
-    // response - jeigu 200, rodyt forma password change, jeigu ne 200, rodyt invalid token.
 
     useEffect(() => {
         const validateToken = async () => {

@@ -4,7 +4,6 @@ namespace App\Validator;
 
 use App\Entity\ReservedDay;
 use App\Entity\Vacation;
-use App\Repository\ReservedDayRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -12,10 +11,10 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class VacationValidator extends ConstraintValidator
 {
-    /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
-    private ReservedDayRepository $reservedDayRepository;
+    // /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+    private $reservedDayRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, ReservedDayRepository $reservedDayRepository)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->reservedDayRepository = $entityManager->getRepository(ReservedDay::class);
     }

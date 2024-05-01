@@ -381,10 +381,11 @@ class VacationCest
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            '2024-04-12' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
-            '2024-04-13' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
-            '2024-04-29' => [],
-            '2024-04-30' => ['requestedBy' => ['email' => 'vacationtest@test.com']]
+            '2024-04-14' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-15' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-16' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-17' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-18' => [],
         ]);
     }
 
@@ -469,6 +470,6 @@ class VacationCest
         $I->amBearerAuthenticated($token);
         $I->sendRequest('get', '/api/admin/monthly-vacation-statistics');
 
-        $I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIs(200);
     }
 }

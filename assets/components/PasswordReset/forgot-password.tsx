@@ -23,22 +23,22 @@ const ForgotPassword: React.FC = () => {
 
     return (
         <Container>
-          <h2>Forgot password?</h2>
-          <p>If you've forgotten your password, please enter your email address below. We'll send you an email with instructions on how to reset your password.</p>
-          <Form onSubmit={handleSubmit} loading={loading}>
-            {message && <Message content={message} success={!message} className='success-message'/>}
-            <Form.Field>
-              <label>Email:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder='Enter your email'
-                required
-              />
-            </Form.Field>
-            <Button type="submit" color='teal'>Submit</Button>
-          </Form>
+            <h2>Forgot password?</h2>
+            <p>If you&apos;ve forgotten your password, please enter your email address below. We&apos;ll send you an email with instructions on how to reset your password.</p>
+            <Form onSubmit={handleSubmit} loading={loading}>
+                {message && <Message content={message} success={!message} className='success-message'/>}
+                <Form.Field>
+                    <label>Email:</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder='Enter your email'
+                        required
+                    />
+                </Form.Field>
+                <Button type="submit" color='teal'>Submit</Button>
+            </Form>
         </Container>
     );
 };

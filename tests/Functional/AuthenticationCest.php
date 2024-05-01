@@ -83,7 +83,7 @@ class AuthenticationCest
         /** @var User $user */
         $user = $this->userManager->getUserByEmail('jwttest@test.com');
 
-        $updateDTO = new UserDTO('', 'Karolis', 'Zabinskis', '123456789', '');
+        $updateDTO = new UserDTO('', 'Karolis', 'Zabinskis', '123456789', 20, '');
 
         $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
             'firstName' => $updateDTO->firstName,

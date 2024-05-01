@@ -33,9 +33,9 @@ class ResetAvailableDaysCommand extends Command
                 $user->getFirstName(),
                 $user->getLastName(),
                 $user->getPhoneNumber(),
+                20,
                 null,
-                $user->getTags()->toArray(),
-                20
+                $user->getTags()->toArray()
             );
 
             $this->userManager->updateUser($user->getId(), $userDTO);

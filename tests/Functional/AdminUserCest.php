@@ -96,7 +96,7 @@ class CreateAdminCest
         $this->userManager->createAdmin('testinis@test.com', 'test');
         $user = $userRepository->findOneBy(['email' => 'testinis@test.com']);
 
-        $updateDTO = new UserDTO('', 'Karolis', 'Testinis', '123456789', '');
+        $updateDTO = new UserDTO('', 'Karolis', 'Testinis', '123456789', 20, '');
 
         $this->userManager->updateUser($user->getId(), $updateDTO);
 
@@ -109,7 +109,7 @@ class CreateAdminCest
 
     public function testUpdateNonExistingUser(FunctionalTester $I)
     {
-        $updateDTO = new UserDTO('', 'Karolis', 'Testinis', '123456789', '');
+        $updateDTO = new UserDTO('', 'Karolis', 'Testinis', '123456789', 20, '');
 
         $result = $this->userManager->updateUser('333', $updateDTO);
 
@@ -128,7 +128,8 @@ class CreateAdminCest
             'registrationtest@test.com',
             'Karolis',
             'Zabinskis',
-            '123456789'
+            '123456789',
+            20
         );
         $this->userManager->createUser($userDto);
 
