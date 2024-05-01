@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Trait\LoggerTrait;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AuthController extends AbstractController
 {
@@ -142,15 +143,15 @@ class AuthController extends AbstractController
         $email = $requestData['email'] ?? null;
 
         // Padariau klaida, kad kuriau sita blogam branche, tai cia uzcommentinau, kad veiktu po merge
-        // $user = $this->userManager->getUserByEmail($email);
-        if (null !== $this->userManager->getUserByEmail($email)) {
+        $user = $this->userManager->getUserByEmail($email);
+        if (null !== $user) {
             $token = $this->jwtIssuer->issueToken(['email' => $email, 'reset_token' => true]);
 
-            // $resetLink = $this->generateUrl(
-            //     'reset_password',
-            //     ['token' => $token],
-            //     UrlGeneratorInterface::ABSOLUTE_URL
-            // );
+            /*$resetLink = */$this->generateUrl(
+                'reset_password',
+                ['token' => $token],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
             // $subject = 'Password Reset';
             // $message = "Hello {$user->getEmail()},\n\n
             // You requested to reset your password. Please click the link below to proceed:\n{$resetLink}";
