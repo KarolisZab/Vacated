@@ -21,7 +21,8 @@ class UserManager
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
         private ValidatorInterface $validator,
-        private TagManager $tagManager
+        private TagManager $tagManager,
+        private MailerManager $mailerManager
     ) {
     }
 
@@ -58,7 +59,7 @@ class UserManager
             $errors = $this->validator->validate($user, null, ['create']);
             ValidationFailureException::throwException($errors);
 
-            // siust maileri
+            $this->mailerManager->sendWelcomeEmail($userDTO->email, $password);
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
@@ -237,8 +238,6 @@ class UserManager
         $this->logger->info("User with ID $id has been updated.");
 
         return $user;
-
-        // TODO: Adminas updatint visus userius ir save, bet ne kitus adminus.
     }
 
     public function getEmployeeCount(): int

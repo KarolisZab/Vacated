@@ -19,4 +19,13 @@ services:
     environment:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: root
+  
+  # mailer:
+  #   image: axllent/mailpit
+  #   ports:
+  #     - "1025"
+  #     - "8025"
+  #   environment:
+  #     MP_SMTP_AUTH_ACCEPT_ANY: 1
+  #     MP_SMTP_AUTH_ALLOW_INSECURE: 1
 
