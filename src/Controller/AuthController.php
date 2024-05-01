@@ -141,9 +141,21 @@ class AuthController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
         $email = $requestData['email'] ?? null;
 
+        // Padariau klaida, kad kuriau sita blogam branche, tai cia uzcommentinau, kad veiktu po merge
+        // $user = $this->userManager->getUserByEmail($email);
         if (null !== $this->userManager->getUserByEmail($email)) {
             $token = $this->jwtIssuer->issueToken(['email' => $email, 'reset_token' => true]);
-            // siunciu emaila su linku subuildintu i /reset-password/token
+
+            // $resetLink = $this->generateUrl(
+            //     'reset_password',
+            //     ['token' => $token],
+            //     UrlGeneratorInterface::ABSOLUTE_URL
+            // );
+            // $subject = 'Password Reset';
+            // $message = "Hello {$user->getEmail()},\n\n
+            // You requested to reset your password. Please click the link below to proceed:\n{$resetLink}";
+
+            // $this->mailerManager->sendEmailToUser($user->getEmail(), $subject, $message);
         }
 
         return new JsonResponse(null, JsonResponse::HTTP_OK);
