@@ -20,7 +20,7 @@ export default function Home() {
     const [pieChartData, setPieChartData] = useState<any[][]>([]);
     const navigate = useNavigate();
 
-
+    
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
