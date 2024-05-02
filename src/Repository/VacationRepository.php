@@ -128,10 +128,10 @@ class VacationRepository extends ServiceEntityRepository
         }
 
         if ($vacationType === '' || $vacationType === null) {
-            return $qb->getQuery()->getResult();
+            return $this->findAll();
         }
 
-        return [];
+        return $qb->getQuery()->getResult();
     }
 
     public function getFilteredVacations(?string $vacationType): array
@@ -163,12 +163,10 @@ class VacationRepository extends ServiceEntityRepository
         }
 
         if ($vacationType === '' || $vacationType === null) {
-            // return [];
-            return $qb->getQuery()->getResult();
+            return $this->findAll();
         }
 
-        // return $qb->getQuery()->getResult();
-        return [];
+        return $qb->getQuery()->getResult();
     }
 
 //    /**
