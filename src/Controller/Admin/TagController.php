@@ -85,7 +85,7 @@ class TagController extends AbstractController
             $tag = $this->tagManager->deleteTag($id);
 
             if ($tag === false) {
-                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+                return new JsonResponse('Tag not found', JsonResponse::HTTP_NOT_FOUND);
             }
 
             return new JsonResponse($this->serializer->serialize($tag, 'json'), JsonResponse::HTTP_OK, [], true);

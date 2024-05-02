@@ -109,7 +109,7 @@ class TagManager
         return $tagRepository->findAll();
     }
 
-    public function getTags(): int
+    public function getTagsCount(): int
     {
         /** @var \App\Repository\TagRepository $tagRepository */
         $tagRepository = $this->entityManager->getRepository(Tag::class);

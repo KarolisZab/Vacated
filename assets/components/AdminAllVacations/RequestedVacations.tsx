@@ -26,10 +26,10 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
         note: '',
         rejectionNote: ''
     });
-    
+        
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>You do not have any requested vacations yet.</Message>;
+        return <Message>There are no requested vacations yet.</Message>;
     }
 
     const handleConfirm = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {

@@ -41,7 +41,7 @@ class UserManager
             $user = new User();
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
-                $userDTO->password = $password
+                $password
             );
             $user->setEmail($userDTO->email)
                 ->setPassword($hashedPassword)

@@ -5,11 +5,11 @@ import { formatDateTime } from '../utils/dateUtils';
 interface Props {
     vacations: VacationType[];
     updateVacations: () => void;
-
 }
 
 /* eslint-disable-next-line */
 const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => {
+    
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
         return <Message>There are no confirmed vacations yet.</Message>;

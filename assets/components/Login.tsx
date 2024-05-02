@@ -11,7 +11,7 @@ const Login: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [isLoading, setLoading] = useState<boolean>(false);
 
-    useEffect(() => {
+    useEffect(() => {        
         const checkAuthentication = async () => {
             if (authService.isAuthenticated()) {
                 navigate('/');

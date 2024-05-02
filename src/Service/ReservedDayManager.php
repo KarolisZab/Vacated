@@ -50,12 +50,6 @@ class ReservedDayManager
                 $reservedDay->addTag($tag);
             }
 
-            // foreach ($reservedDay->getTags() as $existingTag) {
-            //     if (!in_array($existingTag->getName(), $reservedDayDTO->tags)) {
-            //         $reservedDay->removeTag($existingTag);
-            //     }
-            // }
-
             $errors = $this->validator->validate($reservedDay, null, ['create']);
             ValidationFailureException::throwException($errors);
 
