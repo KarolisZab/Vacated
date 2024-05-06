@@ -65,6 +65,23 @@ const Register: React.FC = () => {
         }
     };
 
+    const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
+        if (e.key === 'Enter' && value) {
+            try {
+                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
+                
+                setTags([...tags, newTag]);
+
+                setRegistrationData({
+                    ...registrationData,
+                    tags: [...registrationData.tags, newTag]
+                });
+            } catch (error) {
+                setError('Error: ' + (error as Error).message);
+            }
+        }
+    };
+
     return (
         <Grid textAlign='center' style={{ height: '90vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
@@ -124,10 +141,12 @@ const Register: React.FC = () => {
                                 options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
                                 onChange={handleTagsChange}
                                 value={registrationData.tags.map(tag => tag.name)}
+                                allowAdditions
+                                onAddItem={handleTagCreate}
                             />
                         </Form.Field>
                         <Button color='teal' fluid size='large' type='submit'>
-                            Register
+                            Create
                         </Button>
                     </Segment>
                 </Form>

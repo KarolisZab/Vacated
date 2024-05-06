@@ -4,6 +4,7 @@ import { formatDateTime } from '../utils/dateUtils';
 
 interface Props {
     vacations: VacationType[];
+    updateVacations?: () => void;
 }
 
 /* eslint-disable-next-line */

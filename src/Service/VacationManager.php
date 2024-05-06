@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\DTO\VacationDTO;
-use App\Entity\ReservedDay;
 use App\Entity\User;
 use App\Entity\Vacation;
 use App\Exception\ValidationFailureException;
@@ -37,12 +36,22 @@ class VacationManager
                 throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
             }
 
-            /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
-            $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-            $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
+            if ($user->getAvailableDays() <= 0) {
+                throw new \InvalidArgumentException("You have no available vacation days left.", 400);
+            }
 
-            if (count($reservedDays) > 0) {
-                throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
+            $requestedDays = $this->calculateVacationDaysWithoutWeekends($from, $to);
+            if ($requestedDays > $user->getAvailableDays()) {
+                throw new \InvalidArgumentException("Requested days exceed available days limit.", 400);
+            }
+            $user->setAvailableDays($user->getAvailableDays() - $requestedDays);
+
+            /** @var \App\Repository\VacationRepository $vacationRepository */
+            $vacationRepository = $this->entityManager->getRepository(Vacation::class);
+            $overlappingVacations = $vacationRepository->findOverlappingUserVacations($from, $to, $user);
+
+            if (count($overlappingVacations) > 0) {
+                throw new \InvalidArgumentException("Cannot request vacation due to overlapping vacations", 400);
             }
 
             $vacation = new Vacation();
@@ -101,13 +110,16 @@ class VacationManager
             throw new \InvalidArgumentException("Vacation cannot end before it starts.", 400);
         }
 
-        /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
-        $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
-        $reservedDays = $reservedDayRepository->findReservedDaysInPeriod($from, $to);
+        $previousDays = $this->calculateVacationDaysWithoutWeekends($vacation->getDateFrom(), $vacation->getDateTo());
+        $updatedDays = $this->calculateVacationDaysWithoutWeekends($from, $to);
 
-        if (count($reservedDays) > 0) {
-            throw new \InvalidArgumentException("Vacation cannot be requested on reserved days.", 400);
+        $user->setAvailableDays($user->getAvailableDays() + $previousDays);
+
+        if ($user->getAvailableDays() < $updatedDays) {
+            throw new \InvalidArgumentException("Updated vacation days exceed the available days limit.", 400);
         }
+
+        $user->setAvailableDays($user->getAvailableDays() - $updatedDays);
 
         if ($vacation->isConfirmed() === true) {
             $vacation->setConfirmed(false);
@@ -139,6 +151,11 @@ class VacationManager
         if ($vacation === null) {
             return null;
         }
+
+        $user = $vacation->getRequestedBy();
+
+        $requestedDays = $this->calculateVacationDaysWithoutWeekends($vacation->getDateFrom(), $vacation->getDateTo());
+        $user->setAvailableDays($user->getAvailableDays() + $requestedDays);
 
         $vacation->setReviewedAt(new \DateTimeImmutable())
             ->setReviewedBy($vacationDTO->reviewedBy)
@@ -187,20 +204,20 @@ class VacationManager
         return $vacationRepository->find($id);
     }
 
-    public function getAllVacations(): array
+    public function getAllVacations(?string $vacationType): array
     {
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
-        return $vacationRepository->findAll();
+        return $vacationRepository->getFilteredVacations($vacationType);
     }
 
-    public function getAllCurrentUserVacations(User $user): array
+    public function getAllCurrentUserVacations(User $user, ?string $vacationType): array
     {
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
-        return $vacationRepository->findBy(['requestedBy' => $user]);
+        return $vacationRepository->getAllCurrentUserFilteredVacations($user, $vacationType);
     }
 
     public function getVacations(int $limit = 10, int $offset = 0, /*?string $filter = null*/): array
@@ -211,14 +228,6 @@ class VacationManager
 
         return $vacationRepository->getVacations($limit, $offset, /*$filter*/);
     }
-
-    // public function getVacationsCount(?string $filter = null): int
-    // {
-    //     /** @var \App\Repository\UserRepository $userRepository */
-    //     $userRepository = $this->entityManager->getRepository(User::class);
-
-    //     return $userRepository->countAllVacations($filter);
-    // }
 
     /**
      * @return array<string, Vacation[]>
@@ -301,5 +310,23 @@ class VacationManager
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
 
         return $vacationRepository->count(['isConfirmed' => false, 'isRejected' => false]);
+    }
+
+    private function calculateVacationDaysWithoutWeekends(\DateTimeImmutable $from, \DateTimeImmutable $to): int
+    {
+        $days = 0;
+        $currentDay = $from;
+
+        while ($currentDay <= $to) {
+            $dayOfWeek = (int)date('w', $currentDay->getTimestamp());
+
+            if ($dayOfWeek !== 0 && $dayOfWeek !== 6) {
+                $days++;
+            }
+
+            $currentDay = $currentDay->modify('+1 day');
+        }
+
+        return $days;
     }
 }

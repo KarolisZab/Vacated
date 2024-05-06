@@ -3,6 +3,7 @@ import { VacationType } from '../../services/types';
 import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
 import { useState } from 'react';
 import vacationService from '../../services/vacation-service';
+import errorProcessor from '../../services/errorProcessor';
 import { formatDateTime } from '../utils/dateUtils';
 
 interface Props {
@@ -15,7 +16,9 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     const { id } = useParams<{ id: string }>();
     const [confirmModalOpen, setConfirmModalOpen] = useState<boolean>(false);
     const [rejectModalOpen, setRejectModalOpen] = useState<boolean>(false);
+    /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
+    const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const [vacationData, setVacationData] = useState<Partial<VacationType>>({
         id,
         dateFrom: '',
@@ -43,11 +46,25 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     const handleReject = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
         try {
+            const fieldErrors: { [key: string]: string } = {};
+            if (vacationData.rejectionNote.trim() === '') {
+                fieldErrors['rejectionNote'] = 'Field should not be empty';
+            }
+
+            if (Object.keys(fieldErrors).length > 0) {
+                setFormErrors(fieldErrors);
+                return;
+            }
+
+            setFormErrors({});
+
+            setFormErrors({});
+
             await vacationService.rejectVacation(id, vacationData);
             setRejectModalOpen(false);
             updateVacations();
         } catch (error) {
-            setError('Error' + (error as Error).message);
+            errorProcessor(error, setError, setFormErrors);
         }
     };
 
@@ -66,15 +83,27 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
             id: vacation.id,
             dateFrom: formatDateTime(vacation.dateFrom, true),
             dateTo: formatDateTime(vacation.dateTo, true),
-            note: vacation.note
+            note: vacation.note,
+            rejectionNote: vacation.rejectionNote
         });
         setRejectModalOpen(true);
+    };
+
+    const handleChangeRejectionNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const { value } = e.target;
+    
+        if (value.trim() === '') {
+            setFormErrors({ rejectionNote: 'Field should not be empty' });
+        } else {
+            setFormErrors({});
+        }
+    
+        setVacationData({ ...vacationData, rejectionNote: value });
     };
 
     return (
         <div className="requested-vacation">
             <div style={{ marginRight: '2rem' }}>
-                {error && <Message negative>{error}</Message>}
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>
@@ -124,7 +153,9 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                             label='Rejection Note'
                             placeholder='Enter rejection note here...'
                             value={vacationData.rejectionNote}
-                            onChange={(e) => setVacationData({ ...vacationData, rejectionNote: e.target.value })}
+                            // onChange={(e) => setVacationData({ ...vacationData, rejectionNote: e.target.value })}
+                            onChange={handleChangeRejectionNote}
+                            error={formErrors['rejectionNote']}
                         />
                     </Form>
                 </Modal.Content>

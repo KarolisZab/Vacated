@@ -8,11 +8,10 @@ interface Props {
 }
 
 /* eslint-disable-next-line */
-const RejectedVacations: React.FC<Props> = ({ vacations }) => {
-    
+const UpcomingVacations: React.FC<Props> = ({ vacations }) => {
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>You do not have any rejected vacations.</Message>;
+        return <Message>There are no upcoming / ongoing vacations.</Message>;
     }
 
     return (
@@ -21,13 +20,13 @@ const RejectedVacations: React.FC<Props> = ({ vacations }) => {
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>
+                            <Table.HeaderCell>Requested by</Table.HeaderCell>
                             <Table.HeaderCell>Requested at</Table.HeaderCell>
                             <Table.HeaderCell>Start date</Table.HeaderCell>
                             <Table.HeaderCell>End date</Table.HeaderCell>
                             <Table.HeaderCell>Note</Table.HeaderCell>
                             <Table.HeaderCell>Reviewed by</Table.HeaderCell>
                             <Table.HeaderCell>Reviewed at</Table.HeaderCell>
-                            <Table.HeaderCell>Rejection note</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 
@@ -35,13 +34,13 @@ const RejectedVacations: React.FC<Props> = ({ vacations }) => {
                         {/* eslint-disable-next-line */}
                         {vacations.map((vacation) => (
                             <Table.Row key={vacation.id}>
+                                <Table.Cell>{`${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`}</Table.Cell>
                                 <Table.Cell>{formatDateTime(vacation.requestedAt)}</Table.Cell>
                                 <Table.Cell>{formatDateTime(vacation.dateFrom, true)}</Table.Cell>
                                 <Table.Cell>{formatDateTime(vacation.dateTo, true)}</Table.Cell>
                                 <Table.Cell>{vacation.note}</Table.Cell>
                                 <Table.Cell>{`${vacation.reviewedBy.firstName} ${vacation.reviewedBy.lastName}`}</Table.Cell>
                                 <Table.Cell>{formatDateTime(vacation.reviewedAt)}</Table.Cell>
-                                <Table.Cell>{vacation.rejectionNote}</Table.Cell>
                             </Table.Row>
                         ))}
                     </Table.Body>
@@ -51,4 +50,4 @@ const RejectedVacations: React.FC<Props> = ({ vacations }) => {
     );
 };
 
-export default RejectedVacations;
+export default UpcomingVacations;

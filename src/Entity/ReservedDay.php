@@ -62,15 +62,11 @@ class ReservedDay
         return $this->dateFrom;
     }
 
-    public function setDateFrom(\DateTimeImmutable | \DateTime $dateFrom): static
+    public function setDateFrom(\DateTimeImmutable $dateFrom): static
     {
         $dateFrom = $dateFrom->setTime(0, 0, 0);
 
-        if ($dateFrom instanceof \DateTimeImmutable) {
-            $this->dateFrom = $dateFrom;
-        } else {
-            $this->dateFrom = \DateTimeImmutable::createFromMutable($dateFrom);
-        }
+        $this->dateFrom = $dateFrom;
 
         return $this;
     }
@@ -80,15 +76,11 @@ class ReservedDay
         return $this->dateTo;
     }
 
-    public function setDateTo(\DateTimeImmutable | \DateTime $dateTo): static
+    public function setDateTo(\DateTimeImmutable $dateTo): static
     {
         $dateTo = $dateTo->setTime(23, 59, 59);
 
-        if ($dateTo instanceof \DateTimeImmutable) {
-            $this->dateTo = $dateTo;
-        } else {
-            $this->dateTo = \DateTimeImmutable::createFromMutable($dateTo);
-        }
+        $this->dateTo = $dateTo;
 
         return $this;
     }
@@ -125,13 +117,6 @@ class ReservedDay
         if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
         }
-
-        return $this;
-    }
-
-    public function removeTag(Tag $tag): static
-    {
-        $this->tags->removeElement($tag);
 
         return $this;
     }

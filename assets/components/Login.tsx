@@ -2,6 +2,7 @@ import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Grid, Header, Icon, Message, Segment } from 'semantic-ui-react';
 import authService from '../services/auth-service';
+import '../styles/login.scss';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
@@ -41,6 +42,10 @@ const Login: React.FC = () => {
         }
     };
 
+    const handleForgotPassword = () => {
+        navigate('/forgot-password');
+    };
+
     return (
         <Grid textAlign='center' style={{ height: '90vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
@@ -72,6 +77,9 @@ const Login: React.FC = () => {
 
                         <Button color='teal' fluid size='large' type='submit' loading={isLoading}>
                             Login
+                        </Button>
+                        <Button basic fluid onClick={handleForgotPassword} color='teal' >
+                            Forgot password?
                         </Button>
                     </Segment>
                 </Form>

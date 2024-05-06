@@ -14,6 +14,14 @@ class EmployeeService {
         return await apiService.get<EmployeeType>(`${URL}/${employeeId}`);
     }
 
+    async getEmployeesAvailableVacationDays(): Promise<number> {
+        return await apiService.get<number>(`/user/available-days`);
+    }
+
+    async getCurrentUser(): Promise<EmployeeType> {
+        return await apiService.get('/user/me');
+    }
+
     async updateEmployee(employeeId: string, employeeData: Partial<EmployeeType>): Promise<EmployeeType> {
         return await apiService.patch<EmployeeType>(`${URL}/${employeeId}`, employeeData);
     }
@@ -28,6 +36,14 @@ class EmployeeService {
 
     async createUser(data: EmployeeRegistrationData): Promise<void> {
         return await apiService.post("/admin/create-user", data);
+    }
+
+    async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+        return await apiService.post<void>("/change-password", { oldPassword, newPassword });
+    }
+
+    async resetPassword(token: string, newPassword: string): Promise<void> {
+        return await apiService.post<void>("/reset-password", { token, newPassword });
     }
 }
 

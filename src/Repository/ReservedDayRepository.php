@@ -36,6 +36,7 @@ class ReservedDayRepository extends ServiceEntityRepository
     public function findPaginatedReservedDays(int $limit, int $offset): array
     {
         return $this->createQueryBuilder('r')
+            ->orderBy('r.dateFrom', 'ASC')
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->getQuery()

@@ -69,6 +69,22 @@ const UpdateEmployee: React.FC = () => {
 
     const handleUpdate = async () => {
         try {
+            const fieldErrors: { [key: string]: string } = {};
+            if (employee.firstName.trim() === '') {
+                fieldErrors['firstName'] = 'Field should not be empty';
+            }
+            if (employee.lastName.trim() === '') {
+                fieldErrors['lastName'] = 'Field should not be empty';
+            }
+            if (employee.phoneNumber.trim() === '') {
+                fieldErrors['phoneNumber'] = 'Field should not be empty';
+            }
+
+            if (Object.keys(fieldErrors).length > 0) {
+                setFormErrors(fieldErrors);
+                return;
+            }
+
             setFormErrors({});
             await employeeService.updateEmployee(id, employee);
             navigate(-1);
@@ -95,6 +111,20 @@ const UpdateEmployee: React.FC = () => {
 
     const handleCancel = () => {
         navigate(-1);
+    };
+
+    const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
+        if (e.key === 'Enter' && value) {
+            try {
+                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
+                
+                setTags([...tags, newTag]);
+
+                setEmployee({ ...employee, tags: [...employee.tags, newTag] });
+            } catch (error) {
+                setError('Error fetching tags: ' + (error as Error).message);
+            }
+        }
     };
 
     return (
@@ -143,10 +173,13 @@ const UpdateEmployee: React.FC = () => {
                                 placeholder='Select tags'
                                 fluid
                                 multiple
+                                search
                                 selection
                                 options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
                                 value={employee.tags.map(tag => tag.name)}
                                 onChange={handleTagsChange}
+                                allowAdditions
+                                onAddItem={handleTagCreate}
                             />
                         </Form.Field>
                         <Button type='button' onClick={handleUpdate}>Submit</Button>

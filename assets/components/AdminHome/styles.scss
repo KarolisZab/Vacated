@@ -1,8 +1,9 @@
 .admin-home {
     display: flex;
     justify-content: center;
-    align-items: center;
+    // align-items: center;
     height: 90vh;
+    overflow-y: auto; 
 
     .ui.card {
         background-color: #1b1c1d;
@@ -62,6 +63,7 @@
 .admin-container {
     text-align: center;
     width: 80%;
+    padding-top: 20px;
     
     .content {
         display: flex;
@@ -94,6 +96,10 @@
     align-items: center;
 }
 
+.admin-card-header {
+    font-size: 24px;
+}
+
 // .card {
 //     width: 100% !important;
 //     max-width: 100%;
@@ -119,9 +125,9 @@
 //     margin: 0;
 // }
 
-.admin-card-header {
-    flex: 1;
-}
+// .admin-card-header {
+//     flex: 1;
+// }
 
 .admin-card-content {
     flex: 3;
@@ -132,4 +138,40 @@
     .description {
         width: 100%;
     }
+}
+
+.admin-chart-container {
+    width: 996px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    position: relative;
+
+    .google-visualization-axis-label {
+        fill: #ffffff; 
+    }
+
+    .loader-container {
+        position: absolute;
+      }
+      
+      .loader {
+        // position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+}
+
+.admin-pie-chart-container {
+    width: 996px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    position: relative;
+
 }

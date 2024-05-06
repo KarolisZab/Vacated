@@ -5,10 +5,12 @@ export type EmployeeType = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
+    admin: boolean;
     tags: TagType[];
+    availableDays: number;
 };
 
-export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles"> {
+export interface EmployeeRegistrationData extends Omit<EmployeeType, "id" | "roles" | "admin" | "availableDays"> {
 }
 
 export type EmployeesGetResultType = {
@@ -26,7 +28,7 @@ export type VacationType = {
     confirmed: boolean;
     rejected: boolean;
     reviewedAt: string;
-    reviewedBy: EmployeeType;
+    reviewedBy: EmployeeType | null;
     rejectionNote: string;
 }
 
@@ -52,4 +54,13 @@ export type TagType = {
     id: string;
     name: string;
     colorCode: string;
+}
+
+export type MonthlyVacationStatistics = {
+    [month: string]: string;
+};
+
+export type PieChartType = {
+    task: string;
+    value: number;
 }

@@ -256,4 +256,47 @@ class UserManager
 
         return $userRepository->countAllUsers($filter);
     }
+
+    public function getAvailableDaysForUser(string $email): ?int
+    {
+        $user = $this->getUserByEmail($email);
+
+        if ($user === null) {
+            return null;
+        }
+
+        $availableDays = $user->getAvailableDays();
+
+        return $availableDays;
+    }
+
+    public function changePassword(User $user, string $newPassword)
+    {
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
+
+        $this->entityManager->flush();
+    }
+
+    public function resetPassword(string $email): bool
+    {
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if (!$user) {
+            return false;
+        }
+
+        $hashedPassword = $this->passwordHasher->hashPassword($user, 'test');
+        $user->setPassword($hashedPassword);
+
+        try {
+            $this->entityManager->flush();
+            return true;
+        } catch (\Exception $e) {
+            $this->logger->critical(
+                "Exception occured while requesting password reset for user {$user->getEmail()} : " . $e->getMessage()
+            );
+            throw $e;
+        }
+    }
 }

@@ -38,10 +38,15 @@ export default function Navbar() {
         navigate('/login');
     };
 
+    const handleProfile =() => {
+        navigate('/profile');
+    }
+
     return (
         <nav className="navigation">
             <div className="links-container">
                 <Link to="/" className="brand-name">
+                    {/* <img src={logo} width={50} height={50} /> */}
                     Vacated
                 </Link>
                 <div
@@ -58,6 +63,9 @@ export default function Navbar() {
                                 <li>
                                     <Link to="/vacations">My Vacations</Link>
                                 </li>
+                                <li>
+                                    <Link to="/reserved-days">Reserved days</Link>
+                                </li>
                             </>
                         )}
                     </ul>
@@ -66,21 +74,24 @@ export default function Navbar() {
             <div className="right-container">
                 {isAuthenticated && (
                     <>
-                        {isAdmin && (
-                            <ul>
-                                <li>
-                                    <Link to="/admin">
-                                        <Button basic color="teal">Admin dashboard</Button>
-                                    </Link>
-                                </li>
-                            </ul>
-                        )}
-                        <ul>
+                        <ul className="button-group">
                             <li>
-                                <Button icon basic onClick={handleLogout} inverted>
-                                    <Icon name='sign-out' size="large"/> {/* Use the 'log out' icon */}
+                                <Button icon basic onClick={handleProfile} inverted>
+                                    <Icon name='user' size="large"/> {user.firstName} {user.lastName}
                                 </Button>
                             </li>
+                            <li>
+                                <Button icon basic onClick={handleLogout} inverted className="logout-button">
+                                    <Icon name='sign-out' size="large"/> Log out
+                                </Button>
+                            </li>
+                            {isAdmin && (
+                                <li>
+                                    <Link to="/admin">
+                                        <Button color="teal" className="admin-button">Admin dashboard</Button>
+                                    </Link>
+                                </li>
+                            )}
                         </ul>
                     </>
                 )}

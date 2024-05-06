@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Table } from 'semantic-ui-react';
+import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
 
@@ -47,6 +47,16 @@ const EmployeesList: React.FC = () => {
         navigate('/admin/create-user');
     }
 
+    const getColor = (days: number): SemanticCOLORS => {
+        if (days <= 7) {
+            return 'red';
+        } else if (days <= 13) {
+            return 'yellow';
+        } else {
+            return 'green';
+        }
+    };
+
     return (
         <div className="employees-list">
             <h1>Employees</h1>
@@ -58,7 +68,7 @@ const EmployeesList: React.FC = () => {
                 style={{ marginBottom: '1rem' }}
             />
             <Button color='teal' style={{ marginLeft: '1rem' }} onClick={handleCreateUser}>
-                        Create new employee
+                        Create a new employee
             </Button>
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
@@ -75,6 +85,7 @@ const EmployeesList: React.FC = () => {
                                 <Table.HeaderCell>Email</Table.HeaderCell>
                                 <Table.HeaderCell>Phone No.</Table.HeaderCell>
                                 <Table.HeaderCell>Tags</Table.HeaderCell>
+                                <Table.HeaderCell>Available days</Table.HeaderCell>
                                 <Table.HeaderCell>Actions</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
@@ -83,7 +94,14 @@ const EmployeesList: React.FC = () => {
                             {employees.map((employee) => (
                                 <Table.Row key={employee.id}>
                                     <Table.Cell>{employee.firstName} {employee.lastName}</Table.Cell>
-                                    <Table.Cell>{employee.email}</Table.Cell>
+                                    <Table.Cell>
+                                        {employee.email}
+                                        {employee.admin && (
+                                            <Label color='red' horizontal style={{ marginLeft: '0.5rem' }}>
+                                                Admin
+                                            </Label>
+                                        )}
+                                    </Table.Cell>
                                     <Table.Cell>{employee.phoneNumber}</Table.Cell>
                                     <Table.Cell>
                                         {employee.tags.map((tag) => (
@@ -93,6 +111,9 @@ const EmployeesList: React.FC = () => {
                                                 </Label>
                                             </ListItem>
                                         ))}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Progress value={employee.availableDays} total='20' progress='ratio' size='small' color={getColor(employee.availableDays)} />
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Link to={`/admin/employees/${employee.id}`}>View details</Link>

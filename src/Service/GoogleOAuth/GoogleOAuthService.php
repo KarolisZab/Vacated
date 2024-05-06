@@ -53,7 +53,13 @@ class GoogleOAuthService implements GoogleOAuthInterface
             'roles' => $user->getRoles()
         ]);
 
-        return new JsonResponse(['access_token' => $token, 'email' => $user->getEmail(), 'roles' => $user->getRoles()]);
+        return new JsonResponse([
+            'access_token' => $token,
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName()
+        ]);
     }
 
     public function createAuthUrl(): string

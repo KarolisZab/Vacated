@@ -381,10 +381,11 @@ class VacationCest
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            '2024-04-12' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
-            '2024-04-13' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
-            '2024-04-29' => [],
-            '2024-04-30' => ['requestedBy' => ['email' => 'vacationtest@test.com']]
+            '2024-04-14' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-15' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-16' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-17' => ['requestedBy' => ['email' => 'vacationtest@test.com']],
+            '2024-04-18' => [],
         ]);
     }
 
@@ -414,6 +415,60 @@ class VacationCest
 
         $I->amBearerAuthenticated($token);
         $I->sendRequest('get', '/api/admin/all-confirmed-days');
+
+        $I->seeResponseCodeIs(200);
+    }
+
+    public function testRequestVacationWithTags(FunctionalTester $I)
+    {
+        $user = $this->userManager->getUserByEmail('vacationtest@test.com');
+
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+        $I->amBearerAuthenticated($token);
+
+        $dateFrom = (new \DateTimeImmutable('2050-01-07')); // friday
+        $dateTo = (new \DateTimeImmutable('2050-01-11')); // tuesday
+
+        $I->sendRequest('patch', '/api/admin/users/' . $user->getId(), [
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'phoneNumber' => '123456789',
+            'tags' => [['name' => 'Backend']],
+        ]);
+
+        // reserve days
+        $dateFromReserve = (new \DateTimeImmutable('2050-01-10')); // monday
+        $dateToReserve = $dateFromReserve;
+        $I->sendRequest('post', '/api/admin/reserved-day', [
+            'dateFrom' => $dateFromReserve->format('Y-m-d'),
+            'dateTo' => $dateToReserve->format('Y-m-d'),
+            'note' => 'Important launch',
+            'tags' => [['name' => 'Frontend']]
+        ]);
+
+        $I->sendRequest('post', '/api/request-vacation', [
+            'dateFrom' => $dateFrom->format('Y-m-d'),
+            'dateTo' => $dateTo->format('Y-m-d'),
+            'note' => 'Uzrasiukas testui'
+        ]);
+
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseContainsJson([
+            'requestedBy' => ['email' => 'vacationtest@test.com', 'availableDays' => $user->getAvailableDays() - 3],
+            'note' => 'Uzrasiukas testui',
+            'confirmed' => false,
+            'dateFrom' => $dateFrom->setTime(0, 0, 0)->format('c'),
+            'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
+            'reviewedBy' => null,
+        ]);
+    }
+
+    public function testGetMonthlyStatisticsInAYear(FunctionalTester $I)
+    {
+        $token = $I->grabTokenForUser('vacationtest@test.com');
+
+        $I->amBearerAuthenticated($token);
+        $I->sendRequest('get', '/api/admin/monthly-vacation-statistics');
 
         $I->seeResponseCodeIs(200);
     }

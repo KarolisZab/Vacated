@@ -23,8 +23,10 @@ class TagManager
     public function createOrGetTag(TagDTO $tagDTO, bool $flush = true): Tag
     {
         try {
+            $tagName = ucfirst(strtolower($tagDTO->name));
+
             $existingTag = $this->entityManager->getRepository(Tag::class)->findOneBy([
-                'name' => $tagDTO->name
+                'name' => $tagName
             ]);
 
             if (null !== $existingTag) {
@@ -32,7 +34,7 @@ class TagManager
             }
 
             $tag = new Tag();
-            $tag->setName($tagDTO->name)
+            $tag->setName($tagName)
                 ->setColorCode($tagDTO->colorCode);
 
             $errors = $this->validator->validate($tag, null, ['create']);
@@ -62,7 +64,9 @@ class TagManager
             return null;
         }
 
-        $tag->setName($tagDTO->name)
+        $tagName = ucfirst(strtolower($tagDTO->name));
+
+        $tag->setName($tagName)
             ->setColorCode($tagDTO->colorCode);
 
         $errors = $this->validator->validate($tag, null, ['update']);

@@ -71,6 +71,7 @@ const EmployeeDetails: React.FC = () => {
                     <Card.Description>
                         <p><strong>Email:</strong> {employee.email}</p>
                         <p><strong>Phone Number:</strong> {employee.phoneNumber}</p>
+                        <p><strong>Available vacation days:</strong> {employee.availableDays}</p>
                         <p><strong>Tags:</strong> 
                             {employee.tags?.map((tag: TagType) => (
                                 <ListItem key={tag.id}>

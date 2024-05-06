@@ -3,12 +3,14 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import multiMonthPlugin from '@fullcalendar/multimonth';
 import '../styles/my-calendar.scss';
-import { VacationType, CalendarDays, ReservedDayType } from '../services/types';
-import { Button, Form, Message, Modal } from 'semantic-ui-react';
+import { VacationType, CalendarDays, ReservedDayType, EmployeeType } from '../services/types';
+import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
+import employeeService from '../services/employee-service';
 
 export default function MyCalendar() {
     const navigate = useNavigate();
@@ -33,39 +35,50 @@ export default function MyCalendar() {
     const [confirmedVacations, setConfirmedVacations] = useState<CalendarDays>({});
     const calendarRef = useRef<FullCalendar>();
     const [reservedDays, setReservedDays] = useState<ReservedDayType[]>([]);
-    // const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [note, setNote] = useState<string>('');
     const [showModal, setShowModal] = useState<boolean>(false);
     const [modalError, setModalError] = useState<string>('');
     /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
+    const [availableDays, setAvailableDays] = useState<number>(0);
+    const [popupContent, setPopupContent] = useState<string>('');
+    const [currentUser, setCurrentUser] = useState<EmployeeType | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                // setLoading(true);
-                
+            try {                
                 const { startDate, endDate } = calendarDays;
                 
-                const [vacations, reserved] = await Promise.all([
+                const [vacations, reserved, currentUser] = await Promise.all([
                     vacationService.getConfirmedAndSelfRequestedVacations(startDate, endDate),
-                    reservedDayService.getReservedDays(startDate, endDate)
+                    reservedDayService.getReservedDays(startDate, endDate),
+                    employeeService.getCurrentUser()
                 ]);
                 
                 setConfirmedVacations(vacations);
                 setReservedDays(reserved);
+                setCurrentUser(currentUser);
             } catch (error) {
                 navigate('/login')
-            } 
-            // finally {
-            //     // setLoading(false);
-            // }
+            } finally {
+                setLoading(false);
+            }
         };
     
         fetchData();
+        fetchAvailableDays();
     }, [calendarDays]);
 
-    // cia gal async await reik
+    const fetchAvailableDays = async () => {
+        try {
+            const result = await employeeService.getEmployeesAvailableVacationDays();
+            setAvailableDays(result);
+        } catch (error) {
+            setError('Error: ' + (error as Error).message);
+        }
+    };
+
     const handleDatesSet = () => {
         const calendarApi = calendarRef.current?.getApi();
         if (calendarApi) {
@@ -91,6 +104,7 @@ export default function MyCalendar() {
         setShowModal(false);
         setSelectedDate({ startDate: null, endDate: null });
         setModalError('');
+        setNote('');
     };    
 
     const handleConfirmVacationRequest = async () => {
@@ -102,6 +116,8 @@ export default function MyCalendar() {
                     dateTo: selectedDate.endDate,
                     note: note
                 });
+
+                await fetchAvailableDays();
 
                 const { startDate, endDate } = calendarDays;
                 const updatedVacations = await vacationService.getConfirmedAndSelfRequestedVacations(startDate, endDate);
@@ -123,18 +139,36 @@ export default function MyCalendar() {
         const event = clickInfo.event;
 
         const startDate = new Date(event.start).toISOString()
-            .replace(/T/, ' ')
-            .replace(/\..+/, '');
+            .split('T')[0]
         const endDate = new Date(event.end).toISOString()
-            .replace(/T/, ' ')
-            .replace(/\..+/, '');
+            .split('T')[0]
         const requestedAt = new Date(event.extendedProps.requestedAt).toISOString()
             .replace(/T/, ' ')
-            .replace(/\..+/, '');
+            .replace(/:\d+\.\d+Z/, '');
+        const reviewedAt = new Date(event.extendedProps.reviewedAt).toISOString()
+            .replace(/T/, ' ')
+            .replace(/:\d+\.\d+Z/, '');
+        
+        if (event.extendedProps.confirmed === true) {
+            setPopupContent(`
+                <p style="color: black;"><strong>${event.title}</strong></p>
+                <p style="color: black;">Requested at <strong>${requestedAt}</strong></p>
+                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
+                <p style="color: black;">Ends on <strong>${endDate}</strong></p>
+                <br>
+                <p style="color: black;">Confirmed by <strong>${event.extendedProps.reviewedBy}</strong> at <strong>${reviewedAt}</strong></p>
+            `);
 
-        alert(`Requested by: ${event.title}\nStart date: ${startDate}\nEnd date: ${endDate}\nRequested at: ${requestedAt}`);
+        } else {
+            setPopupContent(`
+                <p style="color: black;"><strong>${event.title.replace('Requested: ', '')}</strong></p>
+                <p style="color: black;">Requested on <strong>${requestedAt}</strong></p>
+                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
+                <p style="color: black;">Ends at <strong>${endDate}</strong></p>
+            `);
+        }
     };
-    
+
     const mapCalendarList = () => {
         const vacations = Object.keys(confirmedVacations).flatMap(date =>
             confirmedVacations[date].map((vacation: VacationType)  => {
@@ -143,11 +177,20 @@ export default function MyCalendar() {
                     return null;
                 } else {
                     uniqueEventIds.add(eventId);
+                    const styles = vacation.confirmed ? 'Calendar__VacationDay--confirmed' : 'Calendar__VacationDay--unconfirmed';
+                    let title = `${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`;
+                    if (!vacation.confirmed) {
+                        title = `Requested: ${title}`;
+                    }
                     return {
-                        title: `${vacation.requestedBy.firstName} ${vacation.requestedBy.lastName}`,
+                        title: title,
                         start: vacation.dateFrom,
                         end: vacation.dateTo,
-                        requestedAt: vacation.requestedAt
+                        requestedAt: vacation.requestedAt,
+                        reviewedBy: vacation.reviewedBy ? `${vacation.reviewedBy.firstName} ${vacation.reviewedBy.lastName}` : '',
+                        reviewedAt: vacation.reviewedAt,
+                        confirmed: vacation.confirmed,
+                        classNames: [styles, 'Calendar__VacationDay']
                     };
                 }
             })
@@ -166,20 +209,60 @@ export default function MyCalendar() {
                 end: endDate.toISOString(),
                 allDay: true,
                 color: '#cb983a',
-                display: 'background',
-                classNames: ['reserved-day']
+                display: 'background'
             };
         });
         return reservedEvents;
     };
 
-    // if (loading) {
-    //     return (
-    //         <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
-    //             <Loader>Loading</Loader>
-    //         </Dimmer>
-    //     );
-    // }
+    const mapTagsList = () => {
+        const tagEvents = reservedDays.flatMap((reservedDay: ReservedDayType) => {
+            const endDate = new Date(reservedDay.dateTo);
+            endDate.setHours(23, 59, 59, 999);
+
+            // return reservedDay.tags.map((tag) => {
+            //     return {
+            //         start: reservedDay.dateFrom,
+            //         end: endDate.toISOString(),
+            //         title: tag.name,
+            //         color: tag.colorCode,
+            //         classNames: ['tag-event'],
+            //         display: 'list-item'
+            //     };
+            // });
+            if (reservedDay.tags && reservedDay.tags.length > 0) {
+                const eventTitle = reservedDay.tags.reduce((label, tag) => {
+                    if (label === '') {
+                        return tag.name;
+                    }
+    
+                    return `${label}, ${tag.name}`;
+                }, '');
+                return {
+                    start: reservedDay.dateFrom,
+                    end: endDate.toISOString(),
+                    title: eventTitle,
+                    color: reservedDay.tags[0].colorCode,
+                    classNames: ['tag-event'],
+                    display: 'list-item'
+                };
+            } else {
+                return null;
+            }
+        });
+        // return tagEvents;
+        return tagEvents.filter(event => event !== null);
+    };
+
+    if (loading) {
+        return (
+            <div className='loader-container'>
+                <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -188,11 +271,25 @@ export default function MyCalendar() {
                     <Modal.Header>Request vacation</Modal.Header>
                     <Modal.Content>
                         {modalError && <Message negative>{modalError}</Message>}
-                        <p style={{ color: 'black' }}>
-                            Selected start date: {selectedDate.startDate} <br />
-                            Selected end date: {selectedDate.endDate}
-                        </p>
                         <Form>
+                            <Form.Field>
+                                <label>Selected Start Date:</label>
+                                <Form.Input
+                                    name="startDate"
+                                    type='date'
+                                    value={selectedDate.startDate}
+                                    onChange={(e, { value }) => setSelectedDate(prevState => ({ ...prevState, startDate: value }))}
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <label>Selected End Date:</label>
+                                <Form.Input
+                                    name="endDate"
+                                    type='date'
+                                    value={selectedDate.endDate}
+                                    onChange={(e, { value }) => setSelectedDate(prevState => ({ ...prevState, endDate: value }))}
+                                />
+                            </Form.Field>
                             <Form.TextArea 
                                 label='Note'
                                 placeholder='Enter your note here'
@@ -214,20 +311,37 @@ export default function MyCalendar() {
                         />
                     </Modal.Actions>
                 </Modal>
-
-                <div className="request-button">
-                    <Button color='teal' disabled={!selectedDate.startDate || !selectedDate.endDate} onClick={handleRequestVacation}>
-                        Request vacation
-                    </Button>
+                <Modal size='mini' open={!!popupContent} onClose={() => setPopupContent('')}>
+                    <Modal.Content>
+                        <div style={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: popupContent }}/>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button onClick={() => setPopupContent('')}>Close</Button>
+                    </Modal.Actions>
+                </Modal>
+                <div>
+                    {currentUser && (
+                        <div>
+                            <p className='greeting-message'>
+                                Hi, {currentUser.firstName} {currentUser.lastName}!
+                            </p>
+                            <p className='available-days-message'>
+                                You have {availableDays} out of 20 available vacation days.
+                            </p>
+                            <Button color='teal' onClick={handleRequestVacation}>
+                                Request vacation
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
 
             <FullCalendar
                 ref={calendarRef}
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
                 initialView="dayGridMonth"
                 selectable={true}
-                events={[...mapCalendarList(), ...mapReservedDays()]}
+                events={[...mapCalendarList(), ...mapReservedDays(), ...mapTagsList()]}
                 select={handleDateSelect}
                 firstDay={1}
                 datesSet={handleDatesSet}
@@ -238,6 +352,11 @@ export default function MyCalendar() {
                 dayMaxEventRows={true}
                 dayMaxEvents={3}
                 aspectRatio={1.75}
+                headerToolbar={{
+                    start: 'prev,next today',
+                    center: 'title',
+                    end: 'dayGridMonth,multiMonthYear'
+                }}
             />
         </div>
     )

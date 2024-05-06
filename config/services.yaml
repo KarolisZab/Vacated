@@ -39,3 +39,8 @@ services:
 
     App\Service\GoogleOAuth\GoogleOAuthInterface:
         class: App\Service\GoogleOAuth\GoogleOAuthService
+
+    App\Validator\VacationValidator:
+        tags:
+            - { name: validator.constraint_validator, alias: app.validator.vacation }
+

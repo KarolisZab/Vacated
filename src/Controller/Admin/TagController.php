@@ -16,7 +16,7 @@ class TagController extends AbstractController
 {
     public function __construct(
         private TagManager $tagManager,
-        private SerializerInterface $serializer,
+        private SerializerInterface $serializer
     ) {
     }
 

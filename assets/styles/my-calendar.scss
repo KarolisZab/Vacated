@@ -2,6 +2,10 @@
     color: white;
 }
 
+.fc-event-title {
+    color: white;
+}
+
 .fc-day-sun,
 .fc-day-sat { 
     background-color: #303030;
@@ -24,16 +28,10 @@
     color: white;
 }
 
-// 
 .fc-daygrid-day {
     width: 50px !important;
     height: 50px !important;
 }
-
-.fc-daygrid-event-dot {
-    display: none;
-}
-//
 
 .fc-day-today {
     background-color: #5f5f5f33 !important;
@@ -44,6 +42,14 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+
+    .greeting-message {
+        font-size: 28px;
+    }
+    
+    .available-days-message {
+        font-size: 16px;
+    }
 }
 
 .selected-dates {
@@ -51,10 +57,54 @@
 }
 
 .request-button {
-    // margin-left: auto;
-    margin: 0; 
+    margin-left: auto;
 }
 
 .calendar {
     width: 70%;
+}
+
+.fc-popover-body .fc-daygrid-event-harness .fc-daygrid-dot-event .fc-event-title {
+    color: #000;
+}
+
+.loader-container {
+    position: relative;
+    // display: flex;
+    // justify-content: center; /* Center horizontally */
+    // align-items: center; /* Center vertically */
+    // reikia height: 100% arba width 100%
+}
+
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.Calendar__VacationDay {
+    border: 1px solid #00b5ad;
+    cursor: pointer;
+
+    &--confirmed {
+        background-color: #00b5ad;
+    }
+
+    &--unconfirmed {
+        border-style: dashed;
+        background-color: rgba(0, 181, 173, 0.5);
+    }
+}
+
+.fc .fc-multimonth-daygrid {
+    background-color: rgb(31, 31, 32);
+}
+ 
+.fc .fc-multimonth-header {
+    color: white;
+}
+
+div.fc-daygrid-event-harness:not(.fc-daygrid-event-harness-abs) {
+    margin-top: -25px !important;
 }

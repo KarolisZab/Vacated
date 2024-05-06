@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Vacation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -77,6 +78,95 @@ class VacationRepository extends ServiceEntityRepository
             ->select('COUNT(v)')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function findOverlappingUserVacations(
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+        User $user
+    ): array {
+        return $this->createQueryBuilder('v')
+            ->where('v.dateFrom <= :endDate')
+            ->andWhere('v.dateTo >= :startDate')
+            ->andWhere('v.requestedBy = :user')
+            ->andWhere('v.isRejected = FALSE')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllCurrentUserFilteredVacations(User $user, ?string $vacationType): array
+    {
+        $qb = $this->createQueryBuilder('v')
+            ->where('v.requestedBy = :user')
+            ->setParameter('user', $user);
+        $now = new \DateTimeImmutable();
+
+        if ($vacationType === 'requested') {
+            $qb->andWhere('v.isConfirmed = FALSE')
+                ->andWhere('v.isRejected = FALSE')
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === 'confirmed') {
+            $qb->andWhere('v.isConfirmed = TRUE')
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === 'rejected') {
+            $qb->andWhere('v.isRejected = TRUE')
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === 'upcoming') {
+            $qb->andWhere('v.dateTo > :now')
+                ->andWhere('v.isConfirmed = TRUE')
+                ->setParameter('now', $now)
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === '' || $vacationType === null) {
+            return $this->findAll();
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getFilteredVacations(?string $vacationType): array
+    {
+        $qb = $this->createQueryBuilder('v');
+        $now = new \DateTimeImmutable();
+
+        if ($vacationType === 'requested') {
+            $qb->where('v.isConfirmed = FALSE')
+               ->andWhere('v.isRejected = FALSE')
+               ->orderBy('v.requestedAt', 'ASC');
+        }
+
+        if ($vacationType === 'confirmed') {
+            $qb->where('v.isConfirmed = TRUE')
+               ->orderBy('v.reviewedAt', 'ASC');
+        }
+
+        if ($vacationType === 'rejected') {
+            $qb->where('v.isRejected = TRUE')
+                ->orderBy('v.reviewedAt', 'ASC');
+        }
+
+        if ($vacationType === 'upcoming') {
+            $qb->where('v.dateTo > :now')
+                ->andWhere('v.isConfirmed = TRUE')
+                ->setParameter('now', $now)
+                ->orderBy('v.dateFrom', 'ASC');
+        }
+
+        if ($vacationType === '' || $vacationType === null) {
+            return $this->findAll();
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
 //    /**

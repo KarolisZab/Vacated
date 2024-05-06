@@ -71,6 +71,14 @@ class AuthService {
         return !!user && user.roles.includes("ROLE_ADMIN");
     }
 
+    forgotPassword(email: string): Promise<string> {
+        return axios
+            .post("http://localhost:8080/forgot-password", { email })
+            .then(response => {
+                return response.data;
+            });
+    }
+
     subscribe(callback: () => void): void {
         this.authenticationChangeSubscribers.push(callback);
     }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Security\JwtIssuer;
+use App\Security\JwtValidator;
 use App\Service\GoogleOAuth\GoogleOAuthInterface;
 use App\Service\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Trait\LoggerTrait;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AuthController extends AbstractController
 {
@@ -33,7 +35,8 @@ class AuthController extends AbstractController
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
         private JwtIssuer $jwtIssuer,
-        private GoogleOAuthInterface $googleService
+        private GoogleOAuthInterface $googleService,
+        private JwtValidator $jwtValidator
     ) {
     }
 
@@ -88,7 +91,13 @@ class AuthController extends AbstractController
             'roles' => $user->getRoles()
         ]);
 
-        return new JsonResponse(['email' => $user->getEmail(), 'roles' => $user->getRoles(), 'access_token' => $token]);
+        return new JsonResponse([
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'access_token' => $token
+        ]);
     }
 
     #[Route('/oauth', name: 'google_login', methods:['GET'])]
@@ -96,5 +105,92 @@ class AuthController extends AbstractController
     {
         // redirects user to the google oauth consent screen
         return new RedirectResponse($this->googleService->createAuthUrl());
+    }
+
+    #[Route('/api/change-password', name: 'change_password', methods:['POST'])]
+    public function changePassword(Request $request, UserManager $userManager): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true);
+
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            return new JsonResponse('User not found', 404);
+        }
+
+        if (!isset($requestData['oldPassword']) || !isset($requestData['newPassword'])) {
+            return new JsonResponse('Old password and new password are required', 400);
+        }
+
+        $oldPassword = $requestData['oldPassword'];
+        $newPassword = $requestData['newPassword'];
+
+        if (!$this->passwordHasher->isPasswordValid($user, $oldPassword)) {
+            return new JsonResponse('Invalid old password', 400);
+        }
+
+        if ($userManager->changePassword($user, $newPassword)) {
+            return new JsonResponse('Password changed successfully', 200);
+        } else {
+            return new JsonResponse('Failed to change password', 500);
+        }
+    }
+
+    #[Route('/api/forgot-password', name: 'forgot_password', methods: ['POST'])]
+    public function forgotPassword(Request $request): Response
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $email = $requestData['email'] ?? null;
+
+        // Padariau klaida, kad kuriau sita blogam branche, tai cia uzcommentinau, kad veiktu po merge
+        $user = $this->userManager->getUserByEmail($email);
+        if (null !== $user) {
+            $token = $this->jwtIssuer->issueToken(['email' => $email, 'reset_token' => true]);
+
+            /*$resetLink = */$this->generateUrl(
+                'reset_password',
+                ['token' => $token],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            // $subject = 'Password Reset';
+            // $message = "Hello {$user->getEmail()},\n\n
+            // You requested to reset your password. Please click the link below to proceed:\n{$resetLink}";
+
+            // $this->mailerManager->sendEmailToUser($user->getEmail(), $subject, $message);
+        }
+
+        return new JsonResponse(null, JsonResponse::HTTP_OK);
+    }
+
+    #[Route('/api/validate-reset-token/{token}', name: 'validate_reset_token', methods: ['GET'])]
+    public function validateResetToken(string $token): Response
+    {
+        try {
+            $this->jwtValidator->validateToken($token, true);
+
+            return new JsonResponse(null, JsonResponse::HTTP_OK);
+        } catch (\Exception) {
+            return new JsonResponse(['error' => 'Invalid token'], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[Route('/api/reset-password', name: 'change_password', methods: ['POST'])]
+    public function resetPassword(Request $request): Response
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $token = $requestData['token'];
+        $newPassword = $requestData['newPassword'];
+
+        $email = $this->jwtValidator->validateToken($token, true);
+
+        $user = $this->userManager->getUserByEmail($email);
+        if (null === $user) {
+            $this->logger->error('Reset token without existing user.', ['token' => $token]);
+            return new JsonResponse(['error' => 'Invalid token'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->userManager->changePassword($user, $newPassword);
+
+        return new JsonResponse(null, JsonResponse::HTTP_OK);
     }
 }
