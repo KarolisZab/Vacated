@@ -44,9 +44,10 @@ export default function Navbar() {
     return (
         <nav className="navigation">
             <div className="links-container">
-                <h1 className="brand-name">
+                <img className="image" src="/logo.png" width={40} height={40}/> 
+                <Link to="/admin" className="brand-name">
                     Vacated
-                </h1>
+                </Link>
                 <div
                     className={
                         isNavbarExpanded ? "navigation-menu expanded" : "navigation-menu"

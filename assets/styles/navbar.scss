@@ -11,12 +11,24 @@
   box-shadow: 0 2px 2px 2px rgba(9, 9, 9, 0.23);
 }
 
+.image {
+  text-decoration: none;
+  color: white;
+  margin-bottom: 0;
+  font-size: 2rem;
+  display: inline-block;
+  //
+  vertical-align: middle;
+  line-height: 60px;
+}
+
 .brand-name {
   text-decoration: none;
   color: white;
   margin-bottom: 0;
   font-size: 2rem;
   display: inline-block;
+  padding-left: 16px;
   //
   vertical-align: middle;
   line-height: 60px;

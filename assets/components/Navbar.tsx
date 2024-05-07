@@ -45,8 +45,8 @@ export default function Navbar() {
     return (
         <nav className="navigation">
             <div className="links-container">
+                <img className="image" src="/logo.png" width={40} height={40}/> 
                 <Link to="/" className="brand-name">
-                    {/* <img src={logo} width={50} height={50} /> */}
                     Vacated
                 </Link>
                 <div
