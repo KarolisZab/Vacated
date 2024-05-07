@@ -12,12 +12,12 @@ const RejectedVacations: React.FC<Props> = ({ vacations }) => {
     
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>You do not have any rejected vacations.</Message>;
+        return <Message className='Vacation__Message'>You do not have any rejected vacations.</Message>;
     }
 
     return (
         <div className="requested-vacation">
-            <div style={{ marginRight: '2rem' }}>
+            <div className='Table_Container'>
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>

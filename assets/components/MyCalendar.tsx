@@ -299,7 +299,7 @@ export default function MyCalendar() {
                         </Form>
                     </Modal.Content>
                     <Modal.Actions className='modal-actions'>
-                        <Button color='black' onClick={() => handleCloseModal()}>
+                        <Button onClick={() => handleCloseModal()}>
                             Cancel
                         </Button>
                         <Button

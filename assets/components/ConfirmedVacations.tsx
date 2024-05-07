@@ -25,7 +25,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>There is no confirmed vacations yet.</Message>;
+        return <Message className='Vacation__Message'>There are no confirmed vacations yet.</Message>;
     }
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
@@ -45,7 +45,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
 
     return (
         <div className="requested-vacation">
-            <div style={{ marginRight: '2rem' }}>
+            <div className='Table_Container'>
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>
@@ -111,7 +111,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Form>
                 </Modal.Content>
                 <Modal.Actions className='modal-actions'>
-                    <Button color='black' onClick={closeModal}>Cancel</Button>
+                    <Button onClick={closeModal}>Cancel</Button>
                     <Button
                         content="Update"
                         labelPosition='left'

@@ -29,7 +29,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
         
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>There are no requested vacations yet.</Message>;
+        return <Message className='Vacation__Message'>There are no requested vacations yet.</Message>;
     }
 
     const handleConfirm = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
@@ -103,7 +103,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
 
     return (
         <div className="requested-vacation">
-            <div style={{ marginRight: '2rem' }}>
+            <div className='Table_Container'>
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>
@@ -140,7 +140,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     <p>Are you sure you want to confirm this vacation request?</p>
                 </Modal.Content>
                 <Modal.Actions className='modal-actions'>
-                    <Button color='black' onClick={() => setConfirmModalOpen(false)}>Cancel</Button>
+                    <Button onClick={() => setConfirmModalOpen(false)}>Cancel</Button>
                     <Button color='green' onClick={(e) => handleConfirm(e, vacationData.id)}>Confirm</Button>
                 </Modal.Actions>
             </Modal>
@@ -160,7 +160,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Form>
                 </Modal.Content>
                 <Modal.Actions className='modal-actions'>
-                    <Button color='black' onClick={() => setRejectModalOpen(false)}>Cancel</Button>
+                    <Button onClick={() => setRejectModalOpen(false)}>Cancel</Button>
                     <Button color='red' onClick={(e) => handleReject(e, vacationData.id)}>Reject</Button>
                 </Modal.Actions>
             </Modal>

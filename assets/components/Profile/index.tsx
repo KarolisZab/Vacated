@@ -6,6 +6,7 @@ import { EmployeeType } from '../../services/types';
 import handleError from "../../services/handler";
 import errorProcessor from "../../services/errorProcessor";
 import './styles.scss'
+import { invertColor } from "../utils/invertColor";
 
 const Profile: React.FC = () => {
     const navigate = useNavigate();
@@ -139,9 +140,9 @@ const Profile: React.FC = () => {
                             <>
                                 <p>Tags:</p>
                                 {employee.tags.map((tag) => (
-                                    <ListItem key={tag.id}>
+                                    <ListItem key={tag.id} className="List__Item">
                                         <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                            {tag.name}
+                                            <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                         </Label>
                                     </ListItem>
                                 ))}

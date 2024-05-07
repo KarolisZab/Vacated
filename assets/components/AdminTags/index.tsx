@@ -121,7 +121,7 @@ const TagsList: React.FC = () => {
                         <Loader>Loading</Loader>
                     </Dimmer>
                 )}
-                <div style={{ marginRight: '2rem' }}>
+                <div>
                     <Table celled inverted selectable striped>
                         <Table.Header>
                             <Table.Row>
@@ -171,7 +171,7 @@ const TagsList: React.FC = () => {
                             </Form>
                         </Modal.Content>
                         <Modal.Actions className='modal-actions'>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
+                            <Button onClick={closeModal}>Cancel</Button>
                             <Button
                                 content="Update"
                                 labelPosition='left'
@@ -187,7 +187,7 @@ const TagsList: React.FC = () => {
                             <p>Are you sure you want to delete this tag?</p>
                         </Modal.Content>
                         <Modal.Actions className='modal-actions'>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
+                            <Button onClick={closeModal}>Cancel</Button>
                             <Button
                                 content="Delete"
                                 labelPosition='left'
@@ -217,7 +217,7 @@ const TagsList: React.FC = () => {
                             </Form>
                         </Modal.Content>
                         <Modal.Actions className='modal-actions'>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
+                            <Button onClick={closeModal}>Cancel</Button>
                             <Button
                                 content="Create"
                                 labelPosition='left'

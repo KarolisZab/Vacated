@@ -264,7 +264,7 @@ const ReservedDaysList: React.FC = () => {
                                     <Table.Cell>{reservedDay.note}</Table.Cell>
                                     <Table.Cell>
                                         {reservedDay.tags.map((tag) => (
-                                            <ListItem key={tag.id}>
+                                            <ListItem key={tag.id} className='List__Item'>
                                                 <Label style={{ backgroundColor: tag.colorCode }} horizontal>
                                                     <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                                 </Label>
@@ -344,7 +344,7 @@ const ReservedDaysList: React.FC = () => {
                         </Form>
                     </Modal.Content>
                     <Modal.Actions className='modal-actions'>
-                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Button onClick={closeModal}>Cancel</Button>
                         <Button
                             content="Update"
                             labelPosition='left'
@@ -360,7 +360,7 @@ const ReservedDaysList: React.FC = () => {
                         <p>Are you sure you want to delete this reservation?</p>
                     </Modal.Content>
                     <Modal.Actions className='modal-actions'>
-                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Button onClick={closeModal}>Cancel</Button>
                         <Button
                             content="Delete"
                             labelPosition='left'
@@ -416,7 +416,7 @@ const ReservedDaysList: React.FC = () => {
                         </Form>
                     </Modal.Content>
                     <Modal.Actions className='modal-actions'>
-                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Button onClick={closeModal}>Cancel</Button>
                         <Button
                             content="Create"
                             labelPosition='left'

@@ -4,6 +4,7 @@ import { Dimmer, Label, ListItem, Loader, Table } from 'semantic-ui-react';
 import '../styles/app.scss';
 import { ReservedDayType } from '../services/types';
 import { formatDateTime } from './utils/dateUtils';
+import { invertColor } from './utils/invertColor';
 
 const ReservedDays: React.FC = () => {
     const [reservedDays, setReservedDays] = useState<ReservedDayType[]>([]);
@@ -62,9 +63,9 @@ const ReservedDays: React.FC = () => {
                                     <Table.Cell>{formatDateTime(reservedDay.dateTo, true)}</Table.Cell>
                                     <Table.Cell>
                                         {reservedDay.tags.map((tag) => (
-                                            <ListItem key={tag.id}>
+                                            <ListItem key={tag.id} className='List__Item'>
                                                 <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                                    {tag.name}
+                                                    <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                                 </Label>
                                             </ListItem>
                                         ))}
