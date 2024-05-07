@@ -6,6 +6,7 @@ use App\DTO\TagDTO;
 use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Exception\ValidationFailureException;
+use App\Service\Mailer\MailerManagerInterface;
 use App\Trait\LoggerTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +23,7 @@ class UserManager
         private UserPasswordHasherInterface $passwordHasher,
         private ValidatorInterface $validator,
         private TagManager $tagManager,
-        private MailerManager $mailerManager
+        private MailerManagerInterface $mailerManager
     ) {
     }
 

@@ -44,3 +44,5 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: app.validator.vacation }
 
+    App\Service\Mailer\MailerManagerInterface:
+        class: App\Service\Mailer\MailerManager

@@ -31,3 +31,6 @@ services:
 
     App\Service\GoogleOAuth\GoogleOAuthInterface:
         class: App\Service\GoogleOAuth\MockedGoogleOAuthService
+
+    App\Service\Mailer\MailerManagerInterface:
+        class: App\Service\Mailer\MockedMailerManager

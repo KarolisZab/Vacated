@@ -7,7 +7,7 @@ use App\Entity\User;
 use App\Security\JwtIssuer;
 use App\Security\JwtValidator;
 use App\Service\GoogleOAuth\GoogleOAuthInterface;
-use App\Service\MailerManager;
+use App\Service\Mailer\MailerManagerInterface;
 use App\Service\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +38,7 @@ class AuthController extends AbstractController
         private JwtIssuer $jwtIssuer,
         private GoogleOAuthInterface $googleService,
         private JwtValidator $jwtValidator,
-        private MailerManager $mailerManager
+        private MailerManagerInterface $mailerManager
     ) {
     }
 

@@ -6,6 +6,7 @@ use App\DTO\VacationDTO;
 use App\Entity\User;
 use App\Entity\Vacation;
 use App\Exception\ValidationFailureException;
+use App\Service\Mailer\MailerManagerInterface;
 use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
@@ -18,7 +19,7 @@ class VacationManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
-        private MailerManager $mailerManager
+        private MailerManagerInterface $mailerManager
     ) {
     }
 

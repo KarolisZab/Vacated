@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Mailer;
 
 use App\Entity\User;
+use App\Service\Mailer\MailerManagerInterface;
 use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
-class MailerManager
+class MailerManager implements MailerManagerInterface
 {
     use LoggerTrait;
 
