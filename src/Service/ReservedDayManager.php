@@ -102,11 +102,6 @@ class ReservedDayManager
             throw new \InvalidArgumentException("Raserved day cannot end before it starts.", 400);
         }
 
-        $overlappingReservedDay = $reservedDayRepository->findOverlappingReservation($from, $to);
-        if (count($overlappingReservedDay) > 0) {
-            throw new \InvalidArgumentException("Reservation overlaps with an existing day reservation.", 400);
-        }
-
         $reservedDay
             ->setDateFrom($from)
             ->setDateTo($to)
