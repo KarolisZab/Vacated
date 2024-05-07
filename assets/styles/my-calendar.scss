@@ -70,10 +70,11 @@
 
 .loader-container {
     position: relative;
-    // display: flex;
-    // justify-content: center; /* Center horizontally */
-    // align-items: center; /* Center vertically */
-    // reikia height: 100% arba width 100%
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
 }
 
 .loader {
