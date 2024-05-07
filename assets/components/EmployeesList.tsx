@@ -62,13 +62,13 @@ const EmployeesList: React.FC = () => {
         <div className="employees-list Content__Container">
             <h1>Employees</h1>
             <div className='actions'>
-            <Input inverted
-                icon='search'
-                placeholder='Search...'
-                value={filter}
-                onChange={handleFilterChange}
-                style={{ marginBottom: '1rem' }}
-            />
+                <Input inverted
+                    icon='search'
+                    placeholder='Search...'
+                    value={filter}
+                    onChange={handleFilterChange}
+                    style={{ marginBottom: '1rem' }}
+                />
                 <Button color='teal' onClick={handleCreateUser} className='Button__Create'>
                     Create a new employee
                 </Button>

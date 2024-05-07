@@ -38,6 +38,7 @@ class ReservedDayManager
                 throw new \InvalidArgumentException("Raserved day cannot end before it starts.", 400);
             }
 
+            /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
             $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
 
             $overlappingReservedDay = $reservedDayRepository->findOverlappingReservation($from, $to);

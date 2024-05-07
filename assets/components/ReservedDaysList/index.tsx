@@ -66,7 +66,6 @@ const ReservedDaysList: React.FC = () => {
             const results = await reservedDayService.getReservedDaysList(startDate, endDate, page);
             setReservedDays(results.items);
             setTotalItems(results.totalItems);
-            console.log(results);
         } catch (error) {
             setError('Error' + (error as Error).message);
             // navigate("/");
