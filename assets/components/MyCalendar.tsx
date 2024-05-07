@@ -256,7 +256,7 @@ export default function MyCalendar() {
 
     if (loading) {
         return (
-            <div className='loader-container'>
+            <div className='calendar-loader-container'>
                 <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
                     <Loader>Loading</Loader>
                 </Dimmer>
