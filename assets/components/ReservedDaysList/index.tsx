@@ -168,7 +168,7 @@ const ReservedDaysList: React.FC = () => {
     const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
         if (e.key === 'Enter' && value) {
             try {
-                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
+                const newTag: TagType = { id: '', name: value as string, colorCode: '#808080' };
                 setTags([...tags, newTag]);
 
                 if (modalOpen) {
@@ -235,7 +235,9 @@ const ReservedDaysList: React.FC = () => {
     return (
         <div className="reserved-days-list Content__Container">
             <h1>Reserved days</h1>
-            <Button color='teal' onClick={() => setNewReservedDayModalOpen(true)} className='reserve-button'>Reserve days</Button>
+            <div className="button-container">
+                <Button color='teal' onClick={() => setNewReservedDayModalOpen(true)} className='reserve-button'>Reserve days</Button>
+            </div>
             <div className="loader-container">
                 {loading && (
                     <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>

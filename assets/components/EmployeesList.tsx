@@ -61,6 +61,7 @@ const EmployeesList: React.FC = () => {
     return (
         <div className="employees-list Content__Container">
             <h1>Employees</h1>
+            <div className='actions'>
             <Input inverted
                 icon='search'
                 placeholder='Search...'
@@ -68,9 +69,10 @@ const EmployeesList: React.FC = () => {
                 onChange={handleFilterChange}
                 style={{ marginBottom: '1rem' }}
             />
-            <Button color='teal' style={{ marginLeft: '1rem' }} onClick={handleCreateUser}>
-                        Create a new employee
-            </Button>
+                <Button color='teal' onClick={handleCreateUser} className='Button__Create'>
+                    Create a new employee
+                </Button>
+            </div>
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
                 {loading && (

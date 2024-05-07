@@ -116,7 +116,7 @@ const UpdateEmployee: React.FC = () => {
     const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
         if (e.key === 'Enter' && value) {
             try {
-                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
+                const newTag: TagType = { id: '', name: value as string, colorCode: '#808080' };
                 
                 setTags([...tags, newTag]);
 

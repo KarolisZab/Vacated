@@ -112,8 +112,10 @@ const TagsList: React.FC = () => {
 
     return (
         <div className="tags-list Content__Container">
-            <h1>Tags</h1>
-            <Button color='teal' onClick={() => setNewTagModalOpen(true)} className='tag-button'>Create new tag</Button>
+            <h1 className='Tag__Header'>Tags</h1>
+            <div className="button-container">
+                <Button color='teal' onClick={() => setNewTagModalOpen(true)} className='tag-button'>Create new tag</Button>
+            </div>
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
                 {loading && (
@@ -121,7 +123,7 @@ const TagsList: React.FC = () => {
                         <Loader>Loading</Loader>
                     </Dimmer>
                 )}
-                <div>
+                <div className='Table__Container'>
                     <Table celled inverted selectable striped>
                         <Table.Header>
                             <Table.Row>

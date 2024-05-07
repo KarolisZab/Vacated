@@ -41,6 +41,16 @@ h1 {
     padding-bottom: 4px;
 }
 
+.actions{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.actions .Button__Create {
+    margin-right: 2rem;
+}
+
 p {
     margin: 0.5rem 0;
     color: aliceblue;
