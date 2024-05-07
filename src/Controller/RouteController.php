@@ -25,4 +25,10 @@ class RouteController extends AbstractController
     {
         return $this->render('default/index.html.twig');
     }
+
+    #[Route('/reset-password', name: 'reset_password_symfony')]
+    public function passwordReset(): Response
+    {
+        return $this->render('default/index.html.twig');
+    }
 }

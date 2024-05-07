@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Security\JwtIssuer;
 use App\Security\JwtValidator;
 use App\Service\GoogleOAuth\GoogleOAuthInterface;
+use App\Service\MailerManager;
 use App\Service\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,7 +37,8 @@ class AuthController extends AbstractController
         private UserPasswordHasherInterface $passwordHasher,
         private JwtIssuer $jwtIssuer,
         private GoogleOAuthInterface $googleService,
-        private JwtValidator $jwtValidator
+        private JwtValidator $jwtValidator,
+        private MailerManager $mailerManager
     ) {
     }
 
@@ -142,21 +144,20 @@ class AuthController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
         $email = $requestData['email'] ?? null;
 
-        // Padariau klaida, kad kuriau sita blogam branche, tai cia uzcommentinau, kad veiktu po merge
         $user = $this->userManager->getUserByEmail($email);
         if (null !== $user) {
             $token = $this->jwtIssuer->issueToken(['email' => $email, 'reset_token' => true]);
 
-            /*$resetLink = */$this->generateUrl(
-                'reset_password',
+            $resetLink = $this->generateUrl(
+                'reset_password_symfony',
                 ['token' => $token],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-            // $subject = 'Password Reset';
-            // $message = "Hello {$user->getEmail()},\n\n
-            // You requested to reset your password. Please click the link below to proceed:\n{$resetLink}";
+            $subject = 'Password Reset';
+            $message = "Hello {$user->getEmail()},\n\n" .
+            "You requested to reset your password. Please click the link below to proceed:\n{$resetLink}";
 
-            // $this->mailerManager->sendEmailToUser($user->getEmail(), $subject, $message);
+            $this->mailerManager->sendEmailToUser($user->getEmail(), $subject, $message);
         }
 
         return new JsonResponse(null, JsonResponse::HTTP_OK);

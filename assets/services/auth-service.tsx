@@ -73,7 +73,7 @@ class AuthService {
 
     forgotPassword(email: string): Promise<string> {
         return axios
-            .post("http://localhost:8080/forgot-password", { email })
+            .post("http://localhost:8080/api/forgot-password", { email })
             .then(response => {
                 return response.data;
             });
