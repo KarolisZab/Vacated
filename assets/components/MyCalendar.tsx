@@ -151,20 +151,20 @@ export default function MyCalendar() {
         
         if (event.extendedProps.confirmed === true) {
             setPopupContent(`
-                <p style="color: black;"><strong>${event.title}</strong></p>
-                <p style="color: black;">Requested at <strong>${requestedAt}</strong></p>
-                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
-                <p style="color: black;">Ends on <strong>${endDate}</strong></p>
+                <p><strong>${event.title}</strong></p>
+                <p>Requested at <strong>${requestedAt}</strong></p>
+                <p>Starts on <strong>${startDate}</strong></p>
+                <p>Ends on <strong>${endDate}</strong></p>
                 <br>
-                <p style="color: black;">Confirmed by <strong>${event.extendedProps.reviewedBy}</strong> at <strong>${reviewedAt}</strong></p>
+                <p>Confirmed by <strong>${event.extendedProps.reviewedBy}</strong> at <strong>${reviewedAt}</strong></p>
             `);
 
         } else {
             setPopupContent(`
-                <p style="color: black;"><strong>${event.title.replace('Requested: ', '')}</strong></p>
-                <p style="color: black;">Requested on <strong>${requestedAt}</strong></p>
-                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
-                <p style="color: black;">Ends at <strong>${endDate}</strong></p>
+                <p><strong>${event.title.replace('Requested: ', '')}</strong></p>
+                <p>Requested on <strong>${requestedAt}</strong></p>
+                <p>Starts on <strong>${startDate}</strong></p>
+                <p>Ends at <strong>${endDate}</strong></p>
             `);
         }
     };
@@ -267,9 +267,9 @@ export default function MyCalendar() {
     return (
         <div>
             <div className="calendar-container">
-                <Modal open={showModal} onClose={() => handleCloseModal()}>
-                    <Modal.Header>Request vacation</Modal.Header>
-                    <Modal.Content>
+                <Modal open={showModal} onClose={() => handleCloseModal()} className="modal-wrapper">
+                    <Modal.Header className="modal-header">Request vacation</Modal.Header>
+                    <Modal.Content className='modal-content'>
                         {modalError && <Message negative>{modalError.replace(/{"|":"|"}|}/g, '')}</Message>}
                         <Form>
                             <Form.Field>
@@ -298,7 +298,7 @@ export default function MyCalendar() {
                             />
                         </Form>
                     </Modal.Content>
-                    <Modal.Actions>
+                    <Modal.Actions className='modal-actions'>
                         <Button color='black' onClick={() => handleCloseModal()}>
                             Cancel
                         </Button>
@@ -311,11 +311,11 @@ export default function MyCalendar() {
                         />
                     </Modal.Actions>
                 </Modal>
-                <Modal size='mini' open={!!popupContent} onClose={() => setPopupContent('')}>
-                    <Modal.Content>
-                        <div style={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: popupContent }}/>
+                <Modal size='mini' open={!!popupContent} onClose={() => setPopupContent('')} className='modal-wrapper'>
+                    <Modal.Content className='modal-content'>
+                        <div dangerouslySetInnerHTML={{ __html: popupContent }}/>
                     </Modal.Content>
-                    <Modal.Actions>
+                    <Modal.Actions className='modal-actions'>
                         <Button onClick={() => setPopupContent('')}>Close</Button>
                     </Modal.Actions>
                 </Modal>

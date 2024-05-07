@@ -134,20 +134,20 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Table.Body>
                 </Table>
             </div>
-            <Modal open={confirmModalOpen} onClose={() => setConfirmModalOpen(false)}>
-                <Modal.Header>Confirm vacation</Modal.Header>
-                <Modal.Content>
-                    <p style={{ color: 'black' }}>Are you sure you want to confirm this vacation request?</p>
+            <Modal open={confirmModalOpen} onClose={() => setConfirmModalOpen(false)} className='modal-wrapper'>
+                <Modal.Header className='modal-header'>Confirm vacation</Modal.Header>
+                <Modal.Content className='modal-content'>
+                    <p>Are you sure you want to confirm this vacation request?</p>
                 </Modal.Content>
-                <Modal.Actions>
+                <Modal.Actions className='modal-actions'>
                     <Button color='black' onClick={() => setConfirmModalOpen(false)}>Cancel</Button>
                     <Button color='green' onClick={(e) => handleConfirm(e, vacationData.id)}>Confirm</Button>
                 </Modal.Actions>
             </Modal>
-            <Modal open={rejectModalOpen} onClose={() => setRejectModalOpen(false)}>
-                <Modal.Header>Reject vacation</Modal.Header>
-                <Modal.Content>
-                    <p style={{ color: 'black' }}>Are you sure you want to reject this vacation request?</p>
+            <Modal open={rejectModalOpen} onClose={() => setRejectModalOpen(false)} className='modal-wrapper'>
+                <Modal.Header className='modal-header'>Reject vacation</Modal.Header>
+                <Modal.Content className='modal-content'>
+                    <p>Are you sure you want to reject this vacation request?</p>
                     <Form>
                         <Form.TextArea
                             label='Rejection Note'
@@ -159,7 +159,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                         />
                     </Form>
                 </Modal.Content>
-                <Modal.Actions>
+                <Modal.Actions className='modal-actions'>
                     <Button color='black' onClick={() => setRejectModalOpen(false)}>Cancel</Button>
                     <Button color='red' onClick={(e) => handleReject(e, vacationData.id)}>Reject</Button>
                 </Modal.Actions>

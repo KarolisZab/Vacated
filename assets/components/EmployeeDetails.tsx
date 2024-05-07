@@ -94,12 +94,13 @@ const EmployeeDetails: React.FC = () => {
                 open={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
                 size='mini'
+                className="modal-wrapper"
             >
-                <Modal.Header>Confirm Delete</Modal.Header>
-                <Modal.Content>
-                    <p style={{ color: 'black' }}>Are you sure you want to delete this employee?</p>
+                <Modal.Header className="modal-header">Confirm Delete</Modal.Header>
+                <Modal.Content className="modal-content">
+                    <p>Are you sure you want to delete this employee?</p>
                 </Modal.Content>
-                <Modal.Actions>
+                <Modal.Actions className="modal-actions">
                     <Button negative onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
                     <Button positive onClick={() => confirmDelete(employee.id)}>Confirm</Button>
                 </Modal.Actions>

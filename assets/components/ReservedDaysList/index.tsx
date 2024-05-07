@@ -299,9 +299,9 @@ const ReservedDaysList: React.FC = () => {
                         size="mini"
                     />
                 </div>
-                <Modal open={modalOpen} onClose={closeModal}>
-                    <Modal.Header>Update reserved days</Modal.Header>
-                    <Modal.Content>
+                <Modal open={modalOpen} onClose={closeModal} className='modal-wrapper'>
+                    <Modal.Header className='modal-header'>Update reserved days</Modal.Header>
+                    <Modal.Content className='modal-content'>
                         {modalError && <Message negative>{modalError}</Message>}
                         <Form>
                             <Form.Input
@@ -341,7 +341,7 @@ const ReservedDaysList: React.FC = () => {
                             </Form.Field>
                         </Form>
                     </Modal.Content>
-                    <Modal.Actions>
+                    <Modal.Actions className='modal-actions'>
                         <Button color='black' onClick={closeModal}>Cancel</Button>
                         <Button
                             content="Update"
@@ -352,12 +352,12 @@ const ReservedDaysList: React.FC = () => {
                         />
                     </Modal.Actions>
                 </Modal>
-                <Modal open={deleteModalOpen} onClose={closeModal}>
-                    <Modal.Header>Delete Reservation</Modal.Header>
-                    <Modal.Content>
-                        <p style={{ color: 'black' }}>Are you sure you want to delete this reservation?</p>
+                <Modal open={deleteModalOpen} onClose={closeModal} className='modal-wrapper'>
+                    <Modal.Header className='modal-header'>Delete Reservation</Modal.Header>
+                    <Modal.Content className='modal-content'>
+                        <p>Are you sure you want to delete this reservation?</p>
                     </Modal.Content>
-                    <Modal.Actions>
+                    <Modal.Actions className='modal-actions'>
                         <Button color='black' onClick={closeModal}>Cancel</Button>
                         <Button
                             content="Delete"
@@ -368,9 +368,9 @@ const ReservedDaysList: React.FC = () => {
                         />
                     </Modal.Actions>
                 </Modal>
-                <Modal open={newReservedDayModalOpen} onClose={closeModal}>
-                    <Modal.Header>New Reserved Day</Modal.Header>
-                    <Modal.Content>
+                <Modal open={newReservedDayModalOpen} onClose={closeModal} className='modal-wrapper'>
+                    <Modal.Header className='modal-header'>New Reserved Day</Modal.Header>
+                    <Modal.Content className='modal-content'>
                         {modalError && <Message negative>{modalError}</Message>}
                         <Form>
                             <Form.Input
@@ -413,7 +413,7 @@ const ReservedDaysList: React.FC = () => {
                             </Form.Field>
                         </Form>
                     </Modal.Content>
-                    <Modal.Actions>
+                    <Modal.Actions className='modal-actions'>
                         <Button color='black' onClick={closeModal}>Cancel</Button>
                         <Button
                             content="Create"

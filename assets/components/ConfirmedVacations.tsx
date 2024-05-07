@@ -85,10 +85,10 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Table.Body>
                 </Table>
             </div>
-            <Modal open={modalOpen} onClose={closeModal}>
-                <Modal.Header>Update Vacation</Modal.Header>
+            <Modal open={modalOpen} onClose={closeModal} className='modal-wrapper'>
+                <Modal.Header className='modal-header'>Update Vacation</Modal.Header>
                 {error && <Message negative>{error}</Message>}
-                <Modal.Content>
+                <Modal.Content className='modal-content'>
                     <Form>
                         <Form.Input
                             label='Start date'
@@ -110,7 +110,7 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                         />
                     </Form>
                 </Modal.Content>
-                <Modal.Actions>
+                <Modal.Actions className='modal-actions'>
                     <Button color='black' onClick={closeModal}>Cancel</Button>
                     <Button
                         content="Update"
