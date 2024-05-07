@@ -188,7 +188,7 @@ const ReservedDaysList: React.FC = () => {
     const confirmDelete = async () => {
         try {
             await reservedDayService.deleteReservedDay(deleteId);
-            setReservedDays(prevReservedDays => prevReservedDays.filter(day => day.id !== id));
+            setReservedDays(prevReservedDays => prevReservedDays.filter(day => day.id !== deleteId));
             closeModal();
         } catch (error) {
             setError('Error' + (error as Error).message);

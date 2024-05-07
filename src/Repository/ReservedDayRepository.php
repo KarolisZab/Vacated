@@ -43,6 +43,19 @@ class ReservedDayRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findOverlappingReservation(
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+    ): array {
+        return $this->createQueryBuilder('r')
+            ->where('r.dateFrom <= :endDate')
+            ->andWhere('r.dateTo >= :startDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery()
+            ->getResult();
+    }
+
     // public function findReservedDaysInPeriod(\DateTimeImmutable $from, \DateTimeImmutable $to): array
     // {
     //     return $this->createQueryBuilder('r')
