@@ -45,7 +45,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
 
     return (
         <div className="requested-vacation">
-            <div style={{ marginRight: '2rem' }}>
+            <div>
                 {error && <Message negative>{error}</Message>}
                 <Table celled inverted selectable striped>
                     <Table.Header>

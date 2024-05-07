@@ -111,7 +111,7 @@ const TagsList: React.FC = () => {
     };
 
     return (
-        <div className="tags-list">
+        <div className="tags-list Content__Container">
             <h1>Tags</h1>
             <Button color='teal' onClick={() => setNewTagModalOpen(true)} className='tag-button'>Create new tag</Button>
             {error && <Message negative>{error}</Message>}

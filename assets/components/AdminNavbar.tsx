@@ -57,7 +57,7 @@ export default function Navbar() {
                         {isAuthenticated && (
                             <>
                                 <li>
-                                    <Link to="/admin">Home</Link>
+                                    <Link to="/admin">Dashboard</Link>
                                 </li>
                                 <li>
                                     <Link to="/admin/vacations">Vacations</Link>

@@ -78,8 +78,9 @@ export default function MyVacations() {
     ];
 
     return (
-        <div className="tab-container">
+        <div className="tab-container Content__Container">
             {error && <Message negative>{error}</Message>}
+            <h1>My Vacations</h1>
             <Tab panes={panes} />
         </div>
     );

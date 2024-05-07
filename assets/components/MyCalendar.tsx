@@ -322,12 +322,14 @@ export default function MyCalendar() {
                 <div>
                     {currentUser && (
                         <div>
-                            <p className='greeting-message'>
-                                Hi, {currentUser.firstName} {currentUser.lastName}!
-                            </p>
-                            <p className='available-days-message'>
-                                You have {availableDays} out of 20 available vacation days.
-                            </p>
+                            <div className='Calendar__PersonalInfo'>
+                                <p className='greeting-message'>
+                                    Hi, {currentUser.firstName} {currentUser.lastName}!
+                                </p>
+                                <p className='available-days-message'>
+                                    You have {availableDays} out of 20 available vacation days.
+                                </p>
+                            </div>
                             <Button color='teal' onClick={handleRequestVacation}>
                                 Request vacation
                             </Button>

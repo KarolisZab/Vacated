@@ -21,8 +21,16 @@ body {
 }
 
 h1 {
-    margin: 1rem 0;
+    margin: 0 0 32px 0;
     color: aliceblue;
+}
+
+.Content__Container {
+    padding: 60px 60px 0 60px;
+}
+
+.Table__Container {
+    margin: 0 2rem;
 }
 
 p {

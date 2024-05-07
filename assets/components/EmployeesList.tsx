@@ -58,7 +58,7 @@ const EmployeesList: React.FC = () => {
     };
 
     return (
-        <div className="employees-list">
+        <div className="employees-list Content__Container">
             <h1>Employees</h1>
             <Input inverted
                 icon='search'

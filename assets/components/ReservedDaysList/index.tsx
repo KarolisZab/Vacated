@@ -6,6 +6,7 @@ import './styles.scss';
 import { ReservedDayType, TagType } from '../../services/types';
 import tagService from '../../services/tag-service';
 import errorProcessor from '../../services/errorProcessor';
+import { invertColor } from '../utils/invertColor';
 
 const ReservedDaysList: React.FC = () => {
     const navigate = useNavigate();
@@ -65,6 +66,7 @@ const ReservedDaysList: React.FC = () => {
             const results = await reservedDayService.getReservedDaysList(startDate, endDate, page);
             setReservedDays(results.items);
             setTotalItems(results.totalItems);
+            console.log(results);
         } catch (error) {
             setError('Error' + (error as Error).message);
             // navigate("/");
@@ -231,7 +233,7 @@ const ReservedDaysList: React.FC = () => {
     };
 
     return (
-        <div className="reserved-days-list">
+        <div className="reserved-days-list Content__Container">
             <h1>Reserved days</h1>
             <Button color='teal' onClick={() => setNewReservedDayModalOpen(true)} className='reserve-button'>Reserve days</Button>
             <div className="loader-container">
@@ -240,7 +242,7 @@ const ReservedDaysList: React.FC = () => {
                         <Loader>Loading</Loader>
                     </Dimmer>
                 )}
-                <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
+                <div>
                     <Table celled inverted selectable striped>
                         <Table.Header>
                             <Table.Row>
@@ -264,7 +266,7 @@ const ReservedDaysList: React.FC = () => {
                                         {reservedDay.tags.map((tag) => (
                                             <ListItem key={tag.id}>
                                                 <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                                    {tag.name}
+                                                    <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                                 </Label>
                                             </ListItem>
                                         ))}
