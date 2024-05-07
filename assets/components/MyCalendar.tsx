@@ -270,7 +270,7 @@ export default function MyCalendar() {
                 <Modal open={showModal} onClose={() => handleCloseModal()}>
                     <Modal.Header>Request vacation</Modal.Header>
                     <Modal.Content>
-                        {modalError && <Message negative>{modalError}</Message>}
+                        {modalError && <Message negative>{modalError.replace(/{"|":"|"}|}/g, '')}</Message>}
                         <Form>
                             <Form.Field>
                                 <label>Selected Start Date:</label>
