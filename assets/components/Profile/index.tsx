@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import employeeService from '../../services/employee-service';
-import { Button, Dimmer, Divider, Form, FormInput, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
+import { Button, Dimmer, Divider, Form, FormInput, Label, ListItem, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
 import { EmployeeType } from '../../services/types';
 import handleError from "../../services/handler";
 import errorProcessor from "../../services/errorProcessor";
@@ -135,6 +135,19 @@ const Profile: React.FC = () => {
                                 <Progress value={employee.availableDays} total='20' progress='ratio' size='medium' color={getColor(employee.availableDays)} />
                             </> 
                         )}
+                        {employee.tags && employee.tags.length > 0 && (
+                            <>
+                                <p>Tags:</p>
+                                {employee.tags.map((tag) => (
+                                    <ListItem key={tag.id}>
+                                        <Label style={{ backgroundColor: tag.colorCode }} horizontal>
+                                            {tag.name}
+                                        </Label>
+                                    </ListItem>
+                                ))}
+                            </>
+                        )}
+                        <br></br>
                         <Form.Group widths='equal'>
                             <FormInput 
                                 fluid 
