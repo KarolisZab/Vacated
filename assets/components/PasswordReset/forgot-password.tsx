@@ -6,7 +6,7 @@ import authService from '../../services/auth-service';
 const ForgotPassword: React.FC = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,7 +25,7 @@ const ForgotPassword: React.FC = () => {
         <Container>
             <h2>Forgot password?</h2>
             <p>If you&apos;ve forgotten your password, please enter your email address below. We&apos;ll send you an email with instructions on how to reset your password.</p>
-            <Form onSubmit={handleSubmit} loading={loading}>
+            <Form onSubmit={handleSubmit}>
                 {message && <Message content={message} success={!message} className='success-message'/>}
                 <Form.Field>
                     <label>Email:</label>
@@ -37,7 +37,7 @@ const ForgotPassword: React.FC = () => {
                         required
                     />
                 </Form.Field>
-                <Button type="submit" color='teal'>Submit</Button>
+                <Button type="submit" color='teal' loading={isLoading}>Submit</Button>
             </Form>
         </Container>
     );
