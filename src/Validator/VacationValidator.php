@@ -11,12 +11,9 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class VacationValidator extends ConstraintValidator
 {
-    /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
-    private $reservedDayRepository;
-
-    public function __construct(EntityManagerInterface $entityManager, $reservedDayRepository)
-    {
-        $this->reservedDayRepository = $entityManager->getRepository(ReservedDay::class);
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {
     }
 
     /**
@@ -24,6 +21,9 @@ class VacationValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
+        /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+        $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+
         if (!$constraint instanceof VacationConstraint) {
             throw new UnexpectedTypeException($constraint, VacationConstraint::class);
         }
@@ -32,7 +32,7 @@ class VacationValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, Vacation::class);
         }
 
-        $reservedDays = $this->reservedDayRepository->findReservedDaysInPeriod(
+        $reservedDays = $reservedDayRepository->findReservedDaysInPeriod(
             $value->getDateFrom(),
             $value->getDateTo()
         );

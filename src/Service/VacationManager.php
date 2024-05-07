@@ -228,7 +228,7 @@ class VacationManager
         return $vacationRepository->find($id);
     }
 
-    public function getAllVacations(string $vacationType): array
+    public function getAllVacations(?string $vacationType): array
     {
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);
@@ -236,7 +236,7 @@ class VacationManager
         return $vacationRepository->getFilteredVacations($vacationType);
     }
 
-    public function getAllCurrentUserVacations(User $user, string $vacationType): array
+    public function getAllCurrentUserVacations(User $user, ?string $vacationType): array
     {
         /** @var \App\Repository\VacationRepository $vacationRepository */
         $vacationRepository = $this->entityManager->getRepository(Vacation::class);

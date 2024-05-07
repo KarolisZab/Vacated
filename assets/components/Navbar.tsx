@@ -28,7 +28,6 @@ export default function Navbar() {
     useEffect(() => {
         if (user) {
             setIsAdmin(user.roles.includes("ROLE_ADMIN"));
-            console.log(user);
         } else {
             setIsAdmin(false);
         }

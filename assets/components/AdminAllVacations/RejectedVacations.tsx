@@ -9,9 +9,10 @@ interface Props {
 
 /* eslint-disable-next-line */
 const RejectedVacations: React.FC<Props> = ({ vacations }) => {
+    
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>There are no rejected vacation requests.</Message>;
+        return <Message>There are no rejected vacations yet.</Message>;
     }
 
     return (

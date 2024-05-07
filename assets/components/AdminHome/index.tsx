@@ -14,11 +14,13 @@ export default function Home() {
     const [reservedDays, setReservedDays] = useState<number>(0);
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
+    /* eslint-disable-next-line */
     const [chartData, setChartData] = useState<any[][]>([]);
+    /* eslint-disable-next-line */
     const [pieChartData, setPieChartData] = useState<any[][]>([]);
     const navigate = useNavigate();
 
-
+    
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
@@ -41,7 +43,6 @@ export default function Home() {
                     chartData.push([month, daysCount]);
                 }
                 setChartData(chartData);
-                console.log(monthlyVacationStatistics)
 
                 const pieChartData = [
                     ["Task", "Value"],
@@ -49,8 +50,6 @@ export default function Home() {
                 ];
                   
                 setPieChartData(pieChartData);
-                console.log(vacationProgress);
-                console.log(pieChartData);
             } catch (error) {
                 setError('Error' + (error as Error).message);
                 navigate('/');

@@ -21,6 +21,8 @@ import TagsList from "../components/AdminTags/index"
 import Google from "../components/GoogleAuth/index"
 import ReservedDays from "../components/ReservedDays"
 import Profile from "../components/Profile/index"
+import ForgotPassword from "../components/PasswordReset/forgot-password"
+import ResetPassword from "../components/PasswordReset/reset-password"
 
 const router = createBrowserRouter([
     {
@@ -81,6 +83,14 @@ const router = createBrowserRouter([
                         <Profile />
                     </PrivateRoute>
                 )
+            },
+            {
+                path: "forgot-password",
+                element: <ForgotPassword />
+            },
+            {
+                path: "reset-password",
+                element: <ResetPassword />
             }
         ]
     },

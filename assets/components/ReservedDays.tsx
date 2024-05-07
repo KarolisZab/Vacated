@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import reservedDayService from '../services/reserved-day-service';
-import { Dimmer, Label, ListItem, Loader, Pagination, Table } from 'semantic-ui-react';
+import { Dimmer, Label, ListItem, Loader, Table } from 'semantic-ui-react';
 // import './styles.scss';
 import { ReservedDayType } from '../services/types';
 import { formatDateTime } from './utils/dateUtils';

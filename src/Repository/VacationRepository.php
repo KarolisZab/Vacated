@@ -97,7 +97,7 @@ class VacationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getAllCurrentUserFilteredVacations(User $user, string $vacationType): array
+    public function getAllCurrentUserFilteredVacations(User $user, ?string $vacationType): array
     {
         $qb = $this->createQueryBuilder('v')
             ->where('v.requestedBy = :user')
@@ -128,13 +128,13 @@ class VacationRepository extends ServiceEntityRepository
         }
 
         if ($vacationType === '' || $vacationType === null) {
-            return [];
+            return $this->findAll();
         }
 
         return $qb->getQuery()->getResult();
     }
 
-    public function getFilteredVacations(string $vacationType): array
+    public function getFilteredVacations(?string $vacationType): array
     {
         $qb = $this->createQueryBuilder('v');
         $now = new \DateTimeImmutable();
@@ -163,7 +163,7 @@ class VacationRepository extends ServiceEntityRepository
         }
 
         if ($vacationType === '' || $vacationType === null) {
-            return [];
+            return $this->findAll();
         }
 
         return $qb->getQuery()->getResult();

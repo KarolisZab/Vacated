@@ -6,7 +6,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType, EmployeeType } from '../services/types';
-import { Button, Dimmer, Form, Loader, Message, Modal, ModalActions, Popup } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
@@ -153,8 +153,8 @@ export default function MyCalendar() {
             setPopupContent(`
                 <p style="color: black;"><strong>${event.title}</strong></p>
                 <p style="color: black;">Requested at <strong>${requestedAt}</strong></p>
-                <p style="color: black;">Starts at <strong>${startDate}</strong></p>
-                <p style="color: black;">Ends at <strong>${endDate}</strong></p>
+                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
+                <p style="color: black;">Ends on <strong>${endDate}</strong></p>
                 <br>
                 <p style="color: black;">Confirmed by <strong>${event.extendedProps.reviewedBy}</strong> at <strong>${reviewedAt}</strong></p>
             `);
@@ -162,8 +162,8 @@ export default function MyCalendar() {
         } else {
             setPopupContent(`
                 <p style="color: black;"><strong>${event.title.replace('Requested: ', '')}</strong></p>
-                <p style="color: black;">Requested at <strong>${requestedAt}</strong></p>
-                <p style="color: black;">Starts at <strong>${startDate}</strong></p>
+                <p style="color: black;">Requested on <strong>${requestedAt}</strong></p>
+                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
                 <p style="color: black;">Ends at <strong>${endDate}</strong></p>
             `);
         }

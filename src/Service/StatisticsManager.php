@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Vacation;
 use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class StatisticsManager
 {
@@ -13,7 +12,6 @@ class StatisticsManager
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ValidatorInterface $validator,
         private UserManager $userManager
     ) {
     }

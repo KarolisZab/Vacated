@@ -42,7 +42,7 @@ class UserManager
             $user = new User();
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
-                $userDTO->password = $password
+                $password
             );
             $user->setEmail($userDTO->email)
                 ->setPassword($hashedPassword)
@@ -269,20 +269,12 @@ class UserManager
         return $availableDays;
     }
 
-    public function changePassword(User $user, string $newPassword): bool
+    public function changePassword(User $user, string $newPassword)
     {
         $hashedPassword = $this->passwordHasher->hashPassword($user, $newPassword);
         $user->setPassword($hashedPassword);
 
-        try {
-            $this->entityManager->flush();
-            return true;
-        } catch (\Exception $e) {
-            $this->logger->critical(
-                "Exception occured while changing password for user {$user->getEmail()} : " . $e->getMessage()
-            );
-            throw $e;
-        }
+        $this->entityManager->flush();
     }
 
     public function resetPassword(string $email): bool

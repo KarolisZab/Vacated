@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import employeeService from '../../services/employee-service';
-import { Button, Dimmer, Divider, Dropdown, DropdownProps, Form, FormInput, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
-import { EmployeeType, TagType } from '../../services/types';
+import { Button, Dimmer, Divider, Form, FormInput, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
+import { EmployeeType } from '../../services/types';
 import handleError from "../../services/handler";
 import errorProcessor from "../../services/errorProcessor";
 import './styles.scss'
-import tagService from "../../services/tag-service";
 
 const Profile: React.FC = () => {
     const navigate = useNavigate();

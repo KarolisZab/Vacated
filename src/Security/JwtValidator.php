@@ -22,7 +22,10 @@ class JwtValidator
         $this->clock = $clock;
     }
 
-    public function validateToken(string $jwtToken): string
+    /**
+     * @throws AuthenticationException
+     */
+    public function validateToken(string $jwtToken, bool $resetToken = false): string
     {
 
         try {
@@ -36,6 +39,10 @@ class JwtValidator
             $email = $parsedToken->claims()->get('email');
 
             $this->jwtValidator->assert($parsedToken, $constraintSignedWith, $constraintLooseValidAt);
+
+            if ($resetToken && null === $parsedToken->claims()->get('reset_token')) {
+                throw new \Exception();
+            }
 
             return $email;
         } catch (\Exception) {
