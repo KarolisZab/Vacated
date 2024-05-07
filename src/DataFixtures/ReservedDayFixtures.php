@@ -13,7 +13,7 @@ class ReservedDayFixtures extends Fixture implements DependentFixtureInterface
     {
         $user = $this->getReference('admin_user2');
 
-        $dateFrom = (new \DateTimeImmutable())->modify('+7 days');
+        $dateFrom = (new \DateTimeImmutable())->modify('+15 days');
         $dateTo = $dateFrom->modify('+1 day');
 
         $reservedDay = new ReservedDay();

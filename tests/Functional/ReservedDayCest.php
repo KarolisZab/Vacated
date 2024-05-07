@@ -63,7 +63,7 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $dateFrom = (new \DateTimeImmutable())->modify('+6 days');
+        $dateFrom = (new \DateTimeImmutable())->modify('+12 days');
         $dateTo = $dateFrom->modify('+7 days');
 
         $I->sendRequest('post', '/api/request-vacation', [
