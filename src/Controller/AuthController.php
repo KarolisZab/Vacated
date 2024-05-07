@@ -134,7 +134,7 @@ class AuthController extends AbstractController
         if ($userManager->changePassword($user, $newPassword)) {
             return new JsonResponse('Password changed successfully', 200);
         } else {
-            return new JsonResponse('Failed to change password', 500);
+            return new JsonResponse('Failed to change password', 400);
         }
     }
 
