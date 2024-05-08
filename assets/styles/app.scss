@@ -77,6 +77,16 @@ h1 {
     }
 }
 
+.Text__Input--disabled,
+.ui.form .disabled.field.Text__Input--disabled {
+    pointer-events: initial;
+    opacity: 1;
+    
+    &:hover {
+        cursor: not-allowed;
+    }
+}
+
 .actions{
     display: flex;
     align-items: center;

@@ -86,7 +86,7 @@ const Register: React.FC = () => {
         <Grid textAlign='center' style={{ height: '90vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
                 <Header as='h2' color='teal' textAlign='center'>
-                    Create a new user account
+                    Create a new employee
                 </Header>
                 <Form size='large' onSubmit={handleSubmit} error={!!error} className='Form__Container'>
                     {error && <Message error style={{ backgroundColor: 'rgb(31, 31, 32)' }} content={error} />}

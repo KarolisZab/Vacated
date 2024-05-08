@@ -348,29 +348,31 @@ export default function MyCalendar() {
                     )}
                 </div>
             </div>
-
-            <FullCalendar
-                ref={calendarRef}
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
-                initialView="dayGridMonth"
-                selectable={true}
-                events={[...mapCalendarList(), ...mapReservedDays(), ...mapTagsList()]}
-                select={handleDateSelect}
-                firstDay={1}
-                datesSet={handleDatesSet}
-                fixedWeekCount={false}
-                timeZone="Europe/London"
-                displayEventTime={false}
-                eventClick={handleEventClick}
-                dayMaxEventRows={true}
-                dayMaxEvents={3}
-                aspectRatio={1.75}
-                headerToolbar={{
-                    start: 'prev,next today',
-                    center: 'title',
-                    end: 'dayGridMonth,multiMonthYear'
-                }}
-            />
+            
+            <div className='CalendarView__Container'>
+                <FullCalendar
+                    ref={calendarRef}
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
+                    initialView="dayGridMonth"
+                    selectable={true}
+                    events={[...mapCalendarList(), ...mapReservedDays(), ...mapTagsList()]}
+                    select={handleDateSelect}
+                    firstDay={1}
+                    datesSet={handleDatesSet}
+                    fixedWeekCount={false}
+                    timeZone="Europe/London"
+                    displayEventTime={false}
+                    eventClick={handleEventClick}
+                    dayMaxEventRows={true}
+                    dayMaxEvents={3}
+                    aspectRatio={1.75}
+                    headerToolbar={{
+                        start: 'prev,next today',
+                        center: 'title',
+                        end: 'dayGridMonth,multiMonthYear'
+                    }}
+                />
+            </div>
         </div>
     )
 }

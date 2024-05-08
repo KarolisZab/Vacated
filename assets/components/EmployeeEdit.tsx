@@ -182,8 +182,8 @@ const UpdateEmployee: React.FC = () => {
                                 onAddItem={handleTagCreate}
                             />
                         </Form.Field>
-                        <Button type='button' onClick={handleUpdate}>Submit</Button>
-                        <Button type='button' onClick={handleCancel}>Cancel</Button>
+                        <Button type='button' color="blue" onClick={handleUpdate}>Update</Button>
+                        <Button type='button' onClick={handleCancel}>Back</Button>
                     </Form>
                 </Segment>
             </div>

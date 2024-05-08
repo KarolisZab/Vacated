@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import employeeService from '../../services/employee-service';
-import { Button, Dimmer, Divider, Form, FormInput, Label, ListItem, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
+import { Button, Dimmer, Divider, Form, FormInput, Label, ListItem, Loader, Message, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
 import { EmployeeType } from '../../services/types';
 import handleError from "../../services/handler";
 import errorProcessor from "../../services/errorProcessor";
@@ -26,6 +26,7 @@ const Profile: React.FC = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [passwordErrors, setPasswordErrors] = useState<{ [key: string]: string }>({});
+    const [successMessage, setSuccessMessage] = useState<string>('');
 
     useEffect(() => {
         const fetchEmployee = async () => {
@@ -63,7 +64,7 @@ const Profile: React.FC = () => {
             setFormErrors({});
 
             await employeeService.updateEmployee(employee.id, employee);
-            navigate(-1);
+            setSuccessMessage('Profile updated successfully.');
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
         }
@@ -90,7 +91,7 @@ const Profile: React.FC = () => {
 
         try {
             await employeeService.changePassword(oldPassword, newPassword);
-            navigate('/');
+            setSuccessMessage('Password changed successfully.');
         } catch (error) {
             setPasswordErrors(prevErrors => ({
                 ...prevErrors,
@@ -113,6 +114,10 @@ const Profile: React.FC = () => {
     return (
         <div style={{ margin: '3rem auto', maxWidth: '500px' }}>
             <h1>Profile</h1>
+            {successMessage && (
+                    <Message success content={successMessage} />
+                )
+            }
             <div className="loader-container">
                 <Segment inverted>
                     {loading && (
@@ -127,8 +132,8 @@ const Profile: React.FC = () => {
                             placeholder='Email' 
                             name="email" 
                             value={employee.email} 
-                            className={'disabled'}
-                            readOnly
+                            className={'Text__Input--disabled'}
+                            disabled
                         />
                         {employee.availableDays !== undefined && (
                             <>
@@ -138,17 +143,16 @@ const Profile: React.FC = () => {
                         )}
                         {employee.tags && employee.tags.length > 0 && (
                             <>
-                                <p>Tags:</p>
-                                {employee.tags.map((tag) => (
-                                    <ListItem key={tag.id} className="List__Item">
+                                <div className="Profile__TagsContainer">
+                                    <p>Tags</p>
+                                    {employee.tags.map((tag) => (
                                         <Label style={{ backgroundColor: tag.colorCode }} horizontal>
                                             <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                         </Label>
-                                    </ListItem>
-                                ))}
+                                    ))}
+                                </div>
                             </>
                         )}
-                        <br></br>
                         <Form.Group widths='equal'>
                             <FormInput 
                                 fluid 

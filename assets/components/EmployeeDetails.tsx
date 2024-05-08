@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import employeeService from '../services/employee-service';
 import { Button, Card, Container, Dimmer, Divider, Header, Label, ListItem, Loader, Message, Modal } from "semantic-ui-react";
 import { EmployeeType, TagType } from '../services/types';
+import { invertColor } from "./utils/invertColor";
 
 const EmployeeDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -54,8 +55,7 @@ const EmployeeDetails: React.FC = () => {
     }
 
     return (
-        <Container style={{ marginTop: '2rem' }}>
-            {/* possibly reik divo */}
+        <Container className="Content__Container">
             {isLoading && (
                 <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }} >
                     <Loader>Loading</Loader>
@@ -71,16 +71,13 @@ const EmployeeDetails: React.FC = () => {
                     <Card.Description>
                         <p><strong>Email:</strong> {employee.email}</p>
                         <p><strong>Phone Number:</strong> {employee.phoneNumber}</p>
-                        <p><strong>Available vacation days:</strong> {employee.availableDays}</p>
-                        <p><strong>Tags:</strong> 
+                        <p><strong>Available vacation days:</strong> {employee.availableDays}/20</p>
+                        <p><strong>Tags:</strong></p>
                             {employee.tags?.map((tag: TagType) => (
-                                <ListItem key={tag.id}>
-                                    <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                        {tag.name}
-                                    </Label>
-                                </ListItem>
+                                <Label style={{ backgroundColor: tag.colorCode }} horizontal>
+                                    <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
+                                </Label>
                             ))}
-                        </p>
                     </Card.Description>
                     <Divider />
                     <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>

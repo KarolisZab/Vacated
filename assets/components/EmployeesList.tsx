@@ -45,7 +45,7 @@ const EmployeesList: React.FC = () => {
     };
 
     const handleCreateUser = () => {
-        navigate('/admin/create-user');
+        navigate('/admin/employees/create');
     }
 
     const getColor = (days: number): SemanticCOLORS => {
@@ -108,19 +108,16 @@ const EmployeesList: React.FC = () => {
                                     <Table.Cell>{employee.phoneNumber}</Table.Cell>
                                     <Table.Cell>
                                         {employee.tags.map((tag) => (
-                                            <ListItem key={tag.id} className='List__Item'>
-                                                <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                                    <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
-                                                </Label>
-                                            </ListItem>
+                                            <Label style={{ backgroundColor: tag.colorCode }} horizontal>
+                                                <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
+                                            </Label>
                                         ))}
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Progress value={employee.availableDays} total='20' progress='ratio' size='small' color={getColor(employee.availableDays)} />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Link to={`/admin/employees/${employee.id}`}>View details</Link>
-                                    </Table.Cell>
+                                        <Button color='blue' onClick={() => navigate(`/admin/employees/${employee.id}`)}>View</Button>                                    </Table.Cell>
                                 </Table.Row>
                             ))}
                         </Table.Body>

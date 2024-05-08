@@ -120,6 +120,14 @@ const router = createBrowserRouter([
                 )
             },
             {
+                path: "employees/create",
+                element: (
+                    <AdminPrivateRoute>
+                        <Register />
+                    </AdminPrivateRoute>
+                )
+            },
+            {
                 path: "employees/:id",
                 element: (
                     <AdminPrivateRoute>
@@ -158,10 +166,6 @@ const router = createBrowserRouter([
                         <TagsList />
                     </AdminPrivateRoute>
                 )
-            },
-            {
-                path: "create-user",
-                element: <Register />
             },
         ]
     }
