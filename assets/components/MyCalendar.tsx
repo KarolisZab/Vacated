@@ -6,7 +6,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType, EmployeeType } from '../services/types';
-import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Loader, Message, Modal, Progress, SemanticCOLORS } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
@@ -254,6 +254,16 @@ export default function MyCalendar() {
         return tagEvents.filter(event => event !== null);
     };
 
+    const getColor = (days: number): SemanticCOLORS => {
+        if (days <= 7) {
+            return 'red';
+        } else if (days <= 13) {
+            return 'yellow';
+        } else {
+            return 'green';
+        }
+    };
+
     if (loading) {
         return (
             <div className='calendar-loader-container'>
@@ -327,8 +337,9 @@ export default function MyCalendar() {
                                     Hi, {currentUser.firstName} {currentUser.lastName}!
                                 </p>
                                 <p className='available-days-message'>
-                                    You have {availableDays} out of 20 available vacation days.
+                                    Available vacation days:
                                 </p>
+                                <Progress value={availableDays} total='20' progress='ratio' size='medium' color={getColor(availableDays)} />
                             </div>
                             <Button color='teal' onClick={handleRequestVacation}>
                                 Request vacation

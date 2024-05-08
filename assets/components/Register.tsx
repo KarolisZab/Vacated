@@ -88,7 +88,7 @@ const Register: React.FC = () => {
                 <Header as='h2' color='teal' textAlign='center'>
                     Create a new user account
                 </Header>
-                <Form size='large' onSubmit={handleSubmit} error={!!error}>
+                <Form size='large' onSubmit={handleSubmit} error={!!error} className='Form__Container'>
                     {error && <Message error style={{ backgroundColor: 'rgb(31, 31, 32)' }} content={error} />}
                     <Segment stacked>
                         <Form.Input

@@ -52,7 +52,7 @@ const Login: React.FC = () => {
                 <Header as='h2' color='teal' textAlign='center'>
                     Log-in to your account
                 </Header>
-                <Form size='large' onSubmit={handleSubmit} error={!!error}>
+                <Form size='large' onSubmit={handleSubmit} error={!!error} className='Form__Container'>
                     {error && <Message error content={error} color='black' />}
                     <Segment stacked>
                         <Form.Input

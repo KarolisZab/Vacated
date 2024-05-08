@@ -41,6 +41,42 @@ h1 {
     padding-bottom: 4px;
 }
 
+.Form__Container {
+
+    input[type='text'],
+    input[type='date'],
+    input[type='password'],
+    textarea {
+        background-color: #555 !important;
+        color: #fff !important;
+    }
+
+    .ui.segment.stacked {
+        background-color: #2b2b2b;
+        color: #ffffff;
+    }
+
+    .ui.dropdown {
+        background-color: #2b2b2b;
+        color: #ffffff;
+        border: 1px solid #4a4a4a;
+
+        .menu {
+            background-color: #2b2b2b;
+            color: #ffffff;
+        }
+
+        .menu > .item {
+            color: #fff;
+        }
+    }
+
+    .ui.input {
+        background-color: #2b2b2b;
+        color: #ffffff;
+    }
+}
+
 .actions{
     display: flex;
     align-items: center;
