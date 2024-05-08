@@ -167,7 +167,10 @@ class AuthenticationCest
             'firstName' => 'John',
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
-            'tags' => [['name' => 'Backend'], ['name' => 'Frontend']],
+            'tags' => [
+                ['name' => 'Backend', 'colorCode' => '#990000'],
+                ['name' => 'Frontend', 'colorCode' => '#FF9999']
+            ],
         ];
 
         $token = $I->grabTokenForUser('jwttest@test.com');
@@ -183,8 +186,8 @@ class AuthenticationCest
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
             'tags' => [
-                ['name' => 'Backend'],
-                ['name' => 'Frontend'],
+                ['name' => 'Backend', 'colorCode' => '#990000'],
+                ['name' => 'Frontend', 'colorCode' => '#FF9999'],
             ]
         ]);
     }
@@ -201,7 +204,10 @@ class AuthenticationCest
             'firstName' => 'John',
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
-            'tags' => [['name' => 'Backend'], ['name' => 'Frontend']],
+            'tags' => [
+                ['name' => 'Backend', 'colorCode' => '#990000'],
+                ['name' => 'Frontend', 'colorCode' => '#FF9999']
+            ],
         ]);
 
         $I->seeResponseCodeIs(200);
@@ -211,8 +217,8 @@ class AuthenticationCest
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
             'tags' => [
-                ['name' => 'Backend'],
-                ['name' => 'Frontend'],
+                ['name' => 'Backend', 'colorCode' => '#990000'],
+                ['name' => 'Frontend', 'colorCode' => '#FF9999'],
             ]
         ]);
 
@@ -221,12 +227,12 @@ class AuthenticationCest
             'firstName' => 'John',
             'lastName' => 'Doe',
             'phoneNumber' => '123456789',
-            'tags' => [['name' => 'Frontend']],
+            'tags' => [['name' => 'Frontend', 'colorCode' => '#FF9999']],
         ]);
 
         $I->seeResponseCodeIs(200);
         $I->dontSeeResponseContainsJson([
-            'tags' => ['name' => 'Backend']
+            'tags' => ['name' => 'Backend', 'colorCode' => '#990000']
         ]);
     }
 

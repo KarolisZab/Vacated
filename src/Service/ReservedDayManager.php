@@ -109,8 +109,8 @@ class ReservedDayManager
             ->setNote($reservedDayDTO->note);
 
         $addTags = [];
-        foreach ($reservedDayDTO->tags as $tagName) {
-            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+        foreach ($reservedDayDTO->tags as $tagDTO) {
+            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagDTO['name'], $tagDTO['colorCode']), false);
             $addTags[] = $tag;
         }
 

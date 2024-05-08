@@ -52,8 +52,8 @@ class UserManager
                 ->setLastName($userDTO->lastName)
                 ->setPhoneNumber($userDTO->phoneNumber);
 
-            foreach ($userDTO->tags as $tagName) {
-                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+            foreach ($userDTO->tags as $tagDTO) {
+                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagDTO['name'], $tagDTO['colorCode']), false);
                 $user->addTag($tag);
             }
 
@@ -227,8 +227,8 @@ class UserManager
         ValidationFailureException::throwException($errors);
 
         $addTags = [];
-        foreach ($userDTO->tags as $tagName) {
-            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+        foreach ($userDTO->tags as $tagDTO) {
+            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagDTO['name'], $tagDTO['colorCode']), false);
             $addTags[] = $tag;
         }
 
