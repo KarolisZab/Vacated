@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import employeeService from '../../services/employee-service';
-import { Button, Dimmer, Divider, Form, FormInput, Label, ListItem, Loader, Message, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
+import { Button, Dimmer, Divider, Form, FormInput, Label, Loader, Message, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
 import { EmployeeType } from '../../services/types';
 import handleError from "../../services/handler";
 import errorProcessor from "../../services/errorProcessor";
@@ -115,9 +115,8 @@ const Profile: React.FC = () => {
         <div style={{ margin: '3rem auto', maxWidth: '500px' }}>
             <h1>Profile</h1>
             {successMessage && (
-                    <Message success content={successMessage} />
-                )
-            }
+                <Message success content={successMessage} />
+            )}
             <div className="loader-container">
                 <Segment inverted>
                     {loading && (
@@ -146,7 +145,7 @@ const Profile: React.FC = () => {
                                 <div className="Profile__TagsContainer">
                                     <p>Tags</p>
                                     {employee.tags.map((tag) => (
-                                        <Label style={{ backgroundColor: tag.colorCode }} horizontal>
+                                        <Label key={tag.id} style={{ backgroundColor: tag.colorCode }} horizontal>
                                             <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                         </Label>
                                     ))}

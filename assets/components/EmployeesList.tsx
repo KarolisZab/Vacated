@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Dimmer, Input, Label, Loader, Message, Pagination, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
 import { invertColor } from './utils/invertColor';
@@ -108,7 +108,7 @@ const EmployeesList: React.FC = () => {
                                     <Table.Cell>{employee.phoneNumber}</Table.Cell>
                                     <Table.Cell>
                                         {employee.tags.map((tag) => (
-                                            <Label style={{ backgroundColor: tag.colorCode }} horizontal>
+                                            <Label key={tag.id} style={{ backgroundColor: tag.colorCode }} horizontal>
                                                 <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                             </Label>
                                         ))}

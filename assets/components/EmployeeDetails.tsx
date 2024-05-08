@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import employeeService from '../services/employee-service';
-import { Button, Card, Container, Dimmer, Divider, Header, Label, ListItem, Loader, Message, Modal } from "semantic-ui-react";
+import { Button, Card, Container, Dimmer, Divider, Header, Label, Loader, Message, Modal } from "semantic-ui-react";
 import { EmployeeType, TagType } from '../services/types';
 import { invertColor } from "./utils/invertColor";
 
@@ -73,11 +73,11 @@ const EmployeeDetails: React.FC = () => {
                         <p><strong>Phone Number:</strong> {employee.phoneNumber}</p>
                         <p><strong>Available vacation days:</strong> {employee.availableDays}/20</p>
                         <p><strong>Tags:</strong></p>
-                            {employee.tags?.map((tag: TagType) => (
-                                <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                    <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
-                                </Label>
-                            ))}
+                        {employee.tags?.map((tag: TagType) => (
+                            <Label key={tag.id} style={{ backgroundColor: tag.colorCode }} horizontal>
+                                <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
+                            </Label>
+                        ))}
                     </Card.Description>
                     <Divider />
                     <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
