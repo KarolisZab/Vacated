@@ -61,16 +61,20 @@ const TagsList: React.FC = () => {
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
+        setLoading(true);
         try {
             await tagService.updateTag(id, tagData);
             closeModal();
             fetchTags();
         } catch (error) {
             setError('Error' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleNewTagSubmit = async () => {
+        setLoading(true);
         try {
             if (newTagData.name.trim() === '') {
                 setFormErrors({ name: 'Tag name should not be empty' });
@@ -90,10 +94,13 @@ const TagsList: React.FC = () => {
         } catch (error) {
             setError('Error' + (error as Error).message);
             navigate(-1);
+        } finally {
+            setLoading(false);
         }
     };
 
     const confirmDelete = async () => {
+        setLoading(true);
         try {
             await tagService.deleteTag(deleteId);
             setTags(prevTags => prevTags.filter(tag => tag.id !== deleteId));
@@ -101,6 +108,8 @@ const TagsList: React.FC = () => {
         } catch (error) {
             setError('Error' + (error as Error).message);
             navigate(-1);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -175,7 +184,7 @@ const TagsList: React.FC = () => {
                         <Modal.Actions className='modal-actions'>
                             <Button onClick={closeModal}>Cancel</Button>
                             <Button
-                                content="Update"
+                                content={loading ? <Loader active inline size='tiny' /> : 'Update'}
                                 labelPosition='left'
                                 icon='checkmark'
                                 onClick={(e) => handleUpdate(e, tagData.id)}
@@ -191,7 +200,7 @@ const TagsList: React.FC = () => {
                         <Modal.Actions className='modal-actions'>
                             <Button onClick={closeModal}>Cancel</Button>
                             <Button
-                                content="Delete"
+                                content={loading ? <Loader active inline size='tiny' /> : 'Delete'}
                                 labelPosition='left'
                                 icon='trash'
                                 onClick={confirmDelete}
@@ -221,7 +230,7 @@ const TagsList: React.FC = () => {
                         <Modal.Actions className='modal-actions'>
                             <Button onClick={closeModal}>Cancel</Button>
                             <Button
-                                content="Create"
+                                content={loading ? <Loader active inline size='tiny' /> : 'Create'}
                                 labelPosition='left'
                                 icon='checkmark'
                                 onClick={handleNewTagSubmit}

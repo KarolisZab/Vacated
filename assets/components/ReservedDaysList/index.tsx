@@ -123,6 +123,7 @@ const ReservedDaysList: React.FC = () => {
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
+        setLoading(true);
         try {
             if (reservedDayData.dateFrom.trim() === '') {
                 setFormErrors({ dateFrom: 'Start date should not be empty' });
@@ -147,6 +148,8 @@ const ReservedDaysList: React.FC = () => {
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
             setModalError(error.response.data);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -187,6 +190,7 @@ const ReservedDaysList: React.FC = () => {
     };
 
     const confirmDelete = async () => {
+        setLoading(true);
         try {
             await reservedDayService.deleteReservedDay(deleteId);
             setReservedDays(prevReservedDays => prevReservedDays.filter(day => day.id !== deleteId));
@@ -194,10 +198,13 @@ const ReservedDaysList: React.FC = () => {
         } catch (error) {
             setError('Error' + (error as Error).message);
             navigate(-1);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleNewReservedDaySubmit = async () => {
+        setLoading(true);
         try {
             if (newReservedDayData.dateFrom.trim() === '') {
                 setFormErrors({ dateFrom: 'Start date should not be empty' });
@@ -223,6 +230,8 @@ const ReservedDaysList: React.FC = () => {
             errorProcessor(error, setError, setFormErrors);
             setModalError(error.response.data);
             // navigate("/");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -347,7 +356,7 @@ const ReservedDaysList: React.FC = () => {
                     <Modal.Actions className='modal-actions'>
                         <Button onClick={closeModal}>Cancel</Button>
                         <Button
-                            content="Update"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Update'}
                             labelPosition='left'
                             icon='checkmark'
                             onClick={(e) => handleUpdate(e, reservedDayData.id)}
@@ -363,7 +372,7 @@ const ReservedDaysList: React.FC = () => {
                     <Modal.Actions className='modal-actions'>
                         <Button onClick={closeModal}>Cancel</Button>
                         <Button
-                            content="Delete"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Delete'}
                             labelPosition='left'
                             icon='trash'
                             onClick={confirmDelete}
@@ -419,7 +428,7 @@ const ReservedDaysList: React.FC = () => {
                     <Modal.Actions className='modal-actions'>
                         <Button onClick={closeModal}>Cancel</Button>
                         <Button
-                            content="Create"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Create'}
                             labelPosition='left'
                             icon='checkmark'
                             onClick={handleNewReservedDaySubmit}

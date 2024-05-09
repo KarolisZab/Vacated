@@ -45,6 +45,7 @@ const Profile: React.FC = () => {
     }, []);
 
     const handleUpdate = async () => {
+        setLoading(true);
         try {
             const fieldErrors: { [key: string]: string } = {};
             if (employee.firstName.trim() === '') {
@@ -67,6 +68,8 @@ const Profile: React.FC = () => {
             setSuccessMessage('Profile updated successfully.');
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -80,12 +83,13 @@ const Profile: React.FC = () => {
 
     const handleChangePassword = async () => {
         setPasswordErrors({});
-        
+        setLoading(true);
         if (newPassword !== confirmNewPassword) {
             setPasswordErrors(prevErrors => ({
                 ...prevErrors,
                 confirmNewPassword: 'New password and confirm password do not match'
             }));
+            setLoading(false);
             return;
         }
 
@@ -98,6 +102,8 @@ const Profile: React.FC = () => {
                 confirmNewPassword: 'Failed to change password'
             }));
             handleError(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -181,7 +187,7 @@ const Profile: React.FC = () => {
                             onChange={handleChange}
                             error={formErrors['phoneNumber']}
                         />
-                        <Button type='button' onClick={handleUpdate}>Save changes</Button>
+                        <Button type='button' loading={loading} onClick={handleUpdate}>Save changes</Button>
                     </Form>
                     <Divider />
                     <Form inverted>
@@ -212,7 +218,7 @@ const Profile: React.FC = () => {
                             onChange={(e) => setConfirmNewPassword(e.target.value)}
                             error={passwordErrors['confirmNewPassword']}
                         />
-                        <Button type='button' onClick={handleChangePassword}>Change password</Button>
+                        <Button type='button' loading={loading} onClick={handleChangePassword}>Change password</Button>
                     </Form>
                 </Segment>
             </div>

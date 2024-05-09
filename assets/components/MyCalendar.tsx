@@ -109,6 +109,7 @@ export default function MyCalendar() {
     };    
 
     const handleConfirmVacationRequest = async () => {
+        setLoading(true);
         try {
             if (selectedDate.startDate && selectedDate.endDate) {
                 setModalError('');
@@ -132,6 +133,8 @@ export default function MyCalendar() {
             }
         } catch (error) {
             setModalError(error.response.data);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -324,7 +327,7 @@ export default function MyCalendar() {
                             Cancel
                         </Button>
                         <Button
-                            content="Request"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Request'}
                             labelPosition='left'
                             icon='checkmark'
                             onClick={handleConfirmVacationRequest}

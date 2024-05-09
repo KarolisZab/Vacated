@@ -68,6 +68,7 @@ const UpdateEmployee: React.FC = () => {
     };
 
     const handleUpdate = async () => {
+        setLoading(true);
         try {
             const fieldErrors: { [key: string]: string } = {};
             if (employee.firstName.trim() === '') {
@@ -90,6 +91,8 @@ const UpdateEmployee: React.FC = () => {
             navigate(-1);
         } catch (error) {
             errorProcessor(error, setError, setFormErrors)
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -182,7 +185,7 @@ const UpdateEmployee: React.FC = () => {
                                 onAddItem={handleTagCreate}
                             />
                         </Form.Field>
-                        <Button type='button' color="blue" onClick={handleUpdate}>Update</Button>
+                        <Button type='button' color="blue" loading={loading} onClick={handleUpdate}>Update</Button>
                         <Button type='button' onClick={handleCancel}>Back</Button>
                     </Form>
                 </Segment>

@@ -19,6 +19,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     /* eslint-disable-next-line */
     const [error, setError] = useState<string>('');
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+    const [loading, setLoading] = useState<boolean>(false);
     const [vacationData, setVacationData] = useState<Partial<VacationType>>({
         id,
         dateFrom: '',
@@ -34,17 +35,21 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
 
     const handleConfirm = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
+        setLoading(true);
         try {
             await vacationService.confirmVacation(id, vacationData);
             setConfirmModalOpen(false);
             updateVacations();
         } catch (error) {
             setError('Error' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleReject = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
+        setLoading(true);
         try {
             const fieldErrors: { [key: string]: string } = {};
             if (vacationData.rejectionNote.trim() === '') {
@@ -65,6 +70,8 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
             updateVacations();
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -141,7 +148,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                 </Modal.Content>
                 <Modal.Actions className='modal-actions'>
                     <Button onClick={() => setConfirmModalOpen(false)}>Cancel</Button>
-                    <Button color='green' onClick={(e) => handleConfirm(e, vacationData.id)}>Confirm</Button>
+                    <Button color='green' loading={loading} onClick={(e) => handleConfirm(e, vacationData.id)}>Confirm</Button>
                 </Modal.Actions>
             </Modal>
             <Modal open={rejectModalOpen} onClose={() => setRejectModalOpen(false)} className='modal-wrapper'>
@@ -161,7 +168,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                 </Modal.Content>
                 <Modal.Actions className='modal-actions'>
                     <Button onClick={() => setRejectModalOpen(false)}>Cancel</Button>
-                    <Button color='red' onClick={(e) => handleReject(e, vacationData.id)}>Reject</Button>
+                    <Button color='red' loading={loading} onClick={(e) => handleReject(e, vacationData.id)}>Reject</Button>
                 </Modal.Actions>
             </Modal>
         </div>
