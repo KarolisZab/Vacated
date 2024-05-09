@@ -46,7 +46,7 @@ RUN sed -i "/<\/VirtualHost>/ i\Options FollowSymLinks" /etc/apache2/sites-avail
 RUN echo "ServerTokens Full" >> /etc/apache2/conf-available/security.conf
 RUN echo "ServerSignature Off" >> /etc/apache2/conf-available/security.conf
 RUN echo 'SecServerSignature " "' >> /etc/apache2/conf-available/security.conf
-RUN echo 'SecServerStatus On' >> /etc/apache2/conf-available/security.conf
+RUN echo 'SecStatusEngine On' >> /etc/apache2/conf-available/security.conf
 
 COPY ./composer.json /var/www/html
 COPY ./composer.lock /var/www/html
