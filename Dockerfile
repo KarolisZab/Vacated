@@ -53,9 +53,9 @@ COPY ./symfony.lock /var/www/html
 COPY ./package.json /var/www/html
 COPY ./yarn.lock /var/www/html
 RUN cd /var/www/html && composer install --no-scripts --no-autoloader
+COPY ./ /var/www/html
 RUN yarn install
 RUN yarn build
-COPY ./ /var/www/html
 
 RUN mkdir /var/www/html/var || echo 'var directory already exists'
 RUN chmod -R 775 /var/www/html/var
