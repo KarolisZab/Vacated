@@ -155,14 +155,14 @@
 
     .loader-container {
         position: absolute;
-      }
-      
-      .loader {
+    }
+    
+    .loader {
         // position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-      }
+    }
 }
 
 .admin-pie-chart-container {
@@ -174,4 +174,14 @@
     margin: 0 auto;
     position: relative;
 
+    .loader-container {
+        position: absolute;
+    }
+      
+    .loader {
+        // position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }

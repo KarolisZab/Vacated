@@ -127,8 +127,8 @@ const Profile: React.FC = () => {
                     <Form inverted>
                         <FormInput 
                             fluid 
-                            label='Email' 
-                            placeholder='Email' 
+                            label='E-mail address' 
+                            placeholder='E-mail address' 
                             name="email" 
                             value={employee.email} 
                             className={'Text__Input--disabled'}

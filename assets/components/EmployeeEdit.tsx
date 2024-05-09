@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import employeeService from '../services/employee-service';
-import { Button, Dimmer, Dropdown, DropdownProps, Form, FormInput, Loader, Segment } from "semantic-ui-react";
+import { Button, Dimmer, Dropdown, DropdownProps, Form, FormInput, Header, Loader, Message, Segment } from "semantic-ui-react";
 import { EmployeeType, TagType } from '../services/types';
 import handleError from "../services/handler";
 import errorProcessor from "../services/errorProcessor";

@@ -69,7 +69,7 @@ const EmployeeDetails: React.FC = () => {
                     <Card.Meta style={{ color: 'white'}}>ID: {employee.id}</Card.Meta>
                     <Divider />
                     <Card.Description>
-                        <p><strong>Email:</strong> {employee.email}</p>
+                        <p><strong>E-mail address:</strong> {employee.email}</p>
                         <p><strong>Phone Number:</strong> {employee.phoneNumber}</p>
                         <p><strong>Available vacation days:</strong> {employee.availableDays}/20</p>
                         <p><strong>Tags:</strong></p>

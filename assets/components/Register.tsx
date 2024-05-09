@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dropdown, DropdownProps, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
+import { Button, Dropdown, DropdownProps, Form, Message, Segment } from 'semantic-ui-react';
 import { EmployeeRegistrationData, TagType } from '../services/types';
 import errorProcessor from '../services/errorProcessor';
 import tagService from '../services/tag-service';
@@ -83,75 +83,78 @@ const Register: React.FC = () => {
     };
 
     return (
-        <Grid textAlign='center' style={{ height: '90vh' }} verticalAlign='middle'>
-            <Grid.Column style={{ maxWidth: 450 }}>
-                <Header as='h2' color='teal' textAlign='center'>
-                    Create a new employee
-                </Header>
-                <Form size='large' onSubmit={handleSubmit} error={!!error} className='Form__Container'>
-                    {error && <Message error style={{ backgroundColor: 'rgb(31, 31, 32)' }} content={error} />}
-                    <Segment stacked>
+        <div style={{ margin: '3rem auto', maxWidth: '500px' }} className='Content__Container'>
+            <h1>Create a new employee</h1>
+            <Segment inverted>
+                <Form inverted onSubmit={handleSubmit} error={!!error}>
+                    {error && <Message error content={error} />}
+                    <Form.Group widths='equal'>
                         <Form.Input
                             fluid
+                            label='E-mail address'
                             icon='user'
                             iconPosition='left'
                             placeholder='E-mail address'
                             value={registrationData.email}
                             onChange={(e) => handleChange(e, 'email')}
                             error={formErrors['email']}
-                            required
                         />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Input
                             fluid
+                            label='First name'
                             icon='user'
                             iconPosition='left'
                             placeholder='First Name'
                             value={registrationData.firstName}
                             onChange={(e) => handleChange(e, 'firstName')}
                             error={formErrors['firstName']}
-                            required
                         />
                         <Form.Input
                             fluid
+                            label='Last name'
                             icon='user'
                             iconPosition='left'
                             placeholder='Last Name'
                             value={registrationData.lastName}
                             onChange={(e) => handleChange(e, 'lastName')}
                             error={formErrors['lastName']}
-                            required
                         />
+                    </Form.Group>
+                    <Form.Group widths='equal'>
                         <Form.Input
                             fluid
+                            label='Phone number'
                             icon='phone'
                             iconPosition='left'
                             placeholder='Phone Number'
                             value={registrationData.phoneNumber}
                             onChange={(e) => handleChange(e, 'phoneNumber')}
                             error={formErrors['phoneNumber']}
-                            required
                         />
-                        <Form.Field>
-                            <Dropdown
-                                placeholder="Select tags"
-                                fluid
-                                multiple
-                                search
-                                selection
-                                options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
-                                onChange={handleTagsChange}
-                                value={registrationData.tags.map(tag => tag.name)}
-                                allowAdditions
-                                onAddItem={handleTagCreate}
-                            />
-                        </Form.Field>
-                        <Button color='teal' fluid size='large' type='submit'>
-                            Create
-                        </Button>
-                    </Segment>
+                    </Form.Group>
+                    <Form.Field>
+                        <label>Tags</label>
+                        <Dropdown
+                            placeholder='Select tags'
+                            fluid
+                            multiple
+                            search
+                            selection
+                            options={tags.map(tag => ({ key: tag.id, text: tag.name, value: tag.name }))}
+                            onChange={handleTagsChange}
+                            value={registrationData.tags.map(tag => tag.name)}
+                            allowAdditions
+                            onAddItem={handleTagCreate}
+                        />
+                    </Form.Field>
+                    <Button color='teal' fluid size='large' type='submit'>
+                        Create
+                    </Button>
                 </Form>
-            </Grid.Column>
-        </Grid>
+            </Segment>
+        </div>
     );
 };
 
