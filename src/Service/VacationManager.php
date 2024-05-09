@@ -79,7 +79,6 @@ class VacationManager
             );
             throw $e;
         }
-        // TODO: siusti laiska per maileri
     }
 
     public function updateRequestedVacation(string $id, User $user, VacationDTO $vacationDTO): ?Vacation

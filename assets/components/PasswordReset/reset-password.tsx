@@ -13,7 +13,7 @@ const ResetPassword: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const [validToken, setValidToken] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleChangeNewPassword = (e: ChangeEvent<HTMLInputElement>) => {
         setNewPassword(e.target.value);
@@ -38,13 +38,13 @@ const ResetPassword: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
         if (newPassword !== confirmNewPassword) {
             setFormErrors({ confirmNewPassword: 'Passwords does not match' });
             setLoading(false);
             return;
         }
 
+        setLoading(true);
         try {
             const token = new URLSearchParams(location.search).get('token');
             if (!token) {

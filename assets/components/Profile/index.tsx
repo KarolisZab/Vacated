@@ -64,7 +64,7 @@ const Profile: React.FC = () => {
             }
             setFormErrors({});
 
-            await employeeService.updateEmployee(employee.id, employee);
+            await employeeService.updateProfile(employee.id, employee);
             setSuccessMessage('Profile updated successfully.');
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);

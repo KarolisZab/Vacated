@@ -2,12 +2,14 @@
 
 namespace App\Controller\API;
 
+use App\DTO\UserDTO;
 use App\Service\UserManager;
 use App\Trait\LoggerTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -56,6 +58,22 @@ class UserController extends AbstractController
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             return new JsonResponse($e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[Route('/api/users/{id}', name: 'update_user', methods: ['PATCH'])]
+    public function updateUser(Request $request, string $id, #[MapRequestPayload()] UserDTO $userDTO)
+    {
+        try {
+            $user = $this->userManager->updateUser($id, $userDTO);
+
+            if ($user === null) {
+                return new JsonResponse('User not found', JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
+        } catch (\Exception $exception) {
+            return new JsonResponse($exception->getMessage(), $exception->getCode());
         }
     }
 }

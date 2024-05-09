@@ -1,5 +1,6 @@
 import apiService from "./api-service";
 import { EmployeeType, EmployeesGetResultType, EmployeeRegistrationData } from '../services/types';
+import { API_URL } from "../config";
 
 const URL = '/admin/users';
 
@@ -16,6 +17,10 @@ class EmployeeService {
 
     async getEmployeesAvailableVacationDays(): Promise<number> {
         return await apiService.get<number>(`/user/available-days`);
+    }
+
+    async updateProfile(employeeId: string, employeeData: Partial<EmployeeType>): Promise<EmployeeType> {
+        return await apiService.patch<EmployeeType>(`${API_URL}/users/${employeeId}`, employeeData);
     }
 
     async getCurrentUser(): Promise<EmployeeType> {
