@@ -52,6 +52,7 @@ COPY ./composer.lock /var/www/html
 COPY ./symfony.lock /var/www/html
 COPY ./package.json /var/www/html
 COPY ./yarn.lock /var/www/html
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN cd /var/www/html && composer install --no-scripts --no-autoloader
 RUN yarn install
 RUN yarn build
