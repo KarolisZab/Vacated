@@ -42,9 +42,9 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="navigation">
+        <nav className="Navigation__AdminContainer">
             <div className="links-container">
-                <img className="image" src="/logo.png" width={40} height={40}/> 
+                <img className="image" src="/vacated-logo-black.png" width={40} height={40}/> 
                 <Link to="/admin" className="brand-name">
                     Vacated
                 </Link>
@@ -81,19 +81,19 @@ export default function Navbar() {
                     <>
                         <ul className="button-group">
                             <li>
-                                <Button icon basic onClick={handleProfile} inverted>
+                                <Button icon basic onClick={handleProfile} color="black" className="Icon__Button--noBorder">
                                     <Icon name='user' size="large"/>
                                 </Button>
                             </li>
                             <li>
-                                <Button icon basic onClick={handleLogout} inverted className="logout-button">
+                                <Button icon basic onClick={handleLogout} color="black" className="Icon__Button--noBorder">
                                     <Icon name='sign-out' size="large"/> Log out
                                 </Button>
                             </li>
                             {isAdmin && (
                                 <li>
                                     <Link to="/">
-                                        <Button color="teal" className="admin-button">Exit admin dashboard</Button>
+                                        <Button color="black" className="admin-button">Exit admin dashboard</Button>
                                     </Link>
                                 </li>
                             )}
