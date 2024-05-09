@@ -118,7 +118,7 @@
     color: white;
 }
 
-div.fc-daygrid-event-harness:not(.fc-daygrid-event-harness-abs) {
+div.fc-daygrid-event-harness:not(.fc-daygrid-event-harness-abs):has(> .Calendar__TagEvent) {
     margin-top: -25px !important;
 }
 

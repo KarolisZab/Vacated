@@ -44,6 +44,7 @@ export default function MyCalendar() {
     const [availableDays, setAvailableDays] = useState<number>(0);
     const [popupContent, setPopupContent] = useState<string>('');
     const [currentUser, setCurrentUser] = useState<EmployeeType | null>(null);
+    const [currentView, setCurrentView] = useState<string>('dayGridMonth');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -182,6 +183,12 @@ export default function MyCalendar() {
                     if (!vacation.confirmed) {
                         title = `Requested: ${title}`;
                     }
+
+                    const startDate = new Date(vacation.dateFrom);
+                    const endDate = new Date(vacation.dateTo);
+                    endDate.setHours(23, 59, 59, 999);
+                    const isSingleDayEvent = startDate.toDateString() === endDate.toDateString();
+
                     return {
                         title: title,
                         start: vacation.dateFrom,
@@ -190,7 +197,8 @@ export default function MyCalendar() {
                         reviewedBy: vacation.reviewedBy ? `${vacation.reviewedBy.firstName} ${vacation.reviewedBy.lastName}` : '',
                         reviewedAt: vacation.reviewedAt,
                         confirmed: vacation.confirmed,
-                        classNames: [styles, 'Calendar__VacationDay']
+                        classNames: [styles, 'Calendar__VacationDay', isSingleDayEvent ? 'test' : 'multi'],
+                        display: 'block',
                     };
                 }
             })
@@ -220,34 +228,37 @@ export default function MyCalendar() {
             const endDate = new Date(reservedDay.dateTo);
             endDate.setHours(23, 59, 59, 999);
 
-            // return reservedDay.tags.map((tag) => {
-            //     return {
-            //         start: reservedDay.dateFrom,
-            //         end: endDate.toISOString(),
-            //         title: tag.name,
-            //         color: tag.colorCode,
-            //         classNames: ['tag-event'],
-            //         display: 'list-item'
-            //     };
-            // });
-            if (reservedDay.tags && reservedDay.tags.length > 0) {
-                const eventTitle = reservedDay.tags.reduce((label, tag) => {
-                    if (label === '') {
-                        return tag.name;
-                    }
-    
-                    return `${label}, ${tag.name}`;
-                }, '');
-                return {
-                    start: reservedDay.dateFrom,
-                    end: endDate.toISOString(),
-                    title: eventTitle,
-                    color: reservedDay.tags[0].colorCode,
-                    classNames: ['tag-event'],
-                    display: 'list-item'
-                };
-            } else {
-                return null;
+            if(currentView === 'multiMonthYear') {
+                return reservedDay.tags.map((tag) => {
+                    return {
+                        start: reservedDay.dateFrom,
+                        end: endDate.toISOString(),
+                        title: tag.name,
+                        color: tag.colorCode,
+                        classNames: ['tag-event'],
+                        display: 'list-item'
+                    };
+                });
+            } else if (currentView === 'dayGridMonth') {
+                if (reservedDay.tags && reservedDay.tags.length > 0) {
+                    const eventTitle = reservedDay.tags.reduce((label, tag) => {
+                        if (label === '') {
+                            return tag.name;
+                        }
+        
+                        return `${label}, ${tag.name}`;
+                    }, '');
+                    return {
+                        start: reservedDay.dateFrom,
+                        end: endDate.toISOString(),
+                        title: eventTitle,
+                        color: reservedDay.tags[0].colorCode,
+                        classNames: ['Calendar__TagEvent'],
+                        display: 'list-item'
+                    };
+                } else {
+                    return null;
+                }
             }
         });
         // return tagEvents;
@@ -370,6 +381,9 @@ export default function MyCalendar() {
                         start: 'prev,next today',
                         center: 'title',
                         end: 'dayGridMonth,multiMonthYear'
+                    }}
+                    viewDidMount={(view) => {
+                        setCurrentView(view.view.type);
                     }}
                 />
             </div>
