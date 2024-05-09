@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import employeeService from '../../services/employee-service';
-import { Button, Dimmer, Divider, Form, FormInput, Loader, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
+import { Button, Dimmer, Divider, Form, FormInput, Label, Loader, Message, Progress, Segment, SemanticCOLORS } from "semantic-ui-react";
 import { EmployeeType } from '../../services/types';
 import handleError from "../../services/handler";
 import errorProcessor from "../../services/errorProcessor";
 import './styles.scss'
+import { invertColor } from "../utils/invertColor";
 
 const Profile: React.FC = () => {
     const navigate = useNavigate();
@@ -25,6 +26,7 @@ const Profile: React.FC = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [passwordErrors, setPasswordErrors] = useState<{ [key: string]: string }>({});
+    const [successMessage, setSuccessMessage] = useState<string>('');
 
     useEffect(() => {
         const fetchEmployee = async () => {
@@ -43,6 +45,7 @@ const Profile: React.FC = () => {
     }, []);
 
     const handleUpdate = async () => {
+        setLoading(true);
         try {
             const fieldErrors: { [key: string]: string } = {};
             if (employee.firstName.trim() === '') {
@@ -62,9 +65,11 @@ const Profile: React.FC = () => {
             setFormErrors({});
 
             await employeeService.updateEmployee(employee.id, employee);
-            navigate(-1);
+            setSuccessMessage('Profile updated successfully.');
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -78,24 +83,27 @@ const Profile: React.FC = () => {
 
     const handleChangePassword = async () => {
         setPasswordErrors({});
-        
+        setLoading(true);
         if (newPassword !== confirmNewPassword) {
             setPasswordErrors(prevErrors => ({
                 ...prevErrors,
                 confirmNewPassword: 'New password and confirm password do not match'
             }));
+            setLoading(false);
             return;
         }
 
         try {
             await employeeService.changePassword(oldPassword, newPassword);
-            navigate('/');
+            setSuccessMessage('Password changed successfully.');
         } catch (error) {
             setPasswordErrors(prevErrors => ({
                 ...prevErrors,
                 confirmNewPassword: 'Failed to change password'
             }));
             handleError(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -112,6 +120,9 @@ const Profile: React.FC = () => {
     return (
         <div style={{ margin: '3rem auto', maxWidth: '500px' }}>
             <h1>Profile</h1>
+            {successMessage && (
+                <Message success content={successMessage} />
+            )}
             <div className="loader-container">
                 <Segment inverted>
                     {loading && (
@@ -122,18 +133,30 @@ const Profile: React.FC = () => {
                     <Form inverted>
                         <FormInput 
                             fluid 
-                            label='Email' 
-                            placeholder='Email' 
+                            label='E-mail address' 
+                            placeholder='E-mail address' 
                             name="email" 
                             value={employee.email} 
-                            className={'disabled'}
-                            readOnly
+                            className={'Text__Input--disabled'}
+                            disabled
                         />
                         {employee.availableDays !== undefined && (
                             <>
                                 <p>Available vacation days</p>
                                 <Progress value={employee.availableDays} total='20' progress='ratio' size='medium' color={getColor(employee.availableDays)} />
                             </> 
+                        )}
+                        {employee.tags && employee.tags.length > 0 && (
+                            <>
+                                <div className="Profile__TagsContainer">
+                                    <p>Tags</p>
+                                    {employee.tags.map((tag) => (
+                                        <Label key={tag.id} style={{ backgroundColor: tag.colorCode }} horizontal>
+                                            <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
+                                        </Label>
+                                    ))}
+                                </div>
+                            </>
                         )}
                         <Form.Group widths='equal'>
                             <FormInput 
@@ -164,7 +187,7 @@ const Profile: React.FC = () => {
                             onChange={handleChange}
                             error={formErrors['phoneNumber']}
                         />
-                        <Button type='button' onClick={handleUpdate}>Save changes</Button>
+                        <Button type='button' loading={loading} onClick={handleUpdate}>Save changes</Button>
                     </Form>
                     <Divider />
                     <Form inverted>
@@ -195,7 +218,7 @@ const Profile: React.FC = () => {
                             onChange={(e) => setConfirmNewPassword(e.target.value)}
                             error={passwordErrors['confirmNewPassword']}
                         />
-                        <Button type='button' onClick={handleChangePassword}>Change password</Button>
+                        <Button type='button' loading={loading} onClick={handleChangePassword}>Change password</Button>
                     </Form>
                 </Segment>
             </div>

@@ -13,6 +13,7 @@ const ResetPassword: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const [validToken, setValidToken] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const handleChangeNewPassword = (e: ChangeEvent<HTMLInputElement>) => {
         setNewPassword(e.target.value);
@@ -37,8 +38,10 @@ const ResetPassword: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true);
         if (newPassword !== confirmNewPassword) {
             setFormErrors({ confirmNewPassword: 'Passwords does not match' });
+            setLoading(false);
             return;
         }
 
@@ -51,6 +54,8 @@ const ResetPassword: React.FC = () => {
             navigate('/login');
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -86,7 +91,7 @@ const ResetPassword: React.FC = () => {
                                 error={formErrors['confirmNewPassword']}
                                 required
                             />
-                            <Button color='teal' fluid size='large' type='submit'>
+                            <Button color='teal' fluid size='large' type='submit' loading={loading}>
                                 Reset Password
                             </Button>
                         </Segment>

@@ -38,6 +38,14 @@ class ReservedDayManager
                 throw new \InvalidArgumentException("Raserved day cannot end before it starts.", 400);
             }
 
+            /** @var \App\Repository\ReservedDayRepository $reservedDayRepository */
+            $reservedDayRepository = $this->entityManager->getRepository(ReservedDay::class);
+
+            $overlappingReservedDay = $reservedDayRepository->findOverlappingReservation($from, $to);
+            if (count($overlappingReservedDay) > 0) {
+                throw new \InvalidArgumentException("Reservation overlaps with an existing reservation.", 400);
+            }
+
             $reservedDay = new ReservedDay();
             $reservedDay
                 ->setReservedBy($reservedDayDTO->reservedBy)
@@ -45,8 +53,8 @@ class ReservedDayManager
                 ->setDateTo($to)
                 ->setNote($reservedDayDTO->note);
 
-            foreach ($reservedDayDTO->tags as $tagName) {
-                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+            foreach ($reservedDayDTO->tags as $tagDTO) {
+                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagDTO['name'], $tagDTO['colorCode']), false);
                 $reservedDay->addTag($tag);
             }
 
@@ -101,8 +109,8 @@ class ReservedDayManager
             ->setNote($reservedDayDTO->note);
 
         $addTags = [];
-        foreach ($reservedDayDTO->tags as $tagName) {
-            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+        foreach ($reservedDayDTO->tags as $tagDTO) {
+            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagDTO['name'], $tagDTO['colorCode']), false);
             $addTags[] = $tag;
         }
 

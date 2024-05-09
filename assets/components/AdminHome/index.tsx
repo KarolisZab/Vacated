@@ -138,6 +138,11 @@ export default function Home() {
                     />
                 </div>
                 <div className="admin-pie-chart-container">
+                    {loading && (
+                        <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
+                            <Loader>Loading</Loader>
+                        </Dimmer>
+                    )}
                     <Chart
                         chartType="PieChart"
                         width="100%"

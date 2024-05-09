@@ -6,6 +6,7 @@ import './styles.scss';
 import { ReservedDayType, TagType } from '../../services/types';
 import tagService from '../../services/tag-service';
 import errorProcessor from '../../services/errorProcessor';
+import { invertColor } from '../utils/invertColor';
 
 const ReservedDaysList: React.FC = () => {
     const navigate = useNavigate();
@@ -122,6 +123,7 @@ const ReservedDaysList: React.FC = () => {
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
+        setLoading(true);
         try {
             if (reservedDayData.dateFrom.trim() === '') {
                 setFormErrors({ dateFrom: 'Start date should not be empty' });
@@ -146,6 +148,8 @@ const ReservedDaysList: React.FC = () => {
         } catch (error) {
             errorProcessor(error, setError, setFormErrors);
             setModalError(error.response.data);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -166,7 +170,7 @@ const ReservedDaysList: React.FC = () => {
     const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
         if (e.key === 'Enter' && value) {
             try {
-                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
+                const newTag: TagType = { id: '', name: value as string, colorCode: '#808080' };
                 setTags([...tags, newTag]);
 
                 if (modalOpen) {
@@ -186,17 +190,21 @@ const ReservedDaysList: React.FC = () => {
     };
 
     const confirmDelete = async () => {
+        setLoading(true);
         try {
             await reservedDayService.deleteReservedDay(deleteId);
-            setReservedDays(prevReservedDays => prevReservedDays.filter(day => day.id !== id));
+            setReservedDays(prevReservedDays => prevReservedDays.filter(day => day.id !== deleteId));
             closeModal();
         } catch (error) {
             setError('Error' + (error as Error).message);
             navigate(-1);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleNewReservedDaySubmit = async () => {
+        setLoading(true);
         try {
             if (newReservedDayData.dateFrom.trim() === '') {
                 setFormErrors({ dateFrom: 'Start date should not be empty' });
@@ -222,6 +230,8 @@ const ReservedDaysList: React.FC = () => {
             errorProcessor(error, setError, setFormErrors);
             setModalError(error.response.data);
             // navigate("/");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -231,16 +241,18 @@ const ReservedDaysList: React.FC = () => {
     };
 
     return (
-        <div className="reserved-days-list">
+        <div className="reserved-days-list Content__Container">
             <h1>Reserved days</h1>
-            <Button color='teal' onClick={() => setNewReservedDayModalOpen(true)} className='reserve-button'>Reserve days</Button>
+            <div className="button-container">
+                <Button color='teal' onClick={() => setNewReservedDayModalOpen(true)} className='reserve-button'>Reserve days</Button>
+            </div>
             <div className="loader-container">
                 {loading && (
                     <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
                         <Loader>Loading</Loader>
                     </Dimmer>
                 )}
-                <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
+                <div>
                     <Table celled inverted selectable striped>
                         <Table.Header>
                             <Table.Row>
@@ -262,9 +274,9 @@ const ReservedDaysList: React.FC = () => {
                                     <Table.Cell>{reservedDay.note}</Table.Cell>
                                     <Table.Cell>
                                         {reservedDay.tags.map((tag) => (
-                                            <ListItem key={tag.id}>
+                                            <ListItem key={tag.id} className='List__Item'>
                                                 <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                                    {tag.name}
+                                                    <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                                 </Label>
                                             </ListItem>
                                         ))}
@@ -299,9 +311,9 @@ const ReservedDaysList: React.FC = () => {
                         size="mini"
                     />
                 </div>
-                <Modal open={modalOpen} onClose={closeModal}>
-                    <Modal.Header>Update reserved days</Modal.Header>
-                    <Modal.Content>
+                <Modal open={modalOpen} onClose={closeModal} className='modal-wrapper'>
+                    <Modal.Header className='modal-header'>Update reserved days</Modal.Header>
+                    <Modal.Content className='modal-content'>
                         {modalError && <Message negative>{modalError}</Message>}
                         <Form>
                             <Form.Input
@@ -341,10 +353,10 @@ const ReservedDaysList: React.FC = () => {
                             </Form.Field>
                         </Form>
                     </Modal.Content>
-                    <Modal.Actions>
-                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                    <Modal.Actions className='modal-actions'>
+                        <Button onClick={closeModal}>Cancel</Button>
                         <Button
-                            content="Update"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Update'}
                             labelPosition='left'
                             icon='checkmark'
                             onClick={(e) => handleUpdate(e, reservedDayData.id)}
@@ -352,15 +364,15 @@ const ReservedDaysList: React.FC = () => {
                         />
                     </Modal.Actions>
                 </Modal>
-                <Modal open={deleteModalOpen} onClose={closeModal}>
-                    <Modal.Header>Delete Reservation</Modal.Header>
-                    <Modal.Content>
-                        <p style={{ color: 'black' }}>Are you sure you want to delete this reservation?</p>
+                <Modal open={deleteModalOpen} onClose={closeModal} className='modal-wrapper'>
+                    <Modal.Header className='modal-header'>Delete Reservation</Modal.Header>
+                    <Modal.Content className='modal-content'>
+                        <p>Are you sure you want to delete this reservation?</p>
                     </Modal.Content>
-                    <Modal.Actions>
-                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                    <Modal.Actions className='modal-actions'>
+                        <Button onClick={closeModal}>Cancel</Button>
                         <Button
-                            content="Delete"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Delete'}
                             labelPosition='left'
                             icon='trash'
                             onClick={confirmDelete}
@@ -368,9 +380,9 @@ const ReservedDaysList: React.FC = () => {
                         />
                     </Modal.Actions>
                 </Modal>
-                <Modal open={newReservedDayModalOpen} onClose={closeModal}>
-                    <Modal.Header>New Reserved Day</Modal.Header>
-                    <Modal.Content>
+                <Modal open={newReservedDayModalOpen} onClose={closeModal} className='modal-wrapper'>
+                    <Modal.Header className='modal-header'>New Reserved Day</Modal.Header>
+                    <Modal.Content className='modal-content'>
                         {modalError && <Message negative>{modalError}</Message>}
                         <Form>
                             <Form.Input
@@ -413,10 +425,10 @@ const ReservedDaysList: React.FC = () => {
                             </Form.Field>
                         </Form>
                     </Modal.Content>
-                    <Modal.Actions>
-                        <Button color='black' onClick={closeModal}>Cancel</Button>
+                    <Modal.Actions className='modal-actions'>
+                        <Button onClick={closeModal}>Cancel</Button>
                         <Button
-                            content="Create"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Create'}
                             labelPosition='left'
                             icon='checkmark'
                             onClick={handleNewReservedDaySubmit}

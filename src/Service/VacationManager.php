@@ -6,6 +6,7 @@ use App\DTO\VacationDTO;
 use App\Entity\User;
 use App\Entity\Vacation;
 use App\Exception\ValidationFailureException;
+use App\Service\Mailer\MailerManagerInterface;
 use App\Trait\LoggerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
@@ -18,6 +19,7 @@ class VacationManager
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
+        private MailerManagerInterface $mailerManager
     ) {
     }
 
@@ -65,6 +67,10 @@ class VacationManager
 
             $this->entityManager->persist($vacation);
             $this->entityManager->flush();
+
+            $this->mailerManager->sendNotificationToAdmins(
+                "User {$user->getEmail()} requested vacation from {$from->format('Y-m-d')} to {$to->format('Y-m-d')}"
+            );
 
             return $vacation;
         } catch (ORMException $e) {
@@ -124,9 +130,13 @@ class VacationManager
         if ($vacation->isConfirmed() === true) {
             $vacation->setConfirmed(false);
             $this->logger->info('Confirmed vacation ' . $id . ' was updated and needs to be reviewed again.');
+            $this->mailerManager->sendNotificationToAdmins(
+                "Vacation requested by " . $vacation->getRequestedBy()->getEmail() .
+                " from " . $vacation->getDateFrom()->format('Y-m-d') .
+                " to " . $vacation->getDateTo()->format('Y-m-d') .
+                " has been updated and needs to be reviewed again for approval."
+            );
         }
-
-        //TODO: issiuncia laiska adminui, kad confirmed vacation buvo paredaguotos
 
         $vacation->setDateFrom($from)
             ->setDateTo($to)
@@ -137,9 +147,14 @@ class VacationManager
 
         $this->entityManager->flush();
 
-        return $vacation;
+        $this->mailerManager->sendNotificationToAdmins(
+            "Vacation requested by " . $vacation->getRequestedBy()->getEmail() .
+            " from " . $vacation->getDateFrom()->format('Y-m-d') .
+            " to " . $vacation->getDateTo()->format('Y-m-d') .
+            " has been updated."
+        );
 
-        //TODO: siusti laiska per maileri adminams po updeito probably
+        return $vacation;
     }
 
     public function rejectVacationRequest(string $id, VacationDTO $vacationDTO): ?Vacation
@@ -167,9 +182,14 @@ class VacationManager
 
         $this->entityManager->flush();
 
-        return $vacation;
+        $this->mailerManager->sendEmailToUser(
+            $vacation->getRequestedBy()->getEmail(),
+            'Vacation Request Rejected',
+            "Your vacation request from " . $vacation->getDateFrom()->format('Y-m-d') .
+            " to " . $vacation->getDateTo()->format('Y-m-d') . " has been rejected."
+        );
 
-        //TODO: siust laiska tures
+        return $vacation;
     }
 
     public function confirmVacationRequest(string $id, VacationDTO $vacationDTO): ?Vacation
@@ -191,9 +211,14 @@ class VacationManager
 
         $this->entityManager->flush();
 
-        return $vacation;
+        $this->mailerManager->sendEmailToUser(
+            $vacation->getRequestedBy()->getEmail(),
+            'Vacation Request Confirmed',
+            "Your vacation request from " . $vacation->getDateFrom()->format('Y-m-d') .
+            " to " . $vacation->getDateTo()->format('Y-m-d') . " has been confirmed."
+        );
 
-        //TODO: siust laiska tures
+        return $vacation;
     }
 
     public function getVacationRequest(string $id): ?Vacation

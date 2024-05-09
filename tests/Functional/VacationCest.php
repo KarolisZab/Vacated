@@ -112,7 +112,7 @@ class VacationCest
             'reviewedBy' => ['email' => 'vacationtest@test.com']
         ]);
 
-        $dateFrom = (new \DateTimeImmutable())->modify('+9 days');
+        $dateFrom = (new \DateTimeImmutable())->modify('+6 days');
         $dateTo = $dateFrom->modify('+6 days');
 
         $I->sendRequest('patch', '/api/update-vacation/' . $vacation->getId(), [

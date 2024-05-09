@@ -63,7 +63,7 @@ class ReservedDayCest
         $token = $I->grabTokenForUser('apitest@test.com');
         $I->amBearerAuthenticated($token);
 
-        $dateFrom = (new \DateTimeImmutable())->modify('+6 days');
+        $dateFrom = (new \DateTimeImmutable())->modify('+12 days');
         $dateTo = $dateFrom->modify('+7 days');
 
         $I->sendRequest('post', '/api/request-vacation', [
@@ -181,7 +181,7 @@ class ReservedDayCest
             'dateFrom' => $dateFrom->format('Y-m-d'),
             'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Important launch',
-            'tags' => [['name' => 'Backend']]
+            'tags' => [['name' => 'Backend', 'colorCode' => '#990000']]
         ]);
 
         $I->seeResponseCodeIs(201);
@@ -190,7 +190,7 @@ class ReservedDayCest
             'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
             'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'note' => 'Important launch',
-            'tags' => ['name' => 'Backend']
+            'tags' => [['name' => 'Backend', 'colorCode' => '#990000']]
         ]);
     }
 
@@ -213,7 +213,10 @@ class ReservedDayCest
             'dateFrom' => $dateFrom->format('Y-m-d'),
             'dateTo' => $dateTo->format('Y-m-d'),
             'note' => 'Keiciasi launch date',
-            'tags' => [['name' => 'Backend'], ['name' => 'Frontend']],
+            'tags' => [
+                ['name' => 'Backend', 'colorCode' => '#808080'],
+                ['name' => 'Frontend', 'colorCode' => '#808080']
+            ],
         ]);
 
         $I->seeResponseCodeIs(200);
@@ -222,11 +225,14 @@ class ReservedDayCest
             'dateFrom' => $dateFrom->setTime(0, 0, 0)->format(\DateTimeImmutable::ATOM),
             'dateTo' => $dateTo->setTime(23, 59, 59)->format(\DateTimeImmutable::ATOM),
             'note' => 'Keiciasi launch date',
-            'tags' => ['name' => 'Frontend', 'name' => 'Backend']
+            'tags' => [
+                ['name' => 'Backend', 'colorCode' => '#990000'],
+                ['name' => 'Frontend', 'colorCode' => '#FF9999']
+            ]
         ]);
 
         $I->sendRequest('patch', '/api/admin/reserved-day/' . $reservedDay->getId(), [
-            'tags' => [['name' => 'Frontend']],
+            'tags' => [['name' => 'Frontend', 'colorCode' => '#808080']],
         ]);
 
         $I->seeResponseCodeIs(200);

@@ -21,11 +21,127 @@ body {
 }
 
 h1 {
-    margin: 1rem 0;
+    margin: 0 0 32px 0;
     color: aliceblue;
+}
+
+.Content__Container {
+    padding: 60px 60px 0 60px;
+}
+
+.Table__Container {
+    margin: 0 2rem;
+}
+
+.Vacation__Message {
+    color: white !important;
+}
+
+.List__Item {
+    padding-bottom: 4px;
+}
+
+.Form__Container {
+
+    input[type='text'],
+    input[type='date'],
+    input[type='password'],
+    textarea {
+        background-color: #555 !important;
+        color: #fff !important;
+    }
+
+    .ui.segment.stacked {
+        background-color: #2b2b2b;
+        color: #ffffff;
+    }
+
+    .ui.dropdown {
+        background-color: #2b2b2b;
+        color: #ffffff;
+        border: 1px solid #4a4a4a;
+
+        .menu {
+            background-color: #2b2b2b;
+            color: #ffffff;
+        }
+
+        .menu > .item {
+            color: #fff;
+        }
+    }
+
+    .ui.input {
+        background-color: #2b2b2b;
+        color: #ffffff;
+    }
+}
+
+.Text__Input--disabled,
+.ui.form .disabled.field.Text__Input--disabled {
+    pointer-events: initial;
+    opacity: 1;
+    
+    &:hover {
+        cursor: not-allowed;
+    }
+}
+
+.actions{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.actions .Button__Create {
+    margin-right: 2rem;
 }
 
 p {
     margin: 0.5rem 0;
     color: aliceblue;
+}
+
+.modal-wrapper {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    color: #fff !important;
+
+    .modal-header {
+        background-color: #333 !important;
+        color: #fff !important;
+    }
+
+    .modal-content {
+        background-color: #444 !important;
+        color: #fff !important;
+
+        input[type='text'],
+        input[type='date'],
+        textarea {
+            background-color: #555 !important;
+            color: #fff !important;
+        }
+
+        .field > label {
+            color: #fff !important;
+        }
+
+        .ui.dropdown {
+            background-color: #555 !important;
+            color: #fff !important;
+
+            .menu {
+                background-color: #555 !important;
+                color: #fff !important;
+            }
+
+            .menu > .item {
+                color: #fff;
+            }
+        }
+    }
+
+    .modal-actions {
+        background-color: #333 !important;
+    }
 }

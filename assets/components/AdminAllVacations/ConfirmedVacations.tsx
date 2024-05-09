@@ -12,12 +12,12 @@ const ConfirmedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>There are no confirmed vacations yet.</Message>;
+        return <Message className='Vacation__Message'>There are no confirmed vacations yet.</Message>;
     }
 
     return (
         <div className="requested-vacation">
-            <div style={{ marginRight: '2rem' }}>
+            <div className='Table_Container'>
                 <Table celled inverted selectable striped>
                     <Table.Header>
                         <Table.Row>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import employeeService from '../services/employee-service';
-import { Button, Card, Container, Dimmer, Divider, Header, Label, ListItem, Loader, Message, Modal } from "semantic-ui-react";
+import { Button, Card, Container, Dimmer, Divider, Header, Label, Loader, Message, Modal } from "semantic-ui-react";
 import { EmployeeType, TagType } from '../services/types';
+import { invertColor } from "./utils/invertColor";
 
 const EmployeeDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -54,8 +55,7 @@ const EmployeeDetails: React.FC = () => {
     }
 
     return (
-        <Container style={{ marginTop: '2rem' }}>
-            {/* possibly reik divo */}
+        <Container className="Content__Container">
             {isLoading && (
                 <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }} >
                     <Loader>Loading</Loader>
@@ -69,18 +69,15 @@ const EmployeeDetails: React.FC = () => {
                     <Card.Meta style={{ color: 'white'}}>ID: {employee.id}</Card.Meta>
                     <Divider />
                     <Card.Description>
-                        <p><strong>Email:</strong> {employee.email}</p>
+                        <p><strong>E-mail address:</strong> {employee.email}</p>
                         <p><strong>Phone Number:</strong> {employee.phoneNumber}</p>
-                        <p><strong>Available vacation days:</strong> {employee.availableDays}</p>
-                        <p><strong>Tags:</strong> 
-                            {employee.tags?.map((tag: TagType) => (
-                                <ListItem key={tag.id}>
-                                    <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                        {tag.name}
-                                    </Label>
-                                </ListItem>
-                            ))}
-                        </p>
+                        <p><strong>Available vacation days:</strong> {employee.availableDays}/20</p>
+                        <p><strong>Tags:</strong></p>
+                        {employee.tags?.map((tag: TagType) => (
+                            <Label key={tag.id} style={{ backgroundColor: tag.colorCode }} horizontal>
+                                <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
+                            </Label>
+                        ))}
                     </Card.Description>
                     <Divider />
                     <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
@@ -94,12 +91,13 @@ const EmployeeDetails: React.FC = () => {
                 open={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
                 size='mini'
+                className="modal-wrapper"
             >
-                <Modal.Header>Confirm Delete</Modal.Header>
-                <Modal.Content>
-                    <p style={{ color: 'black' }}>Are you sure you want to delete this employee?</p>
+                <Modal.Header className="modal-header">Confirm Delete</Modal.Header>
+                <Modal.Content className="modal-content">
+                    <p>Are you sure you want to delete this employee?</p>
                 </Modal.Content>
-                <Modal.Actions>
+                <Modal.Actions className="modal-actions">
                     <Button negative onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
                     <Button positive onClick={() => confirmDelete(employee.id)}>Confirm</Button>
                 </Modal.Actions>

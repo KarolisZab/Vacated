@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { VacationType } from '../services/types';
-import { Button, Form, Message, Modal, Table } from 'semantic-ui-react';
+import { Button, Form, Loader, Message, Modal, Table } from 'semantic-ui-react';
 import { useState } from 'react';
 import vacationService from '../services/vacation-service';
 import { formatDateTime } from './utils/dateUtils';
@@ -16,6 +16,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     const { id } = useParams<{ id: string }>();
     const [modalOpen, setModalOpen] = useState(false);
     const [error, setError] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
     const [vacationData, setVacationData] = useState<Partial<VacationType>>({
         id,
         dateFrom: '',
@@ -25,17 +26,20 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
     
     /* eslint-disable-next-line */
     if (!vacations || vacations.length === 0) {
-        return <Message>You do not have any requested vacations yet.</Message>;
+        return <Message className='Vacation__Message'>You do not have any requested vacations yet.</Message>;
     }
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
+        setLoading(true);
         try {
             await vacationService.updateRequestedVacation(id, vacationData);
             closeModal();
             updateVacations();
         } catch (error) {
             setError('Error' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -45,7 +49,7 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
 
     return (
         <div className="requested-vacation">
-            <div style={{ marginRight: '2rem' }}>
+            <div className='Table_Container'>
                 {error && <Message negative>{error}</Message>}
                 <Table celled inverted selectable striped>
                     <Table.Header>
@@ -82,9 +86,9 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                     </Table.Body>
                 </Table>
             </div>
-            <Modal open={modalOpen} onClose={closeModal}>
-                <Modal.Header>Update Vacation</Modal.Header>
-                <Modal.Content>
+            <Modal open={modalOpen} onClose={closeModal} className="modal-wrapper">
+                <Modal.Header className="modal-header">Update Vacation</Modal.Header>
+                <Modal.Content className="modal-content">
                     <Form>
                         <Form.Input
                             label='Start date'
@@ -106,10 +110,10 @@ const RequestedVacations: React.FC<Props> = ({ vacations, updateVacations }) => 
                         />
                     </Form>
                 </Modal.Content>
-                <Modal.Actions>
-                    <Button color='black' onClick={closeModal}>Cancel</Button>
+                <Modal.Actions className="modal-actions">
+                    <Button onClick={closeModal}>Cancel</Button>
                     <Button
-                        content="Update"
+                        content={loading ? <Loader active inline size='tiny' /> : 'Update'}
                         labelPosition='left'
                         icon='checkmark'
                         onClick={(e) => handleUpdate(e, vacationData.id)}

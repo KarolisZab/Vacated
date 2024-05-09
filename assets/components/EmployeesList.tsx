@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react';
 import employeeService from '../services/employee-service';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button, Dimmer, Input, Label, ListItem, Loader, Message, Pagination, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Dimmer, Input, Label, Loader, Message, Pagination, Progress, SemanticCOLORS, Table } from 'semantic-ui-react';
 import '../styles/employee-list.scss'
 import { EmployeeType } from '../services/types';
+import { invertColor } from './utils/invertColor';
 
 const EmployeesList: React.FC = () => {
     const navigate = useNavigate();
@@ -44,7 +45,7 @@ const EmployeesList: React.FC = () => {
     };
 
     const handleCreateUser = () => {
-        navigate('/admin/create-user');
+        navigate('/admin/employees/create');
     }
 
     const getColor = (days: number): SemanticCOLORS => {
@@ -58,18 +59,20 @@ const EmployeesList: React.FC = () => {
     };
 
     return (
-        <div className="employees-list">
+        <div className="employees-list Content__Container">
             <h1>Employees</h1>
-            <Input inverted
-                icon='search'
-                placeholder='Search...'
-                value={filter}
-                onChange={handleFilterChange}
-                style={{ marginBottom: '1rem' }}
-            />
-            <Button color='teal' style={{ marginLeft: '1rem' }} onClick={handleCreateUser}>
-                        Create a new employee
-            </Button>
+            <div className='actions'>
+                <Input inverted
+                    icon='search'
+                    placeholder='Search...'
+                    value={filter}
+                    onChange={handleFilterChange}
+                    style={{ marginBottom: '1rem' }}
+                />
+                <Button color='teal' onClick={handleCreateUser} className='Button__Create'>
+                    Create a new employee
+                </Button>
+            </div>
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
                 {loading && (
@@ -82,7 +85,7 @@ const EmployeesList: React.FC = () => {
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>Name</Table.HeaderCell>
-                                <Table.HeaderCell>Email</Table.HeaderCell>
+                                <Table.HeaderCell>E-mail address</Table.HeaderCell>
                                 <Table.HeaderCell>Phone No.</Table.HeaderCell>
                                 <Table.HeaderCell>Tags</Table.HeaderCell>
                                 <Table.HeaderCell>Available days</Table.HeaderCell>
@@ -105,19 +108,16 @@ const EmployeesList: React.FC = () => {
                                     <Table.Cell>{employee.phoneNumber}</Table.Cell>
                                     <Table.Cell>
                                         {employee.tags.map((tag) => (
-                                            <ListItem key={tag.id}>
-                                                <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                                    {tag.name}
-                                                </Label>
-                                            </ListItem>
+                                            <Label key={tag.id} style={{ backgroundColor: tag.colorCode }} horizontal>
+                                                <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
+                                            </Label>
                                         ))}
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Progress value={employee.availableDays} total='20' progress='ratio' size='small' color={getColor(employee.availableDays)} />
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Link to={`/admin/employees/${employee.id}`}>View details</Link>
-                                    </Table.Cell>
+                                        <Button color='blue' onClick={() => navigate(`/admin/employees/${employee.id}`)}>View</Button>                                    </Table.Cell>
                                 </Table.Row>
                             ))}
                         </Table.Body>

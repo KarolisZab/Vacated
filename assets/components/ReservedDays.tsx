@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react';
 import reservedDayService from '../services/reserved-day-service';
 import { Dimmer, Label, ListItem, Loader, Table } from 'semantic-ui-react';
-// import './styles.scss';
+import '../styles/app.scss';
 import { ReservedDayType } from '../services/types';
 import { formatDateTime } from './utils/dateUtils';
+import { invertColor } from './utils/invertColor';
 
 const ReservedDays: React.FC = () => {
     const [reservedDays, setReservedDays] = useState<ReservedDayType[]>([]);
@@ -36,7 +37,7 @@ const ReservedDays: React.FC = () => {
     }, []);
 
     return (
-        <div className="reserved-days-list">
+        <div className="reserved-days-list Content__Container">
             <h1>Reserved days</h1>
             <div className="loader-container">
                 {loading && (
@@ -44,7 +45,7 @@ const ReservedDays: React.FC = () => {
                         <Loader>Loading</Loader>
                     </Dimmer>
                 )}
-                <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
+                <div>
                     <Table celled inverted selectable striped>
                         <Table.Header>
                             <Table.Row>
@@ -62,9 +63,9 @@ const ReservedDays: React.FC = () => {
                                     <Table.Cell>{formatDateTime(reservedDay.dateTo, true)}</Table.Cell>
                                     <Table.Cell>
                                         {reservedDay.tags.map((tag) => (
-                                            <ListItem key={tag.id}>
+                                            <ListItem key={tag.id} className='List__Item'>
                                                 <Label style={{ backgroundColor: tag.colorCode }} horizontal>
-                                                    {tag.name}
+                                                    <span style={{ color: invertColor(tag.colorCode) }}>{tag.name}</span>
                                                 </Label>
                                             </ListItem>
                                         ))}

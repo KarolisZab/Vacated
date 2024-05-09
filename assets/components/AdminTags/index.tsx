@@ -61,16 +61,20 @@ const TagsList: React.FC = () => {
 
     const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         event.preventDefault();
+        setLoading(true);
         try {
             await tagService.updateTag(id, tagData);
             closeModal();
             fetchTags();
         } catch (error) {
             setError('Error' + (error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleNewTagSubmit = async () => {
+        setLoading(true);
         try {
             if (newTagData.name.trim() === '') {
                 setFormErrors({ name: 'Tag name should not be empty' });
@@ -90,10 +94,13 @@ const TagsList: React.FC = () => {
         } catch (error) {
             setError('Error' + (error as Error).message);
             navigate(-1);
+        } finally {
+            setLoading(false);
         }
     };
 
     const confirmDelete = async () => {
+        setLoading(true);
         try {
             await tagService.deleteTag(deleteId);
             setTags(prevTags => prevTags.filter(tag => tag.id !== deleteId));
@@ -101,6 +108,8 @@ const TagsList: React.FC = () => {
         } catch (error) {
             setError('Error' + (error as Error).message);
             navigate(-1);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -111,9 +120,11 @@ const TagsList: React.FC = () => {
     };
 
     return (
-        <div className="tags-list">
-            <h1>Tags</h1>
-            <Button color='teal' onClick={() => setNewTagModalOpen(true)} className='tag-button'>Create new tag</Button>
+        <div className="tags-list Content__Container">
+            <h1 className='Tag__Header'>Tags</h1>
+            <div className="button-container">
+                <Button color='teal' onClick={() => setNewTagModalOpen(true)} className='tag-button'>Create new tag</Button>
+            </div>
             {error && <Message negative>{error}</Message>}
             <div className="loader-container">
                 {loading && (
@@ -121,7 +132,7 @@ const TagsList: React.FC = () => {
                         <Loader>Loading</Loader>
                     </Dimmer>
                 )}
-                <div style={{ marginRight: '2rem' }}>
+                <div className='Table__Container'>
                     <Table celled inverted selectable striped>
                         <Table.Header>
                             <Table.Row>
@@ -151,12 +162,13 @@ const TagsList: React.FC = () => {
                             ))}
                         </Table.Body>
                     </Table>
-                    <Modal open={modalOpen} onClose={closeModal}>
-                        <Modal.Header>Update tag</Modal.Header>
-                        <Modal.Content>
+                    <Modal open={modalOpen} onClose={closeModal} className='modal-wrapper'>
+                        <Modal.Header className='modal-header'>Update tag</Modal.Header>
+                        <Modal.Content className='modal-content'>
                             <Form>
                                 <Form.Input
                                     label='Tag name'
+                                    type='text'
                                     value={tagData.name}
                                     onChange={(e) => setTagData({ ...tagData, name: e.target.value })}
                                     error={formErrors['name']}
@@ -169,10 +181,10 @@ const TagsList: React.FC = () => {
                                 </Form.Input>
                             </Form>
                         </Modal.Content>
-                        <Modal.Actions>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Modal.Actions className='modal-actions'>
+                            <Button onClick={closeModal}>Cancel</Button>
                             <Button
-                                content="Update"
+                                content={loading ? <Loader active inline size='tiny' /> : 'Update'}
                                 labelPosition='left'
                                 icon='checkmark'
                                 onClick={(e) => handleUpdate(e, tagData.id)}
@@ -180,15 +192,15 @@ const TagsList: React.FC = () => {
                             />
                         </Modal.Actions>
                     </Modal>
-                    <Modal open={deleteModalOpen} onClose={closeModal}>
-                        <Modal.Header>Delete tag</Modal.Header>
-                        <Modal.Content>
-                            <p style={{ color: 'black' }}>Are you sure you want to delete this tag?</p>
+                    <Modal open={deleteModalOpen} onClose={closeModal} className='modal-wrapper'>
+                        <Modal.Header className='modal-header'>Delete tag</Modal.Header>
+                        <Modal.Content className='modal-content'>
+                            <p>Are you sure you want to delete this tag?</p>
                         </Modal.Content>
-                        <Modal.Actions>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Modal.Actions className='modal-actions'>
+                            <Button onClick={closeModal}>Cancel</Button>
                             <Button
-                                content="Delete"
+                                content={loading ? <Loader active inline size='tiny' /> : 'Delete'}
                                 labelPosition='left'
                                 icon='trash'
                                 onClick={confirmDelete}
@@ -196,12 +208,13 @@ const TagsList: React.FC = () => {
                             />
                         </Modal.Actions>
                     </Modal>
-                    <Modal open={newTagModalOpen} onClose={closeModal}>
-                        <Modal.Header>New tag</Modal.Header>
-                        <Modal.Content>
+                    <Modal open={newTagModalOpen} onClose={closeModal} className='modal-wrapper'>
+                        <Modal.Header className='modal-header'>New tag</Modal.Header>
+                        <Modal.Content className='modal-content'>
                             <Form>
                                 <Form.Input
                                     label='Tag name'
+                                    type='text'
                                     value={newTagData.name}
                                     onChange={(e) => setNewTagData({ ...newTagData, name: e.target.value })}
                                     error={formErrors['name']}
@@ -214,10 +227,10 @@ const TagsList: React.FC = () => {
                                 </Form.Input>
                             </Form>
                         </Modal.Content>
-                        <Modal.Actions>
-                            <Button color='black' onClick={closeModal}>Cancel</Button>
+                        <Modal.Actions className='modal-actions'>
+                            <Button onClick={closeModal}>Cancel</Button>
                             <Button
-                                content="Create"
+                                content={loading ? <Loader active inline size='tiny' /> : 'Create'}
                                 labelPosition='left'
                                 icon='checkmark'
                                 onClick={handleNewTagSubmit}

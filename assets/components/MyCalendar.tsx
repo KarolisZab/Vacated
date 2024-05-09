@@ -6,7 +6,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import '../styles/my-calendar.scss';
 import { VacationType, CalendarDays, ReservedDayType, EmployeeType } from '../services/types';
-import { Button, Dimmer, Form, Loader, Message, Modal } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Loader, Message, Modal, Progress, SemanticCOLORS } from 'semantic-ui-react';
 import vacationService from '../services/vacation-service';
 import reservedDayService from '../services/reserved-day-service';
 import { useNavigate } from 'react-router-dom';
@@ -44,6 +44,7 @@ export default function MyCalendar() {
     const [availableDays, setAvailableDays] = useState<number>(0);
     const [popupContent, setPopupContent] = useState<string>('');
     const [currentUser, setCurrentUser] = useState<EmployeeType | null>(null);
+    const [currentView, setCurrentView] = useState<string>('dayGridMonth');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -108,6 +109,7 @@ export default function MyCalendar() {
     };    
 
     const handleConfirmVacationRequest = async () => {
+        setLoading(true);
         try {
             if (selectedDate.startDate && selectedDate.endDate) {
                 setModalError('');
@@ -131,6 +133,8 @@ export default function MyCalendar() {
             }
         } catch (error) {
             setModalError(error.response.data);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -151,20 +155,20 @@ export default function MyCalendar() {
         
         if (event.extendedProps.confirmed === true) {
             setPopupContent(`
-                <p style="color: black;"><strong>${event.title}</strong></p>
-                <p style="color: black;">Requested at <strong>${requestedAt}</strong></p>
-                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
-                <p style="color: black;">Ends on <strong>${endDate}</strong></p>
+                <p><strong>${event.title}</strong></p>
+                <p>Requested at <strong>${requestedAt}</strong></p>
+                <p>Starts on <strong>${startDate}</strong></p>
+                <p>Ends on <strong>${endDate}</strong></p>
                 <br>
-                <p style="color: black;">Confirmed by <strong>${event.extendedProps.reviewedBy}</strong> at <strong>${reviewedAt}</strong></p>
+                <p>Confirmed by <strong>${event.extendedProps.reviewedBy}</strong> at <strong>${reviewedAt}</strong></p>
             `);
 
         } else {
             setPopupContent(`
-                <p style="color: black;"><strong>${event.title.replace('Requested: ', '')}</strong></p>
-                <p style="color: black;">Requested on <strong>${requestedAt}</strong></p>
-                <p style="color: black;">Starts on <strong>${startDate}</strong></p>
-                <p style="color: black;">Ends at <strong>${endDate}</strong></p>
+                <p><strong>${event.title.replace('Requested: ', '')}</strong></p>
+                <p>Requested on <strong>${requestedAt}</strong></p>
+                <p>Starts on <strong>${startDate}</strong></p>
+                <p>Ends at <strong>${endDate}</strong></p>
             `);
         }
     };
@@ -182,6 +186,12 @@ export default function MyCalendar() {
                     if (!vacation.confirmed) {
                         title = `Requested: ${title}`;
                     }
+
+                    const startDate = new Date(vacation.dateFrom);
+                    const endDate = new Date(vacation.dateTo);
+                    endDate.setHours(23, 59, 59, 999);
+                    const isSingleDayEvent = startDate.toDateString() === endDate.toDateString();
+
                     return {
                         title: title,
                         start: vacation.dateFrom,
@@ -190,7 +200,8 @@ export default function MyCalendar() {
                         reviewedBy: vacation.reviewedBy ? `${vacation.reviewedBy.firstName} ${vacation.reviewedBy.lastName}` : '',
                         reviewedAt: vacation.reviewedAt,
                         confirmed: vacation.confirmed,
-                        classNames: [styles, 'Calendar__VacationDay']
+                        classNames: [styles, 'Calendar__VacationDay', isSingleDayEvent ? 'test' : 'multi'],
+                        display: 'block',
                     };
                 }
             })
@@ -220,43 +231,56 @@ export default function MyCalendar() {
             const endDate = new Date(reservedDay.dateTo);
             endDate.setHours(23, 59, 59, 999);
 
-            // return reservedDay.tags.map((tag) => {
-            //     return {
-            //         start: reservedDay.dateFrom,
-            //         end: endDate.toISOString(),
-            //         title: tag.name,
-            //         color: tag.colorCode,
-            //         classNames: ['tag-event'],
-            //         display: 'list-item'
-            //     };
-            // });
-            if (reservedDay.tags && reservedDay.tags.length > 0) {
-                const eventTitle = reservedDay.tags.reduce((label, tag) => {
-                    if (label === '') {
-                        return tag.name;
-                    }
-    
-                    return `${label}, ${tag.name}`;
-                }, '');
-                return {
-                    start: reservedDay.dateFrom,
-                    end: endDate.toISOString(),
-                    title: eventTitle,
-                    color: reservedDay.tags[0].colorCode,
-                    classNames: ['tag-event'],
-                    display: 'list-item'
-                };
-            } else {
-                return null;
+            if(currentView === 'multiMonthYear') {
+                return reservedDay.tags.map((tag) => {
+                    return {
+                        start: reservedDay.dateFrom,
+                        end: endDate.toISOString(),
+                        title: tag.name,
+                        color: tag.colorCode,
+                        classNames: ['tag-event'],
+                        display: 'list-item'
+                    };
+                });
+            } else if (currentView === 'dayGridMonth') {
+                if (reservedDay.tags && reservedDay.tags.length > 0) {
+                    const eventTitle = reservedDay.tags.reduce((label, tag) => {
+                        if (label === '') {
+                            return tag.name;
+                        }
+        
+                        return `${label}, ${tag.name}`;
+                    }, '');
+                    return {
+                        start: reservedDay.dateFrom,
+                        end: endDate.toISOString(),
+                        title: eventTitle,
+                        color: reservedDay.tags[0].colorCode,
+                        classNames: ['Calendar__TagEvent'],
+                        display: 'list-item'
+                    };
+                } else {
+                    return null;
+                }
             }
         });
         // return tagEvents;
         return tagEvents.filter(event => event !== null);
     };
 
+    const getColor = (days: number): SemanticCOLORS => {
+        if (days <= 7) {
+            return 'red';
+        } else if (days <= 13) {
+            return 'yellow';
+        } else {
+            return 'green';
+        }
+    };
+
     if (loading) {
         return (
-            <div className='loader-container'>
+            <div className='calendar-loader-container'>
                 <Dimmer active style={{ backgroundColor: 'rgb(31, 31, 32)' }}>
                     <Loader>Loading</Loader>
                 </Dimmer>
@@ -267,10 +291,10 @@ export default function MyCalendar() {
     return (
         <div>
             <div className="calendar-container">
-                <Modal open={showModal} onClose={() => handleCloseModal()}>
-                    <Modal.Header>Request vacation</Modal.Header>
-                    <Modal.Content>
-                        {modalError && <Message negative>{modalError}</Message>}
+                <Modal open={showModal} onClose={() => handleCloseModal()} className="modal-wrapper">
+                    <Modal.Header className="modal-header">Request vacation</Modal.Header>
+                    <Modal.Content className='modal-content'>
+                        {modalError && <Message negative>{modalError.replace(/{"|":"|"}|}/g, '')}</Message>}
                         <Form>
                             <Form.Field>
                                 <label>Selected Start Date:</label>
@@ -298,12 +322,12 @@ export default function MyCalendar() {
                             />
                         </Form>
                     </Modal.Content>
-                    <Modal.Actions>
-                        <Button color='black' onClick={() => handleCloseModal()}>
+                    <Modal.Actions className='modal-actions'>
+                        <Button onClick={() => handleCloseModal()}>
                             Cancel
                         </Button>
                         <Button
-                            content="Request"
+                            content={loading ? <Loader active inline size='tiny' /> : 'Request'}
                             labelPosition='left'
                             icon='checkmark'
                             onClick={handleConfirmVacationRequest}
@@ -311,23 +335,26 @@ export default function MyCalendar() {
                         />
                     </Modal.Actions>
                 </Modal>
-                <Modal size='mini' open={!!popupContent} onClose={() => setPopupContent('')}>
-                    <Modal.Content>
-                        <div style={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: popupContent }}/>
+                <Modal size='mini' open={!!popupContent} onClose={() => setPopupContent('')} className='modal-wrapper'>
+                    <Modal.Content className='modal-content'>
+                        <div dangerouslySetInnerHTML={{ __html: popupContent }}/>
                     </Modal.Content>
-                    <Modal.Actions>
+                    <Modal.Actions className='modal-actions'>
                         <Button onClick={() => setPopupContent('')}>Close</Button>
                     </Modal.Actions>
                 </Modal>
                 <div>
                     {currentUser && (
                         <div>
-                            <p className='greeting-message'>
-                                Hi, {currentUser.firstName} {currentUser.lastName}!
-                            </p>
-                            <p className='available-days-message'>
-                                You have {availableDays} out of 20 available vacation days.
-                            </p>
+                            <div className='Calendar__PersonalInfo'>
+                                <p className='greeting-message'>
+                                    Hi, {currentUser.firstName} {currentUser.lastName}!
+                                </p>
+                                <p className='available-days-message'>
+                                    Available vacation days:
+                                </p>
+                                <Progress value={availableDays} total='20' progress='ratio' size='medium' color={getColor(availableDays)} />
+                            </div>
                             <Button color='teal' onClick={handleRequestVacation}>
                                 Request vacation
                             </Button>
@@ -335,29 +362,34 @@ export default function MyCalendar() {
                     )}
                 </div>
             </div>
-
-            <FullCalendar
-                ref={calendarRef}
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
-                initialView="dayGridMonth"
-                selectable={true}
-                events={[...mapCalendarList(), ...mapReservedDays(), ...mapTagsList()]}
-                select={handleDateSelect}
-                firstDay={1}
-                datesSet={handleDatesSet}
-                fixedWeekCount={false}
-                timeZone="Europe/London"
-                displayEventTime={false}
-                eventClick={handleEventClick}
-                dayMaxEventRows={true}
-                dayMaxEvents={3}
-                aspectRatio={1.75}
-                headerToolbar={{
-                    start: 'prev,next today',
-                    center: 'title',
-                    end: 'dayGridMonth,multiMonthYear'
-                }}
-            />
+            
+            <div className='CalendarView__Container'>
+                <FullCalendar
+                    ref={calendarRef}
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
+                    initialView="dayGridMonth"
+                    selectable={true}
+                    events={[...mapCalendarList(), ...mapReservedDays(), ...mapTagsList()]}
+                    select={handleDateSelect}
+                    firstDay={1}
+                    datesSet={handleDatesSet}
+                    fixedWeekCount={false}
+                    timeZone="Europe/London"
+                    displayEventTime={false}
+                    eventClick={handleEventClick}
+                    dayMaxEventRows={true}
+                    dayMaxEvents={3}
+                    aspectRatio={1.75}
+                    headerToolbar={{
+                        start: 'prev,next today',
+                        center: 'title',
+                        end: 'dayGridMonth,multiMonthYear'
+                    }}
+                    viewDidMount={(view) => {
+                        setCurrentView(view.view.type);
+                    }}
+                />
+            </div>
         </div>
     )
 }

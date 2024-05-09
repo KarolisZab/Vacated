@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Grid, Header, Icon, Message, Segment } from 'semantic-ui-react';
+import { Button, Divider, Form, Grid, Header, Icon, Message, Segment } from 'semantic-ui-react';
 import authService from '../services/auth-service';
 import '../styles/login.scss';
 
@@ -52,7 +52,7 @@ const Login: React.FC = () => {
                 <Header as='h2' color='teal' textAlign='center'>
                     Log-in to your account
                 </Header>
-                <Form size='large' onSubmit={handleSubmit} error={!!error}>
+                <Form size='large' onSubmit={handleSubmit} error={!!error} className='Form__Container'>
                     {error && <Message error content={error} color='black' />}
                     <Segment stacked>
                         <Form.Input
@@ -81,12 +81,13 @@ const Login: React.FC = () => {
                         <Button basic fluid onClick={handleForgotPassword} color='teal' >
                             Forgot password?
                         </Button>
+                        <Divider content='or' horizontal className='Login__Divider'></Divider>
+                        <Button color='google plus' fluid onClick={() => (window.location.href='/oauth')}>
+                            <Icon name='google' />
+                            Log-in with Google
+                        </Button>
                     </Segment>
                 </Form>
-                <Button color='google plus' fluid onClick={() => (window.location.href='/oauth')}>
-                    <Icon name='google' />
-                    Log-in with Google
-                </Button>
             </Grid.Column>
         </Grid>
     );

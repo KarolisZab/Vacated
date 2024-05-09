@@ -45,8 +45,8 @@ export default function Navbar() {
     return (
         <nav className="navigation">
             <div className="links-container">
+                <img className="image" src="/vacated-logo-white.png" width={40} height={40}/> 
                 <Link to="/" className="brand-name">
-                    {/* <img src={logo} width={50} height={50} /> */}
                     Vacated
                 </Link>
                 <div
@@ -58,7 +58,7 @@ export default function Navbar() {
                         {isAuthenticated && (
                             <>
                                 <li>
-                                    <Link to="/">Home</Link>
+                                    <Link to="/">Calendar</Link>
                                 </li>
                                 <li>
                                     <Link to="/vacations">My Vacations</Link>
@@ -77,7 +77,7 @@ export default function Navbar() {
                         <ul className="button-group">
                             <li>
                                 <Button icon basic onClick={handleProfile} inverted>
-                                    <Icon name='user' size="large"/> {user.firstName} {user.lastName}
+                                    <Icon name='user' size="large"/>
                                 </Button>
                             </li>
                             <li>

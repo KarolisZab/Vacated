@@ -5,3 +5,9 @@
 .ui.teal.basic.fluid.button {
     margin-top: 8px;
 }
+
+.Login__Divider {
+    &.ui.divider {
+        color: white;
+    }
+}

@@ -68,6 +68,7 @@ const UpdateEmployee: React.FC = () => {
     };
 
     const handleUpdate = async () => {
+        setLoading(true);
         try {
             const fieldErrors: { [key: string]: string } = {};
             if (employee.firstName.trim() === '') {
@@ -90,6 +91,8 @@ const UpdateEmployee: React.FC = () => {
             navigate(-1);
         } catch (error) {
             errorProcessor(error, setError, setFormErrors)
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -116,7 +119,7 @@ const UpdateEmployee: React.FC = () => {
     const handleTagCreate = async (e: React.KeyboardEvent<HTMLElement>, { value }: DropdownProps) => {
         if (e.key === 'Enter' && value) {
             try {
-                const newTag: TagType = { id: '', name: value as string, colorCode: 'grey' };
+                const newTag: TagType = { id: '', name: value as string, colorCode: '#808080' };
                 
                 setTags([...tags, newTag]);
 
@@ -182,8 +185,8 @@ const UpdateEmployee: React.FC = () => {
                                 onAddItem={handleTagCreate}
                             />
                         </Form.Field>
-                        <Button type='button' onClick={handleUpdate}>Submit</Button>
-                        <Button type='button' onClick={handleCancel}>Cancel</Button>
+                        <Button type='button' color="blue" loading={loading} onClick={handleUpdate}>Update</Button>
+                        <Button type='button' onClick={handleCancel}>Back</Button>
                     </Form>
                 </Segment>
             </div>

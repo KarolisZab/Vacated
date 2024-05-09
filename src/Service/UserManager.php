@@ -6,6 +6,7 @@ use App\DTO\TagDTO;
 use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Exception\ValidationFailureException;
+use App\Service\Mailer\MailerManagerInterface;
 use App\Trait\LoggerTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +22,8 @@ class UserManager
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
         private ValidatorInterface $validator,
-        private TagManager $tagManager
+        private TagManager $tagManager,
+        private MailerManagerInterface $mailerManager
     ) {
     }
 
@@ -50,15 +52,15 @@ class UserManager
                 ->setLastName($userDTO->lastName)
                 ->setPhoneNumber($userDTO->phoneNumber);
 
-            foreach ($userDTO->tags as $tagName) {
-                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+            foreach ($userDTO->tags as $tagDTO) {
+                $tag = $this->tagManager->createOrGetTag(new TagDTO($tagDTO['name'], $tagDTO['colorCode']), false);
                 $user->addTag($tag);
             }
 
             $errors = $this->validator->validate($user, null, ['create']);
             ValidationFailureException::throwException($errors);
 
-            // siust maileri
+            $this->mailerManager->sendWelcomeEmail($userDTO->email, $password);
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
@@ -225,8 +227,8 @@ class UserManager
         ValidationFailureException::throwException($errors);
 
         $addTags = [];
-        foreach ($userDTO->tags as $tagName) {
-            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagName['name']), false);
+        foreach ($userDTO->tags as $tagDTO) {
+            $tag = $this->tagManager->createOrGetTag(new TagDTO($tagDTO['name'], $tagDTO['colorCode']), false);
             $addTags[] = $tag;
         }
 
@@ -237,8 +239,6 @@ class UserManager
         $this->logger->info("User with ID $id has been updated.");
 
         return $user;
-
-        // TODO: Adminas updatint visus userius ir save, bet ne kitus adminus.
     }
 
     public function getEmployeeCount(): int
