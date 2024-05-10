@@ -1,6 +1,5 @@
 import apiService from "./api-service";
 import { EmployeeType, EmployeesGetResultType, EmployeeRegistrationData } from '../services/types';
-import { API_URL } from "../config";
 
 const URL = '/admin/users';
 

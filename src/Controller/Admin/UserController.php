@@ -23,7 +23,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('/users', name: 'get_users', methods: ['GET'])]
+    #[Route('/users', name: 'admin_get_users', methods: ['GET'])]
     public function getUsers(Request $request)
     {
         $page = $request->query->get('page', 1);
@@ -38,7 +38,7 @@ class UserController extends AbstractController
         return new JsonResponse($this->serializer->serialize($results, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
-    #[Route('/users/{id}', name: 'get_user', methods: ['GET'])]
+    #[Route('/users/{id}', name: 'admin_get_user', methods: ['GET'])]
     public function getOneUser(string $id)
     {
         $user = $this->userManager->getUser($id);
@@ -50,7 +50,7 @@ class UserController extends AbstractController
         return new JsonResponse($this->serializer->serialize($user, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
-    #[Route('/users/{id}', name: 'delete_user', methods: ['DELETE'])]
+    #[Route('/users/{id}', name: 'admin_delete_user', methods: ['DELETE'])]
     public function deleteUser(Request $request, string $id)
     {
         try {
@@ -66,7 +66,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/users/{id}', name: 'update_user', methods: ['PATCH'])]
+    #[Route('/users/{id}', name: 'admin_update_user', methods: ['PATCH'])]
     public function updateUser(Request $request, string $id, #[MapRequestPayload()] UserDTO $userDTO)
     {
         try {
@@ -82,7 +82,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/employee-count', name: 'get_users_count_with_role_user_only', methods: ['GET'])]
+    #[Route('/employee-count', name: 'admin_get_users_count_with_role_user_only', methods: ['GET'])]
     public function getUsersCountWithRoleUserOnly(Request $request)
     {
         try {

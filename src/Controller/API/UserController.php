@@ -61,7 +61,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/api/users/{id}', name: 'update_user', methods: ['PATCH'])]
+    #[Route('/api/users/{id}', name: 'update_employee', methods: ['PATCH'])]
     public function updateUser(Request $request, string $id, #[MapRequestPayload()] UserDTO $userDTO)
     {
         try {
