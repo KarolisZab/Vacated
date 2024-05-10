@@ -175,7 +175,7 @@ class AuthController extends AbstractController
         }
     }
 
-    #[Route('/api/reset-password', name: 'change_password', methods: ['POST'])]
+    #[Route('/api/reset-password', name: 'reset_password', methods: ['POST'])]
     public function resetPassword(Request $request): Response
     {
         $requestData = json_decode($request->getContent(), true);
