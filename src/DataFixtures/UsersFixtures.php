@@ -30,6 +30,7 @@ class UsersFixtures extends Fixture implements FixtureGroupInterface
             ->setFirstName('Jonas')
             ->setLastName('Jonaitis')
             ->setPhoneNumber('862461235')
+            ->setAvailableDays(15)
             ->setTags(new ArrayCollection([$tag1]));
         $manager->persist($user);
         $this->addReference('user', $user);
@@ -66,6 +67,7 @@ class UsersFixtures extends Fixture implements FixtureGroupInterface
             ->setIsAdmin(true)
             ->setFirstName('Juozas')
             ->setLastName('Juozaitis')
+            ->setAvailableDays(14)
             ->setPhoneNumber('862465276');
         $manager->persist($admin4);
         $this->addReference('admin_user2', $admin4);
@@ -76,8 +78,9 @@ class UsersFixtures extends Fixture implements FixtureGroupInterface
             ->setPassword($password)
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
             ->setIsAdmin(true)
-            ->setFirstName('Jonas')
-            ->setLastName('Jonaitis')
+            ->setFirstName('Karolis')
+            ->setLastName('Zabinskis')
+            ->setAvailableDays(17)
             ->setPhoneNumber('862461235');
         $manager->persist($admin5);
         $this->addReference('admin_user', $admin5);
@@ -90,6 +93,7 @@ class UsersFixtures extends Fixture implements FixtureGroupInterface
             ->setFirstName('Darius')
             ->setLastName('Girenas')
             ->setPhoneNumber('864542312')
+            ->setAvailableDays(16)
             ->setTags(new ArrayCollection([$tag2]));
         $manager->persist($user1);
         $this->addReference('user1', $user1);
@@ -101,6 +105,7 @@ class UsersFixtures extends Fixture implements FixtureGroupInterface
             ->setRoles(['ROLE_USER'])
             ->setFirstName('Karolis')
             ->setLastName('Karolenas')
+            ->setAvailableDays(17)
             ->setPhoneNumber('862354782');
         $manager->persist($user2);
         $this->addReference('user2', $user2);
@@ -123,6 +128,7 @@ class UsersFixtures extends Fixture implements FixtureGroupInterface
             ->setRoles(['ROLE_USER'])
             ->setFirstName('Monika')
             ->setLastName('Monikaite')
+            ->setAvailableDays(15)
             ->setPhoneNumber('862556723');
         $manager->persist($user4);
         $this->addReference('user4', $user4);
