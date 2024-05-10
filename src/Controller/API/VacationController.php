@@ -83,7 +83,7 @@ class VacationController extends AbstractController
         return new JsonResponse($this->serializer->serialize($vacation, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
-    #[Route('/api/vacations/', name: 'get_vacations', methods: ['GET'])]
+    #[Route('/api/vacations', name: 'get_vacations', methods: ['GET'])]
     public function getReservedVacationDays(Request $request)
     {
         $currentUser = $this->security->getUser();
@@ -105,7 +105,7 @@ class VacationController extends AbstractController
         return new JsonResponse($this->serializer->serialize($vacations, 'json'), JsonResponse::HTTP_OK, [], true);
     }
 
-    #[Route('/api/user-vacations/', name: 'get_all_user_vacations', methods: ['GET'])]
+    #[Route('/api/user-vacations', name: 'get_all_user_vacations', methods: ['GET'])]
     public function getAllCurrentUserVacations(Request $request)
     {
         $currentUser = $this->security->getUser();
