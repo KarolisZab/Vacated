@@ -93,7 +93,7 @@ class ReservedDayController extends AbstractController
         }
     }
 
-    #[Route('/api/admin/all-reserveddays/', name: 'get_all_reserved_days', methods: ['GET'])]
+    #[Route('/api/admin/all-reserveddays', name: 'get_all_reserved_days', methods: ['GET'])]
     public function getAllReservedDays(Request $request)
     {
         $page = $request->query->get('page', 1);

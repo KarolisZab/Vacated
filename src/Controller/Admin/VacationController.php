@@ -90,7 +90,7 @@ class VacationController extends AbstractController
         }
     }
 
-    #[Route('/api/admin/all-vacations/', name: 'get_all_vacations', methods: ['GET'])]
+    #[Route('/api/admin/all-vacations', name: 'get_all_vacations', methods: ['GET'])]
     public function getAllVacations(Request $request)
     {
         // $page = $request->query->get('page', 1);
