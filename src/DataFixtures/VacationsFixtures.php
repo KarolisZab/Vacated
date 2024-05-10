@@ -24,7 +24,9 @@ class VacationsFixtures extends Fixture implements DependentFixtureInterface, Fi
         $vacation->setRequestedBy($user3)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-13'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-17'))
-            ->setConfirmed(true);
+            ->setConfirmed(true)
+            ->setReviewedBy($user)
+            ->setReviewedAt(new \DateTimeImmutable());
 
         $manager->persist($vacation);
 
@@ -32,7 +34,9 @@ class VacationsFixtures extends Fixture implements DependentFixtureInterface, Fi
         $vacation->setRequestedBy($user2)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-29'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-06-05'))
-            ->setConfirmed(true);
+            ->setConfirmed(true)
+            ->setReviewedBy($user)
+            ->setReviewedAt(new \DateTimeImmutable());
 
         $manager->persist($vacation);
 
@@ -40,7 +44,9 @@ class VacationsFixtures extends Fixture implements DependentFixtureInterface, Fi
         $vacation->setRequestedBy($user)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-21'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-23'))
-            ->setConfirmed(true);
+            ->setConfirmed(true)
+            ->setReviewedBy($user2)
+            ->setReviewedAt(new \DateTimeImmutable());
 
         $manager->persist($vacation);
 
@@ -48,7 +54,9 @@ class VacationsFixtures extends Fixture implements DependentFixtureInterface, Fi
         $vacation->setRequestedBy($user4)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-28'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-05-31'))
-            ->setConfirmed(true);
+            ->setConfirmed(true)
+            ->setReviewedBy($user)
+            ->setReviewedAt(new \DateTimeImmutable());
 
         $manager->persist($vacation);
 
@@ -56,7 +64,9 @@ class VacationsFixtures extends Fixture implements DependentFixtureInterface, Fi
         $vacation->setRequestedBy($user5)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-06-04'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-06-06'))
-            ->setConfirmed(true);
+            ->setConfirmed(true)
+            ->setReviewedBy($user2)
+            ->setReviewedAt(new \DateTimeImmutable());
 
         $manager->persist($vacation);
 
@@ -64,7 +74,9 @@ class VacationsFixtures extends Fixture implements DependentFixtureInterface, Fi
         $vacation->setRequestedBy($user6)
             ->setDateFrom(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-07-15'))
             ->setDateTo(\DateTimeImmutable::createFromFormat('Y-m-d', '2024-07-19'))
-            ->setConfirmed(true);
+            ->setConfirmed(true)
+            ->setReviewedBy($user)
+            ->setReviewedAt(new \DateTimeImmutable());
 
         $manager->persist($vacation);
 

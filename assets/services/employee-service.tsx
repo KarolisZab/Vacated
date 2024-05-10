@@ -20,7 +20,7 @@ class EmployeeService {
     }
 
     async updateProfile(employeeId: string, employeeData: Partial<EmployeeType>): Promise<EmployeeType> {
-        return await apiService.patch<EmployeeType>(`${API_URL}/users/${employeeId}`, employeeData);
+        return await apiService.patch<EmployeeType>(`/users/${employeeId}`, employeeData);
     }
 
     async getCurrentUser(): Promise<EmployeeType> {
